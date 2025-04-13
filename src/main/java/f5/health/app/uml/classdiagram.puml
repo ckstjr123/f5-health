@@ -1,0 +1,127 @@
+@startuml
+
+class Member {
+    - Long id
+    - String oauthId
+    - String username
+    - Role role
+    - Badge badge
+    - LocalDate birthDate
+    - String gender
+    - int height
+    - int weight
+    - String bloodType
+    - boolean isSmoker
+    - int daySmokingAvg
+    - int weekAlcoholAvg
+    - int weekExerciseFreq
+    - LocalDateTime createdAt
+    - LocalDateTime updatedAt
+    +getter()
+}
+
+enum Role {
+    - String name;
+    +getter()
+}
+
+enum Badge {
+    - String name
+    - Long cutOffScore
+    +getter()
+}
+
+class Device {
+    - Long id
+    - String udid
+    - Member member
+    - String refreshToken
+    - LocalDateTime refreshTokenExpiration
+    +getter()
+}
+
+class HealthReport {
+    - Long id
+    - Member member
+    - int healthLifeScore
+    - int waterIntake
+    - List<String> eatFoods
+    - int smokedCigarettes
+    - int alcoholDrinks
+    - String fitnessAdvice
+    - String foodAdvice
+    - LocalDateTime startDate
+    - LocalDateTime endDate
+    - LocalDateTime reportedAt
+    +getter()
+    + void addWaterIntake(int ml)
+    + void recordEatFoods(Set<String> eatFoods)
+}
+
+class FoodNutrient {
+    - String foodCode
+    - String foodName
+    - String foodType
+    - int kcal
+    - int natrium
+    - double carbohydrate
+    - double sugar
+    - double protein
+    - double fat
+    - String nutConStdQua
+    - String foodWeight
+    +getter()
+}
+
+class Post {
+    - Long id
+    - Category category
+    - Member member
+    - String title
+    - long view
+    - String content
+    - long likeCount
+    - long commentCount
+    - LocalDateTime postedAt
+    - LocalDateTime editedAt
+    +getter()
+}
+
+class Category {
+    - Long code
+    - String name
+    - Category parentCategory
+    - List<Category> childCategories
+    - int level
+    +getter()
+}
+
+class PostLike {
+    - Long id
+    - Member member
+    - Post post
+    +getter()
+}
+
+class Comment {
+    - Long id
+    - Post post
+    - Long memberId
+    - String writerName
+    - String content
+    - LocalDateTime commentedAt
+    - LocalDateTime editedAt
+    +getter()
+}
+
+Member "*" -up-> "1" Badge
+Member "*" -up-> "1" Role
+Device "*" -up-> "1" Member
+HealthReport "*" -left-> "1" Member
+Post "*" -up-> "1" Category
+Post "*" -right-> "1" Member
+PostLike "*" -up-> "1" Post
+PostLike "*" -up-> "1" Member
+Comment "*" -up-> "1" Post
+
+@enduml

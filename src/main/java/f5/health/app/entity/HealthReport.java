@@ -1,6 +1,7 @@
 package f5.health.app.entity;
 
-import f5.health.app.exception.MenuSizeOverflowException;
+import f5.health.app.exception.healthreport.HealthReportErrorCode;
+import f5.health.app.exception.healthreport.SizeLimitExceededException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -69,7 +70,7 @@ public class HealthReport {
 
     public void recordEatFoods(Set<String> eatFoods) {
         if ((this.eatFoods.size() + eatFoods.size()) > MENU_LIMIT_SIZE_PER_DAY) {
-            throw new MenuSizeOverflowException(MENU_LIMIT_SIZE_PER_DAY);
+            throw new SizeLimitExceededException(HealthReportErrorCode.EXCEEDED_MAX_MENU_COUNT);
         }
 
         this.eatFoods.addAll(eatFoods);

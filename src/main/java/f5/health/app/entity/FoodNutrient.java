@@ -40,7 +40,7 @@ public class FoodNutrient {
     private double fat;
 
     @Column(name = "NUT_CON_STD_QUA")
-    private String nutConStdQua;
+    private String nutConStdQua; // 영양성분 함량 기준량
 
     @Column(name = "FOOD_WEIGHT")
     private String foodWeight;

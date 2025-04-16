@@ -1,5 +1,6 @@
 package f5.health.app.entity;
 
+import f5.health.app.constant.System;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,11 +21,15 @@ public class Device {
 
     // 복합 고유키 (UDID, MEMBER_ID) //
     @Column(name = "UDID")
-    private String udid; // IOS(identifierForVendor)
+    private String udid; // IOS identifierForVendor
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
+
+    @Column(name = "OS")
+    @Enumerated(EnumType.STRING)
+    private System os;
 
     @Column(name = "REFRESH_TOKEN")
     private String refreshToken;

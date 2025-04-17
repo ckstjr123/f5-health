@@ -1,16 +1,21 @@
 package f5.health.app.constant;
 
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 public enum AuthStatus {
-    SIGNUP_REQUIRED(HttpServletResponse.SC_FOUND),
-    JOIN(HttpServletResponse.SC_CREATED),
-    LOGIN_FAIL(HttpServletResponse.SC_BAD_REQUEST),
-    SIGNIN(HttpServletResponse.SC_OK);
+    SIGNUP_REQUIRED(HttpStatus.FOUND),
+    JOIN(HttpStatus.CREATED),
+    SIGNIN(HttpStatus.OK);
 
-    private final int httpStatus;
+    private final HttpStatusCode httpStatus;
 
-    AuthStatus(int httpStatus) {
+    AuthStatus(HttpStatusCode httpStatus) {
         this.httpStatus = httpStatus;
+    }
+
+
+    public HttpStatusCode httpStatus() {
+        return this.httpStatus;
     }
 }

@@ -72,7 +72,7 @@ public class AuthService {
         String accessToken = this.jwtProvider.issueAccessToken(memberId, member.getUsername(), member.getRole().name());
         JwtProvider.RefreshToken refreshToken = this.jwtProvider.issueRefreshToken(memberId);
 
-        this.deviceService.register(Device.of(member, deviceInfo, refreshToken)); // 해당 접속 유저 디바이스 등록
+        this.deviceService.register(Device.of(member, deviceInfo, refreshToken)); // 갱신 토큰과 함께 해당 접속 유저 디바이스 등록
 
         return new JwtResponse(accessToken, refreshToken.getValue()); // 생성된 토큰 응답
     }

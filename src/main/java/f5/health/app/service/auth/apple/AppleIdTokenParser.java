@@ -1,4 +1,5 @@
-package f5.health.app.controller.auth.apple;
+/*
+package f5.health.app.service.auth.apple;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,9 +19,11 @@ public class AppleIdTokenParser {
     private static final int HEADER_INDEX = 0;
     private final ObjectMapper objectMapper;
 
-    /**
+    */
+/**
      * Identity Token에 담긴 암호화 알고리즘 ALG 및 키 식별자인 KID 헤더 추출
-     */
+     *//*
+
     public Map<String, String> parseHeaders(String idToken) {
         try {
             String encodedHeader = idToken.split(TOKEN_VALUE_DELIMITER)[HEADER_INDEX];
@@ -31,3 +34,4 @@ public class AppleIdTokenParser {
         }
     }
 }
+*/

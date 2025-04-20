@@ -4,6 +4,7 @@ import f5.health.app.exception.auth.AuthErrorCode;
 import f5.health.app.exception.auth.AuthenticationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,14 +13,16 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 
 @Slf4j
 @Component
 public class JwtProvider {
 
-    public static final long ACCESS_TOKEN_EXPIRED_MS = Duration.ofMinutes(3).toMillis();
-    public static final long REFRESH_TOKEN_EXPIRED_MS = Duration.ofMinutes(10).toMillis();
+    public static final long ACCESS_TOKEN_EXPIRED_MS = Duration.ofMinutes(30).toMillis();
+    public static final long REFRESH_TOKEN_EXPIRED_MS = Duration.ofDays(14).toMillis();
     public static final String JWT_EXCEPTION_ATTRIBUTE = "JWT_EXCEPTION";
     private final SecretKey secretKey;
 
@@ -29,16 +32,21 @@ public class JwtProvider {
     }
 
 
-    //로그인 성공 시 토큰 발급 역할
-    public String generateJwt(Long memberId, String username, String role, Long expiredMs) {
+    public String issueAccessToken(Long memberId, String username, String role) {
+        Date now = new Date();
+        Date expirationDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRED_MS);
         return Jwts.builder()
                 .subject(memberId.toString())
                 .claim("username", username)
                 .claim("role", role)
-                .issuedAt(new Date(System.currentTimeMillis())) // 토큰 발행 시각
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                .issuedAt(now)
+                .expiration(expirationDate)
                 .signWith(this.secretKey)
                 .compact();
+    }
+
+    public RefreshToken issueRefreshToken(Long memberId) {
+        return this.new RefreshToken(memberId);
     }
 
     public Claims extractVaildClaims(String token) {
@@ -59,21 +67,35 @@ public class JwtProvider {
         }
     }
 
-/*    public boolean isExpired(String token) {
-        try {
-            Jwts.parser().verifyWith(this.secretKey).build().parseSignedClaims(token);
-            return false;
-        } catch (ExpiredJwtException ex) {
-            return true;
-        } catch (SignatureException ex) {
-            throw new AuthenticationException(AuthExceptionType.SIGNATURE_JWT, ex);
-        } catch (MalformedJwtException ex) {
-            throw new AuthenticationException(AuthExceptionType.MALFORMED_JWT, ex);
-        } catch (UnsupportedJwtException ex) {
-            throw new AuthenticationException(AuthExceptionType.UNSUPPORTED_JWT, ex);
-        } catch (JwtException | IllegalArgumentException ex) {
-            throw new AuthenticationException(AuthExceptionType.INVALID_JWT, ex);
+    @Getter
+    public final class RefreshToken {
+
+        private final String value;
+        private final Date expiration;
+
+        private RefreshToken(Long memberId) {
+            Date now = new Date();
+            Date expirationDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRED_MS);
+            this.expiration = expirationDate;
+            this.value = Jwts.builder()
+                    .subject(memberId.toString())
+                    .issuedAt(now)
+                    .expiration(expirationDate)
+                    .signWith(secretKey)
+                    .compact();
         }
-    }*/
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof RefreshToken that)) return false;
+            return Objects.equals(this.value, that.value);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(this.value);
+        }
+    }
 
 }

@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 public enum AuthStatus {
+
     SIGNUP_REQUIRED(HttpStatus.FOUND),
     JOIN(HttpStatus.CREATED),
     SIGNIN(HttpStatus.OK);

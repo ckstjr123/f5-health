@@ -7,10 +7,10 @@ import lombok.Getter;
 @Getter
 public class CustomFieldError {
 
-    @Schema(description = "검증 실패 필드", example = "gender")
+    @Schema(description = "검증 실패 필드", example = "memberCheckUp.birthDate")
     private final String field;
 
-    @Schema(description = "해당 검증 실패 필드 에러 메시지", example = "성별이 잘못 입력되었습니다.")
+    @Schema(description = "해당 검증 실패 필드 에러 메시지", example = "생년월일을 입력해주세요.")
     private final String message;
 
     public CustomFieldError(String field, String message) {

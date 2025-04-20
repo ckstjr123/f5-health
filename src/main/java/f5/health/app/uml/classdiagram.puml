@@ -3,25 +3,20 @@
 class Member {
     - Long id
     - String oauthId
+    - String email
     - String username
     - Role role
     - Badge badge
     - LocalDate birthDate
-    - String gender
+    - Gender gender
     - int height
     - int weight
-    - String bloodType
-    - boolean isSmoker
+    - BloodType bloodType
     - int daySmokingAvg
     - int weekAlcoholAvg
     - int weekExerciseFreq
     - LocalDateTime createdAt
     - LocalDateTime updatedAt
-    +getter()
-}
-
-enum Role {
-    - String name;
     +getter()
 }
 
@@ -33,11 +28,11 @@ enum Badge {
 
 class Device {
     - Long id
-    - String udid
     - Member member
+    - String udid
     - System os
     - String refreshToken
-    - LocalDateTime refreshTokenExpiration
+    - Date refreshTokenExpiration
     +getter()
 }
 
@@ -116,7 +111,6 @@ class Comment {
 }
 
 Member "*" -up-> "1" Badge
-Member "*" -up-> "1" Role
 Device "*" -up-> "1" Member
 HealthReport "*" -left-> "1" Member
 Post "*" -up-> "1" Category

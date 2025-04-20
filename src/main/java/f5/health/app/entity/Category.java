@@ -15,7 +15,6 @@ import java.util.List;
 public class Category {
 
     @Id
-    @GeneratedValue
     @Column(name = "CATEGORY_CODE")
     private Long code;
 

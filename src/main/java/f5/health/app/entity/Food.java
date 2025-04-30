@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "FOOD_NUTRIENT")
-public class FoodNutrient {
+@Table(name = "FOOD")
+public class Food {
 
     @Id
     @Column(name = "FOOD_CODE")
@@ -39,8 +39,9 @@ public class FoodNutrient {
     @Column(name = "FAT")
     private double fat;
 
+    /** 영양성분 함량 기준량 */
     @Column(name = "NUT_CON_STD_QUA")
-    private String nutConStdQua; // 영양성분 함량 기준량
+    private String nutritionContentStdQuantity;
 
     @Column(name = "FOOD_WEIGHT")
     private String foodWeight;

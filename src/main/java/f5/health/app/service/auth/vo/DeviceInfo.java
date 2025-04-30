@@ -1,4 +1,4 @@
-package f5.health.app.entity.Device;
+package f5.health.app.service.auth.vo;
 
 import f5.health.app.constant.System;
 import io.swagger.v3.oas.annotations.media.Schema;

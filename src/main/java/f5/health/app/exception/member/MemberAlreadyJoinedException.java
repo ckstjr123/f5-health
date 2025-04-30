@@ -1,12 +1,10 @@
 package f5.health.app.exception.member;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import f5.health.app.exception.global.DuplicateEntityException;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class MemberAlreadyJoinedException extends IllegalStateException {
+public class MemberAlreadyJoinedException extends DuplicateEntityException {
 
-    public MemberAlreadyJoinedException(String message) {
-        super(message);
+    public MemberAlreadyJoinedException() {
+        super(MemberErrorCode.ALREADY_JOINED_MEMBER);
     }
 }

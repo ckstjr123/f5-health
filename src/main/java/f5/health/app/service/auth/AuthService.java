@@ -2,25 +2,23 @@ package f5.health.app.service.auth;
 
 import f5.health.app.constant.OAuth2Provider;
 import f5.health.app.entity.Device.Device;
-import f5.health.app.entity.Device.DeviceInfo;
 import f5.health.app.entity.Member;
-import f5.health.app.exception.member.MemberAlreadyJoinedException;
 import f5.health.app.jwt.JwtProvider;
 import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.client.OAuth2KakaoClient;
+import f5.health.app.service.auth.vo.DeviceInfo;
 import f5.health.app.service.auth.vo.OAuth2LoginRequest;
 import f5.health.app.service.auth.vo.SignUpRequest;
 import f5.health.app.service.auth.vo.oauth2userinfo.OAuth2UserInfo;
 import f5.health.app.service.device.DeviceService;
 import f5.health.app.service.member.MemberService;
-import f5.health.app.vo.auth.AuthResult;
+import f5.health.app.vo.auth.OAuth2LoginResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static f5.health.app.constant.AuthStatus.*;
+import static f5.health.app.constant.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
+import static f5.health.app.constant.OAuth2LoginStatus.SIGNUP_REQUIRED;
 import static f5.health.app.constant.OAuth2Provider.KAKAO;
 
 @Service
@@ -34,24 +32,22 @@ public class AuthService {
 
 
     @Transactional
-    public AuthResult signin(OAuth2Provider provider, OAuth2LoginRequest loginRequest) {
+    public OAuth2LoginResult login(OAuth2Provider provider, OAuth2LoginRequest loginRequest) {
         OAuth2UserInfo oauth2Userinfo = this.fetchOAuth2UserInfo(provider, loginRequest.getAccessToken());
 
         return memberService.findByEmail(oauth2Userinfo.getEmail())
-                .map(findMember -> AuthResult.of(SIGNIN, this.issueTokensAndRegisterDevice(findMember, loginRequest.getDeviceInfo())))
-                .orElse(AuthResult.of(SIGNUP_REQUIRED, null));
+                .map(findMember -> OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, this.issueTokensAndRegisterDevice(findMember, loginRequest.getDeviceInfo())))
+                .orElse(OAuth2LoginResult.of(SIGNUP_REQUIRED, null));
     }
 
     @Transactional
-    public AuthResult join(OAuth2Provider provider, SignUpRequest signUpRequest) {
-        // 유저 정보 조회 및 회원가입 중복 체크
+    public JwtResponse join(OAuth2Provider provider, SignUpRequest signUpRequest) {
+        // 액세스 토큰을 통해 유저 정보 조회
         OAuth2UserInfo oauth2Userinfo = this.fetchOAuth2UserInfo(provider, signUpRequest.getAccessToken());
-        this.validateDuplicateMember(oauth2Userinfo.getEmail());
 
-        Member joinMember = memberService.join(oauth2Userinfo, signUpRequest.getMemberCheckUp()); // 회원가입
+        Member joinMember = memberService.join(oauth2Userinfo, signUpRequest.getMemberCheckUp());
 
-        JwtResponse tokenResponse = this.issueTokensAndRegisterDevice(joinMember, signUpRequest.getDeviceInfo());
-        return AuthResult.of(JOIN, tokenResponse);
+        return this.issueTokensAndRegisterDevice(joinMember, signUpRequest.getDeviceInfo());
     }
 
 
@@ -67,21 +63,16 @@ public class AuthService {
     }
 
     private JwtResponse issueTokensAndRegisterDevice(Member member, DeviceInfo deviceInfo) {
-        // access token & refresh token 발행
         Long memberId = member.getId();
-        String accessToken = this.jwtProvider.issueAccessToken(memberId, member.getUsername(), member.getRole().name());
-        JwtProvider.RefreshToken refreshToken = this.jwtProvider.issueRefreshToken(memberId);
+        String nickname = member.getNickname();
+        String role = member.getRole().name();
+        // access token & refresh token 발행
+        String accessToken = this.jwtProvider.issueAccessToken(memberId, nickname, role);
+        JwtProvider.RefreshToken refreshToken = this.jwtProvider.issueRefreshToken(memberId, nickname, role);
 
-        this.deviceService.register(Device.of(member, deviceInfo, refreshToken)); // 갱신 토큰과 함께 해당 접속 유저 디바이스 등록
+        this.deviceService.register(Device.of(member, deviceInfo.getUdid(), deviceInfo.getOs(), refreshToken)); // 갱신 토큰과 함께 해당 접속 유저 디바이스 등록
 
-        return new JwtResponse(accessToken, refreshToken.getValue()); // 생성된 토큰 응답
-    }
-
-    private void validateDuplicateMember(String email) {
-        Optional<Member> findMember = this.memberService.findByEmail(email);
-        if (!findMember.isEmpty()) {
-            throw new MemberAlreadyJoinedException("이미 가입한 회원입니다.");
-        }
+        return new JwtResponse(accessToken, refreshToken.getValue());
     }
 
 }

@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/** JPA 복합키 (UDID, MEMBER_ID) 매핑 */
+/** JPA 복합키 (`MEMBER_ID`, UDID) 매핑 */
 @Embeddable
 @Getter
 @EqualsAndHashCode

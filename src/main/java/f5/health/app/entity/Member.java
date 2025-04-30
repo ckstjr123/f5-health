@@ -4,6 +4,7 @@ import f5.health.app.constant.Badge;
 import f5.health.app.constant.BloodType;
 import f5.health.app.constant.Gender;
 import f5.health.app.constant.Role;
+import f5.health.app.entity.base.BaseTimeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,18 +12,19 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "MEMBER")
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +37,8 @@ public class Member {
     @Column(name = "EMAIL", unique = true)
     private String email; // oauth 검증을 마치고 얻은 이메일
 
-    @Column(name = "USERNAME")
-    private String username;
+    @Column(name = "NICKNAME")
+    private String nickname;
 
     @Column(name = "ROLE")
     @Enumerated(EnumType.STRING)
@@ -72,40 +74,17 @@ public class Member {
     @Column(name = "WEEK_EXERCISE_FREQ")
     private int weekExerciseFreq;
 
-    @Column(name = "CREATED_AT")
-    private LocalDateTime createdAt;
-
-    @Column(name = "UPDATED_AT")
-    private LocalDateTime updatedAt;
-
     
     /** 회원 생성 메서드 */
     public static Member createMember(String oauthId, String email, String username, Role role, MemberCheckUp memberCheckUp) {
         Member member = new Member();
         member.oauthId = oauthId;
         member.email = email;
-        member.username = username;
+        member.nickname = username;
         member.role = role;
         member.badge = Badge.BEGINNER;
         memberCheckUp.applyTo(member);
         return member;
-    }
-
-
-    public void updateWeight(int weight) {
-        this.weight = weight;
-    }
-
-    public void updateDaySmokingAvg(int daySmokingAvg) {
-        this.daySmokingAvg = daySmokingAvg;
-    }
-
-    public void updateWeekAlcoholAvg(int weekAlcoholAvg) {
-        this.weekAlcoholAvg = weekAlcoholAvg;
-    }
-
-    public void updateWeekExerciseFreq(int weekExerciseFreq) {
-        this.weekAlcoholAvg = weekExerciseFreq;
     }
 
 

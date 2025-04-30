@@ -4,7 +4,7 @@ class Member {
     - Long id
     - String oauthId
     - String email
-    - String username
+    - String nickname
     - Role role
     - Badge badge
     - LocalDate birthDate
@@ -41,20 +41,18 @@ class HealthReport {
     - Member member
     - int healthLifeScore
     - int waterIntake
-    - List<String> eatFoods
     - int smokedCigarettes
     - int alcoholDrinks
     - String fitnessAdvice
-    - String foodAdvice
-    - LocalDateTime startDate
-    - LocalDateTime endDate
+    - String mealAdvice
+    - LocalDateTime startDateTime
+    - LocalDate endDate
+    - LocalTime endTime
     - LocalDateTime reportedAt
     +getter()
-    + void addWaterIntake(int ml)
-    + void recordEatFoods(Set<String> eatFoods)
 }
 
-class FoodNutrient {
+class Food {
     - String foodCode
     - String foodName
     - String foodType
@@ -64,7 +62,7 @@ class FoodNutrient {
     - double sugar
     - double protein
     - double fat
-    - String nutConStdQua
+    - String nutritionContentStdQuantity
     - String foodWeight
     +getter()
 }
@@ -78,8 +76,8 @@ class Post {
     - String content
     - long likeCount
     - long commentCount
-    - LocalDateTime postedAt
-    - LocalDateTime editedAt
+    - LocalDateTime createdAt
+    - LocalDateTime updatedAt
     +getter()
 }
 
@@ -105,8 +103,8 @@ class Comment {
     - Long memberId
     - String writerName
     - String content
-    - LocalDateTime commentedAt
-    - LocalDateTime editedAt
+    - LocalDateTime createdAt
+    - LocalDateTime updatedAt
     +getter()
 }
 

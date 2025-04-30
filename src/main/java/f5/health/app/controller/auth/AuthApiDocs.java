@@ -2,9 +2,10 @@ package f5.health.app.controller.auth;
 
 import f5.health.app.constant.OAuth2Provider;
 import f5.health.app.exception.response.ExceptionResult;
+import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.vo.OAuth2LoginRequest;
 import f5.health.app.service.auth.vo.SignUpRequest;
-import f5.health.app.vo.auth.AuthResult;
+import f5.health.app.vo.auth.OAuth2LoginResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -37,7 +38,7 @@ public interface AuthApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    ResponseEntity<AuthResult> login(OAuth2Provider provider, OAuth2LoginRequest loginRequest);
+    ResponseEntity<OAuth2LoginResult> signin(OAuth2Provider provider, OAuth2LoginRequest loginRequest);
 
 
     /** 회원가입 */
@@ -50,11 +51,14 @@ public interface AuthApiDocs {
     )
     @ApiResponses({
             @ApiResponse(
+                    responseCode = "201",
+                    description = "회원가입 성공"
+            ),
+            @ApiResponse(
                     responseCode = "401",
-                    description = "oauth 회원가입 인증 실패",
+                    description = "OAuth2 회원가입 실패",
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    ResponseEntity<AuthResult> signup(OAuth2Provider provider, SignUpRequest signUpRequest);
-
+    ResponseEntity<JwtResponse> signup(OAuth2Provider provider, SignUpRequest signUpRequest);
 }

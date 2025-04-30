@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -31,10 +30,10 @@ public class Device {
     private Date refreshTokenExpiration;
 
 
-    public static Device of(Member member, DeviceInfo deviceInfo, JwtProvider.RefreshToken refreshToken) {
+    public static Device of(Member member, String udid, System os, JwtProvider.RefreshToken refreshToken) {
         Device device = new Device();
-        device.deviceId = new DeviceId(member, deviceInfo.getUdid());
-        device.os = deviceInfo.getOs();
+        device.deviceId = new DeviceId(member, udid);
+        device.os = os;
         device.refreshToken = refreshToken.getValue();
         device.refreshTokenExpiration = refreshToken.getExpiration();
         return device;

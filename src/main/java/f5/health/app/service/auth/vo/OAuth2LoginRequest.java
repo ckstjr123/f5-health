@@ -1,6 +1,5 @@
 package f5.health.app.service.auth.vo;
 
-import f5.health.app.entity.Device.DeviceInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

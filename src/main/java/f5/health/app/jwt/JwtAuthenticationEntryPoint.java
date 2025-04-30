@@ -1,0 +1,37 @@
+package f5.health.app.jwt;
+
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import f5.health.app.exception.ErrorCode;
+import f5.health.app.exception.response.ExceptionResult;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+import static f5.health.app.jwt.JwtProvider.JWT_EXCEPTION_ATTRIBUTE;
+
+@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private final ObjectMapper objectMapper;
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        ErrorCode errorCode = (ErrorCode) request.getAttribute(JWT_EXCEPTION_ATTRIBUTE);
+        if (errorCode != null) {
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            this.objectMapper.writeValue(response.getWriter(), ExceptionResult.from(errorCode));
+        }
+    }
+}

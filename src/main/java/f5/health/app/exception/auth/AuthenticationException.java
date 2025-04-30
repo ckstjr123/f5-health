@@ -1,14 +1,18 @@
 package f5.health.app.exception.auth;
 
-import lombok.Getter;
+import f5.health.app.exception.ErrorCode;
+import f5.health.app.exception.global.ApiException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-@Getter
-public class AuthenticationException extends org.springframework.security.core.AuthenticationException {
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
+public class AuthenticationException extends ApiException {
 
-    private final AuthErrorCode errorCode;
+    public AuthenticationException(ErrorCode errorCode) {
+        super(errorCode);
+    }
 
     public AuthenticationException(AuthErrorCode errorCode, Throwable cause) {
-        super(errorCode.getMessage(), cause);
-        this.errorCode = errorCode;
+        super(errorCode, cause);
     }
 }

@@ -4,7 +4,7 @@ import f5.health.app.exception.auth.AuthErrorCode;
 import f5.health.app.exception.auth.AuthenticationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.*;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,16 +13,18 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
+
+import static f5.health.app.jwt.JwtCustomClaimNames.*;
 
 @Slf4j
 @Component
 public class JwtProvider {
 
-    public static final long ACCESS_TOKEN_EXPIRED_MS = Duration.ofMinutes(30).toMillis();
-    public static final long REFRESH_TOKEN_EXPIRED_MS = Duration.ofDays(14).toMillis();
+    private final String ACCESS = "access";
+    public static final String ACCESS_TOKEN_TYPE = "Bearer";
+    private final long ACCESS_TOKEN_EXPIRE_MS = Duration.ofMinutes(30).toMillis();
     public static final String JWT_EXCEPTION_ATTRIBUTE = "JWT_EXCEPTION";
     private final SecretKey secretKey;
 
@@ -32,24 +34,29 @@ public class JwtProvider {
     }
 
 
-    public String issueAccessToken(Long memberId, String username, String role) {
+    public String issueAccessToken(Long memberId, String nickname, String role) {
         Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRED_MS);
+        Date expirationDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_MS);
         return Jwts.builder()
                 .subject(memberId.toString())
-                .claim("username", username)
-                .claim("role", role)
                 .issuedAt(now)
+                .claim(NICKNAME, nickname)
+                .claim(ROLES, role)
+                .claim(TOKEN_USE, ACCESS)
                 .expiration(expirationDate)
                 .signWith(this.secretKey)
                 .compact();
     }
 
-    public RefreshToken issueRefreshToken(Long memberId) {
-        return this.new RefreshToken(memberId);
+    public boolean hasAccessTokenUse(Claims claims) {
+        return ACCESS.equals(claims.get(TOKEN_USE));
     }
 
-    public Claims extractVaildClaims(String token) {
+    public RefreshToken issueRefreshToken(Long memberId, String nickname, String role) {
+        return this.new RefreshToken(memberId, nickname, role);
+    }
+
+    public Claims parseClaims(String token) {
         try {
             return Jwts.parser().verifyWith(this.secretKey).build()
                     .parseSignedClaims(token)
@@ -70,19 +77,28 @@ public class JwtProvider {
     @Getter
     public final class RefreshToken {
 
+        private static final String REFRESH = "refresh";
+        private static final long REFRESH_TOKEN_EXPIRE_MS = Duration.ofDays(7).toMillis();
         private final String value;
         private final Date expiration;
 
-        private RefreshToken(Long memberId) {
+        private RefreshToken(Long memberId, String nickname, String role) {
             Date now = new Date();
-            Date expirationDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRED_MS);
+            Date expirationDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_MS);
             this.expiration = expirationDate;
             this.value = Jwts.builder()
                     .subject(memberId.toString())
                     .issuedAt(now)
+                    .claim(NICKNAME, nickname)
+                    .claim(ROLES, role)
+                    .claim(TOKEN_USE, REFRESH)
                     .expiration(expirationDate)
                     .signWith(secretKey)
                     .compact();
+        }
+
+        public boolean hasRefreshTokenUse(Claims claims) {
+            return REFRESH.equals(claims.get(TOKEN_USE));
         }
 
         @Override

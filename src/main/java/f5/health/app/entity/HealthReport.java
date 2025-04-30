@@ -1,24 +1,19 @@
 package f5.health.app.entity;
 
-import f5.health.app.exception.healthreport.HealthReportErrorCode;
-import f5.health.app.exception.healthreport.SizeLimitExceededException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
+/** 건강 리포트 엔티티 */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "HEALTH_REPORT")
+@Table(name = "HEALTH_REPORT", uniqueConstraints = {@UniqueConstraint(columnNames = {"MEMBER_ID", "END_DATE"})})
 public class HealthReport {
-
-    public static final int MENU_LIMIT_SIZE_PER_DAY = 15; // 하루 식단에 등록 가능한 메뉴 최대 개수
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +30,6 @@ public class HealthReport {
     @Column(name = "WATER_INTAKE")
     private int waterIntake;
 
-    @Column(name = "EAT_FOODS")
-    private List<String> eatFoods = new ArrayList<>(); // db에 ["치킨", "피자", "콜라"]와 같이 저장됨
-
     @Column(name = "SMOKED_CIGARETTES")
     private int smokedCigarettes;
 
@@ -47,33 +39,19 @@ public class HealthReport {
     @Column(name = "FITNESS_ADVICE")
     private String fitnessAdvice;
 
-    @Column(name = "FOOD_ADVICE")
-    private String foodAdvice;
+    @Column(name = "MEAL_ADVICE")
+    private String mealAdvice;
     
     // startDate ~ endDate: 건강 관측 기간 //
-    @Column(name = "START_DATE")
-    private LocalDateTime startDate;
+    @Column(name = "START_DATE_TIME")
+    private LocalDateTime startDateTime;
 
     @Column(name = "END_DATE")
-    private LocalDateTime endDate;
+    private LocalDate endDate; // 'yyyy-MM-DD' 일자별 조회 시 인덱스 성능을 높이기 위해 endTime과 분리
+
+    @Column(name = "END_TIME")
+    private LocalDate endTime; // 'HH:mm:ss'
 
     @Column(name = "REPORTED_AT")
-    private LocalDateTime reportedAt; // 제출 시각
-
-
-
-    // ------------------------- 비즈니스 로직 ------------------------- //
-
-    public void addWaterIntake(int ml) {
-        this.waterIntake += ml; // 동시에 누르는 경우 없다고 가정
-    }
-
-    public void recordEatFoods(Set<String> eatFoods) {
-        if ((this.eatFoods.size() + eatFoods.size()) > MENU_LIMIT_SIZE_PER_DAY) {
-            throw new SizeLimitExceededException(HealthReportErrorCode.EXCEEDED_MAX_MENU_COUNT);
-        }
-
-        this.eatFoods.addAll(eatFoods);
-    }
-
+    private LocalDateTime reportedAt; // 실제 작성 시각
 }

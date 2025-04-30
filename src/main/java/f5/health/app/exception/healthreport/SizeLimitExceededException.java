@@ -1,17 +1,10 @@
 package f5.health.app.exception.healthreport;
 
-import lombok.Getter;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import f5.health.app.exception.global.BadRequestException;
 
-@Getter
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class SizeLimitExceededException extends IllegalArgumentException {
-
-    private final HealthReportErrorCode errorCode;
+public class SizeLimitExceededException extends BadRequestException {
 
     public SizeLimitExceededException(HealthReportErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
+        super(errorCode);
     }
 }

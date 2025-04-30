@@ -1,6 +1,5 @@
 package f5.health.app.service.auth.vo;
 
-import f5.health.app.entity.Device.DeviceInfo;
 import f5.health.app.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -32,10 +31,12 @@ public class SignUpRequest {
     }
 
 
+    @Schema(hidden = true)
     public String getAccessToken() {
         return this.loginRequest.getAccessToken();
     }
 
+    @Schema(hidden = true)
     public DeviceInfo getDeviceInfo() {
         return this.loginRequest.getDeviceInfo();
     }

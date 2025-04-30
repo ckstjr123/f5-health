@@ -1,6 +1,9 @@
 package f5.health.app.exception.global.exhandler;
 
+import f5.health.app.exception.global.BadRequestException;
+import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.exception.response.CustomFieldError;
+import f5.health.app.exception.response.ExceptionResult;
 import f5.health.app.exception.response.FieldErrorsResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,8 +20,8 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public FieldErrorsResult MethodArgumentNotValidExHandler(MethodArgumentNotValidException ex) {
-        log.error("MethodArgumentNotValidExHandler", ex);
+    public FieldErrorsResult methodArgumentNotValidExHandler(MethodArgumentNotValidException ex) {
+        log.warn("MethodArgumentNotValidExHandler", ex);
         List<CustomFieldError> customFieldErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -28,4 +31,17 @@ public class GlobalExceptionHandler {
         return new FieldErrorsResult(customFieldErrors);
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ExceptionResult notFoundExHandler(NotFoundException ex) {
+        log.warn("NotFoundExHandler", ex);
+        return ExceptionResult.from(ex.getErrorCode());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public ExceptionResult badRequestExHandler(BadRequestException ex) {
+        log.warn("BadRequestExHandler", ex);
+        return ExceptionResult.from(ex.getErrorCode());
+    }
 }

@@ -1,17 +1,18 @@
 package f5.health.app.entity;
 
+import f5.health.app.entity.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "COMMENT")
-public class Comment {
+public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,10 +31,4 @@ public class Comment {
 
     @Column(name = "CONTENT")
     private String content;
-
-    @Column(name = "COMMENTED_AT")
-    private LocalDateTime commentedAt;
-
-    @Column(name = "EDITED_AT")
-    private LocalDateTime editedAt;
 }

@@ -18,7 +18,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final String[] SWAGGER_URL = {"/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"};
+    public static final String[] AUTH_EXCLUDE_URIS = {
+            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
+            , "/favicon.ico", "/signin/oauth2/{provider}", "/signup/oauth2/{provider}", "/reissue"
+    };
     private final JwtProvider jwtProvider;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
@@ -32,8 +35,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(this.jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((registry) -> registry
-                        .requestMatchers(SWAGGER_URL).permitAll()
-                        .requestMatchers( "/signin/oauth2/{provider}", "/signup/oauth2/{provider}", "/refresh").permitAll()
+                        .requestMatchers(AUTH_EXCLUDE_URIS).permitAll()
 //                        .requestMatchers("/admin").hasAuthority(Role.ADMIN.name())
                         .anyRequest().authenticated());
 

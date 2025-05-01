@@ -61,4 +61,25 @@ public interface AuthApiDocs {
             )
     })
     ResponseEntity<JwtResponse> signup(OAuth2Provider provider, SignUpRequest signUpRequest);
+
+
+    /** 토큰 재발급 */
+    @Operation(summary = "접근 & 갱신 토큰 재발급",
+            description = "갱신 토큰 검증 뒤 토큰 재발급 처리",
+            parameters = {
+                    @Parameter(name = "jwtReissueRequest", description = "토큰 재발급 요청", content = @Content(schema = @Schema(implementation = JwtReissueRequest.class)), required = true)
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "토큰 재발급 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "만료되었거나 부적절한 갱신 토큰이므로 검증 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            )
+    })
+    JwtResponse reissue(JwtReissueRequest jwtReissueRequest);
 }

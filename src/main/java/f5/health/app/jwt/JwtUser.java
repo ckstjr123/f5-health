@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static f5.health.app.jwt.JwtCustomClaimNames.NICKNAME;
 import static f5.health.app.jwt.JwtCustomClaimNames.ROLES;
 
 @Getter
@@ -14,7 +13,6 @@ import static f5.health.app.jwt.JwtCustomClaimNames.ROLES;
 public class JwtUser {
 
     private Long memberId;
-    private String username;
     private String role;
 
     public static JwtUserBuilder builder() {
@@ -25,8 +23,7 @@ public class JwtUser {
         Assert.notEmpty(claims, "claims cannot be empty");
         return JwtUser.builder()
                 .memberId(Long.valueOf(claims.getSubject()))
-                .nickname(claims.get(NICKNAME, String.class))
-                .roles(claims.get(ROLES, String.class))
+                .role(claims.get(ROLES, String.class))
                 .build();
     }
 
@@ -43,12 +40,7 @@ public class JwtUser {
             return this;
         }
 
-        public JwtUserBuilder nickname(String username) {
-            this.jwtUser.username = username;
-            return this;
-        }
-
-        public JwtUserBuilder roles(String role) {
+        public JwtUserBuilder role(String role) {
             this.jwtUser.role = role;
             return this;
         }

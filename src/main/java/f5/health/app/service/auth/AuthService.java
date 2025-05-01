@@ -67,8 +67,8 @@ public class AuthService {
         String nickname = member.getNickname();
         String role = member.getRole().name();
         // access token & refresh token 발행
-        String accessToken = this.jwtProvider.issueAccessToken(memberId, nickname, role);
-        JwtProvider.RefreshToken refreshToken = this.jwtProvider.issueRefreshToken(memberId, nickname, role);
+        String accessToken = this.jwtProvider.issueAccessToken(memberId, role);
+        JwtProvider.RefreshToken refreshToken = this.jwtProvider.issueRefreshToken(memberId);
 
         this.deviceService.register(Device.of(member, deviceInfo.getUdid(), deviceInfo.getOs(), refreshToken)); // 갱신 토큰과 함께 해당 접속 유저 디바이스 등록
 

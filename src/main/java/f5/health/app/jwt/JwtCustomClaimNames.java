@@ -5,5 +5,5 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JwtCustomClaimNames {
-    public static final String ROLES = "roles";
+    public static final String ROLE = "role";
 }

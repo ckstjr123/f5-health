@@ -16,7 +16,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-import static f5.health.app.jwt.JwtCustomClaimNames.ROLES;
+import static f5.health.app.jwt.JwtCustomClaimNames.ROLE;
 
 @Slf4j
 @Component
@@ -37,9 +37,9 @@ public class JwtProvider {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_MS);
         return Jwts.builder()
-                .issuedAt(now)
                 .subject(memberId.toString())
-                .claim(ROLES, role)
+                .claim(ROLE, role)
+                .issuedAt(now)
                 .expiration(expirationDate)
                 .signWith(this.secretKey)
                 .compact();
@@ -79,8 +79,8 @@ public class JwtProvider {
             Date expirationDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_MS);
             this.expiration = expirationDate;
             this.value = Jwts.builder()
-                    .issuedAt(now)
                     .subject(memberId.toString())
+                    .issuedAt(now)
                     .expiration(expirationDate)
                     .signWith(secretKey)
                     .compact();

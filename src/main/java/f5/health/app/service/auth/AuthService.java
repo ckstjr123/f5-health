@@ -3,6 +3,7 @@ package f5.health.app.service.auth;
 import f5.health.app.constant.OAuth2Provider;
 import f5.health.app.entity.Device.Device;
 import f5.health.app.entity.Member;
+import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.jwt.JwtProvider;
 import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.client.OAuth2KakaoClient;
@@ -13,6 +14,7 @@ import f5.health.app.service.auth.vo.oauth2userinfo.OAuth2UserInfo;
 import f5.health.app.service.device.DeviceService;
 import f5.health.app.service.member.MemberService;
 import f5.health.app.vo.auth.OAuth2LoginResult;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static f5.health.app.constant.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
 import static f5.health.app.constant.OAuth2LoginStatus.SIGNUP_REQUIRED;
 import static f5.health.app.constant.OAuth2Provider.KAKAO;
+import static f5.health.app.exception.member.MemberErrorCode.NOT_FOUND_MEMBER;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +52,17 @@ public class AuthService {
 
         return this.issueTokensAndRegisterDevice(joinMember, signUpRequest.getDeviceInfo());
     }
+
+    @Transactional
+    public JwtResponse refresh(String refreshToken) {
+        Claims rtClaims = this.jwtProvider.parseClaims(refreshToken);
+        Long memberId = Long.valueOf(rtClaims.getSubject());
+        
+        // 해당 리프레시 토큰과 일치하는 device와 페치 조인 멤버(id, role) 조회
+
+        return null;
+    }
+
 
 
     /** 액세스 토큰으로 사용자 정보 조회하는 API 호출 */

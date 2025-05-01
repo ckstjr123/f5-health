@@ -42,8 +42,9 @@ public class AuthController implements AuthApiDocs {
         return new ResponseEntity<>(tokenResponse, HttpStatus.CREATED);
     }
 
-//    @PostMapping("/refresh")
-
-
-
+    @PostMapping("/reissue")
+    public JwtResponse reissue(JwtReissueRequest jwtReissueRequest) {
+        // JwtResponse tokenResponse = this.authService.refresh(jwtReissueRequest.getRefreshToken());
+        return null;
+    }
 }

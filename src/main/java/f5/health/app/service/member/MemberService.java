@@ -22,11 +22,15 @@ public class MemberService {
     public Member join(OAuth2UserInfo userInfo, Member.MemberCheckUp memberCheckUp) {
         this.validateDuplicateMember(userInfo.getEmail());
         Member joinMember = Member.createMember(userInfo.getOAuthId(), userInfo.getEmail(), userInfo.getNickname(), Role.USER, memberCheckUp);
-        return this.memberRepository.save(joinMember);
+        return memberRepository.save(joinMember);
+    }
+
+    public Optional<Member> findById(Long memberId) {
+        return memberRepository.findById(memberId);
     }
 
     public Optional<Member> findByEmail(String email) {
-        return this.memberRepository.findByEmail(email);
+        return memberRepository.findByEmail(email);
     }
 
 

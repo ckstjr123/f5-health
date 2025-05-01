@@ -1,33 +1,25 @@
 package f5.health.app.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.lang.Assert;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static f5.health.app.jwt.JwtCustomClaimNames.ROLES;
-
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JwtUser {
 
     private Long memberId;
     private String role;
 
-    public static JwtUserBuilder builder() {
-        return new JwtUserBuilder();
+    public JwtUser(Long memberId, String role) {
+        this.memberId = memberId;
+        this.role = role;
     }
 
-    public static JwtUser from(Claims claims) {
-        Assert.notEmpty(claims, "claims cannot be empty");
-        return JwtUser.builder()
-                .memberId(Long.valueOf(claims.getSubject()))
-                .role(claims.get(ROLES, String.class))
-                .build();
-    }
+//    public static JwtUserBuilder builder() {
+//        return new JwtUserBuilder();
+//    }
 
-    public static class JwtUserBuilder {
+/*    public static class JwtUserBuilder {
 
         private final JwtUser jwtUser;
 
@@ -44,10 +36,10 @@ public class JwtUser {
             this.jwtUser.role = role;
             return this;
         }
+
         public JwtUser build() {
             return this.jwtUser;
         }
-
-    }
+    }*/
 
 }

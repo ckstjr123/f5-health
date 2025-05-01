@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static f5.health.app.exception.auth.AuthErrorCode.INVALID_TOKEN_TYPE;
-import static f5.health.app.exception.auth.AuthErrorCode.INVALID_TOKEN_USE;
 import static f5.health.app.jwt.JwtProvider.ACCESS_TOKEN_TYPE;
 
 /**
@@ -42,8 +41,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            Claims accessTokenClaims = this.resolveAccessTokenClaims(request.getHeader(HttpHeaders.AUTHORIZATION));
+            String accessToken = this.resolveAccessToken(request.getHeader(HttpHeaders.AUTHORIZATION));
 
+            Claims accessTokenClaims = jwtProvider.parseClaims(accessToken);
             JwtUser loginMember = JwtUser.from(accessTokenClaims); // 임시 세션 보관용 유저 객체 생성
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(loginMember, null, List.of(new SimpleGrantedAuthority(loginMember.getRole())));
@@ -55,21 +55,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw ex;
         }
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response); //
     }
 
-    private Claims resolveAccessTokenClaims(String authHeader) {
+    private String resolveAccessToken(String authHeader) {
         if (!StringUtils.hasText(authHeader) || !authHeader.startsWith(ACCESS_TOKEN_PREFIX)) {
             throw new AuthenticationException(INVALID_TOKEN_TYPE);
         }
-        String token = authHeader.replace(ACCESS_TOKEN_PREFIX, "");
 
-        Claims claims = jwtProvider.parseClaims(token);
-        if (!jwtProvider.hasAccessTokenUse(claims)) {
-            throw new AuthenticationException(INVALID_TOKEN_USE);
-        }
-
-        return claims;
+        return authHeader.replace(ACCESS_TOKEN_PREFIX, "");
     }
 
 }

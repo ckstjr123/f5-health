@@ -76,11 +76,11 @@ public class Member extends BaseTimeEntity {
 
     
     /** 회원 생성 메서드 */
-    public static Member createMember(String oauthId, String email, String username, Role role, MemberCheckUp memberCheckUp) {
+    public static Member createMember(String oauthId, String email, String nickname, Role role, MemberCheckUp memberCheckUp) {
         Member member = new Member();
         member.oauthId = oauthId;
         member.email = email;
-        member.nickname = username;
+        member.nickname = nickname;
         member.role = role;
         member.badge = Badge.BEGINNER;
         memberCheckUp.applyTo(member);

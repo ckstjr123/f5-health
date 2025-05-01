@@ -16,13 +16,12 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-import static f5.health.app.jwt.JwtCustomClaimNames.*;
+import static f5.health.app.jwt.JwtCustomClaimNames.ROLES;
 
 @Slf4j
 @Component
 public class JwtProvider {
 
-    private final String ACCESS = "access";
     public static final String ACCESS_TOKEN_TYPE = "Bearer";
     private final long ACCESS_TOKEN_EXPIRE_MS = Duration.ofMinutes(30).toMillis();
     public static final String JWT_EXCEPTION_ATTRIBUTE = "JWT_EXCEPTION";
@@ -34,26 +33,20 @@ public class JwtProvider {
     }
 
 
-    public String issueAccessToken(Long memberId, String nickname, String role) {
+    public String issueAccessToken(Long memberId, String role) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_MS);
         return Jwts.builder()
-                .subject(memberId.toString())
                 .issuedAt(now)
-                .claim(NICKNAME, nickname)
+                .subject(memberId.toString())
                 .claim(ROLES, role)
-                .claim(TOKEN_USE, ACCESS)
                 .expiration(expirationDate)
                 .signWith(this.secretKey)
                 .compact();
     }
 
-    public boolean hasAccessTokenUse(Claims claims) {
-        return ACCESS.equals(claims.get(TOKEN_USE));
-    }
-
-    public RefreshToken issueRefreshToken(Long memberId, String nickname, String role) {
-        return this.new RefreshToken(memberId, nickname, role);
+    public RefreshToken issueRefreshToken(Long memberId) {
+        return this.new RefreshToken(memberId);
     }
 
     public Claims parseClaims(String token) {
@@ -77,28 +70,20 @@ public class JwtProvider {
     @Getter
     public final class RefreshToken {
 
-        private static final String REFRESH = "refresh";
         private static final long REFRESH_TOKEN_EXPIRE_MS = Duration.ofDays(7).toMillis();
         private final String value;
         private final Date expiration;
 
-        private RefreshToken(Long memberId, String nickname, String role) {
+        private RefreshToken(Long memberId) {
             Date now = new Date();
             Date expirationDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_MS);
             this.expiration = expirationDate;
             this.value = Jwts.builder()
-                    .subject(memberId.toString())
                     .issuedAt(now)
-                    .claim(NICKNAME, nickname)
-                    .claim(ROLES, role)
-                    .claim(TOKEN_USE, REFRESH)
+                    .subject(memberId.toString())
                     .expiration(expirationDate)
                     .signWith(secretKey)
                     .compact();
-        }
-
-        public boolean hasRefreshTokenUse(Claims claims) {
-            return REFRESH.equals(claims.get(TOKEN_USE));
         }
 
         @Override

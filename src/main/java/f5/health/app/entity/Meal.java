@@ -24,11 +24,11 @@ public class Meal {
     @Column(name = "MEAL_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) //양방향 매핑
     @JoinColumn(name = "HEALTH_REPORT_ID")
     private HealthReport report;
 
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL) //양방향
+    @OneToMany(mappedBy = "meal", cascade = CascadeType.ALL)
     private List<MealFood> mealFoods = new ArrayList<>();
 
     @Column(name = "MEAL_TYPE")

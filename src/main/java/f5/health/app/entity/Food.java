@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class Food {
 
     @Id
-    @Column(name = "FOOD_CODE")
+    @Column(name = "FOOD_CODE", length = 19)
     private String foodCode;
 
     @Column(name = "FOOD_NAME", unique = true)

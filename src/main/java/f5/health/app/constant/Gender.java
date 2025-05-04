@@ -1,5 +1,11 @@
 package f5.health.app.constant;
 
 public enum Gender {
-    남자, 여자
+    MALE("남자"), FEMALE("여자");
+
+    private final String label;
+
+    Gender(String label) {
+        this.label = label;
+    }
 }

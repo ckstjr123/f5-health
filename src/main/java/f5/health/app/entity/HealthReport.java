@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-/** 건강 리포트 엔티티 */
+/** 건강 일지 엔티티 */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -20,9 +22,14 @@ public class HealthReport {
     @Column(name = "HEALTH_REPORT_ID")
     private Long id;
 
+    /** 일지 작성자 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
+
+    /** 일지에 기록된 식단 */
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+    private List<Meal> meals = new ArrayList<>();
 
     @Column(name = "HEALTH_LIFE_SCORE")
     private int healthLifeScore;

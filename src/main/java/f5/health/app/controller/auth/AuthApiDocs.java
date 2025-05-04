@@ -2,6 +2,7 @@ package f5.health.app.controller.auth;
 
 import f5.health.app.constant.OAuth2Provider;
 import f5.health.app.exception.response.ExceptionResult;
+import f5.health.app.jwt.JwtMember;
 import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.vo.OAuth2LoginRequest;
 import f5.health.app.service.auth.vo.SignUpRequest;
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+
+import static f5.health.app.jwt.JwtConst.REFRESH_TOKEN_HEADER;
 
 @Tag(name = "인증 관련 API", description = "인증(로그인, 회원가입, 토큰 갱신 등) 처리")
 public interface AuthApiDocs {
@@ -46,7 +49,7 @@ public interface AuthApiDocs {
             description = "액세스 토큰과 회원 추가 정보 검증 후 회원가입",
             parameters = {
                     @Parameter(in = ParameterIn.PATH, name = "provider", description = "OAuth2 제공자", content = @Content(schema = @Schema(implementation = OAuth2Provider.class)), required = true),
-                    @Parameter(name = "signUpRequest", description = "회원가입 요청 VO", content = @Content(schema = @Schema(implementation = SignUpRequest.class)), required = true)
+                    @Parameter(name = "signUpRequest", description = "회원가입 VO", content = @Content(schema = @Schema(implementation = SignUpRequest.class)), required = true)
             }
     )
     @ApiResponses({
@@ -67,7 +70,7 @@ public interface AuthApiDocs {
     @Operation(summary = "접근 & 갱신 토큰 재발급",
             description = "갱신 토큰 검증 뒤 토큰 재발급 처리",
             parameters = {
-                    @Parameter(name = "jwtReissueRequest", description = "토큰 재발급 요청", content = @Content(schema = @Schema(implementation = JwtReissueRequest.class)), required = true)
+                    @Parameter(in = ParameterIn.HEADER, name = REFRESH_TOKEN_HEADER, description = "갱신 토큰 헤더", required = true)
             }
     )
     @ApiResponses({
@@ -81,5 +84,32 @@ public interface AuthApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    JwtResponse reissue(JwtReissueRequest jwtReissueRequest);
+    JwtResponse refresh(String refreshToken);
+
+
+
+    /** 로그아웃 */
+    @Operation(summary = "로그아웃",
+            description = "클라이언트는 저장한 인증 토큰과 갱신 토큰 삭제",
+            parameters = {
+                    @Parameter(in = ParameterIn.HEADER, name = REFRESH_TOKEN_HEADER, description = "갱신 토큰 헤더", required = true)
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "로그아웃 처리 완료"
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "로그아웃 권한 불일치",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            )
+    })
+    void logout(JwtMember logoutMember, String refreshToken);
 }

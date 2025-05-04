@@ -1,10 +1,9 @@
-package com.f5health.app;
+package f5.health.app;
 
-import f5.health.app.HealthApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(classes = HealthApplication.class)
+@SpringBootTest
 class HealthApplicationTests {
 
 	@Test

@@ -1,9 +1,11 @@
 package f5.health.app.service.auth;
 
 import f5.health.app.constant.OAuth2Provider;
+import f5.health.app.dto.device.DeviceAndMemberRole;
 import f5.health.app.entity.Device.Device;
 import f5.health.app.entity.Member;
-import f5.health.app.exception.global.NotFoundException;
+import f5.health.app.exception.auth.AccessDeniedException;
+import f5.health.app.exception.auth.RefreshViolationException;
 import f5.health.app.jwt.JwtProvider;
 import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.client.OAuth2KakaoClient;
@@ -16,13 +18,15 @@ import f5.health.app.service.member.MemberService;
 import f5.health.app.vo.auth.OAuth2LoginResult;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static f5.health.app.constant.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
 import static f5.health.app.constant.OAuth2LoginStatus.SIGNUP_REQUIRED;
 import static f5.health.app.constant.OAuth2Provider.KAKAO;
-import static f5.health.app.exception.member.MemberErrorCode.NOT_FOUND_MEMBER;
+import static f5.health.app.exception.auth.AuthErrorCode.FORBIDDEN_REQUEST;
+import static f5.health.app.exception.auth.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
 
 @Service
 @RequiredArgsConstructor
@@ -55,14 +59,23 @@ public class AuthService {
 
     @Transactional
     public JwtResponse refresh(String refreshToken) {
-        Claims rtClaims = this.jwtProvider.parseClaims(refreshToken);
-        Long memberId = Long.valueOf(rtClaims.getSubject());
-        
-        // 해당 리프레시 토큰과 일치하는 device와 페치 조인 멤버(id, role) 조회
+        this.jwtProvider.parseClaims(refreshToken);
 
-        return null;
+        DeviceAndMemberRole deviceAndMemberRole = deviceService.findDeviceAndMemberRoleBy(refreshToken)
+                .orElseThrow(() -> new RefreshViolationException(NOT_MATCH_REFRESH_JWT));
+
+        return this.refreshRotation(deviceAndMemberRole);
     }
 
+    @Transactional
+    public void logout(Long logoutMemberId, String refreshToken) {
+        Claims rtClaims = this.jwtProvider.parseClaims(refreshToken);
+        if (!logoutMemberId.equals(Long.valueOf(rtClaims.getSubject()))) {
+            throw new AccessDeniedException("로그아웃 권한이 없습니다.");
+        }
+
+        this.deviceService.deleteByMemberIdAndRefreshToken(logoutMemberId, refreshToken);
+    }
 
 
     /** 액세스 토큰으로 사용자 정보 조회하는 API 호출 */
@@ -70,7 +83,7 @@ public class AuthService {
         switch (provider) {
 //          case APPLE:
             case KAKAO:
-                return this.oauth2KakaoClient.getKakaoUserInfo(KAKAO.accessTokenPrefix() + accessToken);
+                return oauth2KakaoClient.getKakaoUserInfo(KAKAO.accessTokenPrefix() + accessToken);
             default:
                 throw new IllegalStateException("Unsupported OAuth2 Provider: " + provider);
         }
@@ -78,15 +91,22 @@ public class AuthService {
 
     private JwtResponse issueTokensAndRegisterDevice(Member member, DeviceInfo deviceInfo) {
         Long memberId = member.getId();
-        String nickname = member.getNickname();
-        String role = member.getRole().name();
-        // access token & refresh token 발행
-        String accessToken = this.jwtProvider.issueAccessToken(memberId, role);
-        JwtProvider.RefreshToken refreshToken = this.jwtProvider.issueRefreshToken(memberId);
+        String accessToken = jwtProvider.issueAccessToken(memberId, member.getRole().name());
+        JwtProvider.RefreshToken refreshToken = jwtProvider.issueRefreshToken(memberId);
 
         this.deviceService.register(Device.of(member, deviceInfo.getUdid(), deviceInfo.getOs(), refreshToken)); // 갱신 토큰과 함께 해당 접속 유저 디바이스 등록
+        return new JwtResponse(accessToken, refreshToken.value());
+    }
 
-        return new JwtResponse(accessToken, refreshToken.getValue());
+    private JwtResponse refreshRotation(DeviceAndMemberRole deviceAndMemberRole) {
+        Device refreshDevice = deviceAndMemberRole.getDevice();
+        Long refreshMemberId = refreshDevice.getDeviceId().getMember().getId(); // MEMBER 테이블 조회 X
+
+        String accessToken = jwtProvider.issueAccessToken(refreshMemberId, deviceAndMemberRole.getMemberRole());
+        JwtProvider.RefreshToken refreshToken = jwtProvider.issueRefreshToken(refreshMemberId);
+        refreshDevice.rotateRefreshToken(refreshToken);
+
+        return new JwtResponse(accessToken, refreshToken.value());
     }
 
 }

@@ -1,8 +1,10 @@
 package f5.health.app.controller.auth;
 
 import f5.health.app.constant.OAuth2Provider;
+import f5.health.app.jwt.JwtMember;
 import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.AuthService;
+import f5.health.app.service.auth.vo.DeviceInfo;
 import f5.health.app.service.auth.vo.OAuth2LoginRequest;
 import f5.health.app.service.auth.vo.SignUpRequest;
 import f5.health.app.vo.auth.OAuth2LoginResult;
@@ -11,10 +13,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import static f5.health.app.jwt.JwtConst.REFRESH_TOKEN_HEADER;
 
 @Slf4j
 @RestController
@@ -29,6 +31,8 @@ public class AuthController implements AuthApiDocs {
                                                     @RequestBody @Valid OAuth2LoginRequest loginRequest) {
 
         OAuth2LoginResult oauth2loginResult = this.authService.login(provider, loginRequest);
+        DeviceInfo deviceInfo = loginRequest.getDeviceInfo();
+        log.info("Login device:{} {}", deviceInfo.getOs(), deviceInfo.getUdid());
 
         return new ResponseEntity<>(oauth2loginResult, oauth2loginResult.httpStatus());
     }
@@ -42,9 +46,17 @@ public class AuthController implements AuthApiDocs {
         return new ResponseEntity<>(tokenResponse, HttpStatus.CREATED);
     }
 
-    @PostMapping("/reissue")
-    public JwtResponse reissue(JwtReissueRequest jwtReissueRequest) {
-        // JwtResponse tokenResponse = this.authService.refresh(jwtReissueRequest.getRefreshToken());
-        return null;
+    @PatchMapping("/refresh")
+    public JwtResponse refresh(@RequestHeader(REFRESH_TOKEN_HEADER) String refreshToken) {
+        return this.authService.refresh(refreshToken);
     }
+
+    @PostMapping("/logout")
+    public void logout(@AuthenticationPrincipal JwtMember logoutMember,
+                       @RequestHeader(REFRESH_TOKEN_HEADER) String refreshToken) {
+        Long logoutMemberId = logoutMember.getId();
+        this.authService.logout(logoutMemberId, refreshToken);
+        log.info("Logout memberId:{}", logoutMemberId);
+    }
+
 }

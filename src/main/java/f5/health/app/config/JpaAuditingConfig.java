@@ -1,6 +1,6 @@
 package f5.health.app.config;
 
-import f5.health.app.jwt.JwtUser;
+import f5.health.app.jwt.JwtMember;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -22,6 +22,6 @@ public class JpaAuditingConfig {
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)
                 .map(Authentication::getPrincipal)
-                .map(principal -> ((JwtUser) principal).getMemberId());
+                .map(principal -> ((JwtMember) principal).getId());
     }
 }

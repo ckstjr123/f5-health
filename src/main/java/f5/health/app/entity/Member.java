@@ -35,7 +35,7 @@ public class Member extends BaseTimeEntity {
     private String oauthId;
 
     @Column(name = "EMAIL", unique = true)
-    private String email; // oauth 검증을 마치고 얻은 이메일
+    private String email; // OAuth 액세스 토큰 검증을 마치고 얻은 이메일
 
     @Column(name = "NICKNAME")
     private String nickname;
@@ -88,7 +88,7 @@ public class Member extends BaseTimeEntity {
     }
 
 
-    @Schema(description = "회원 설문 정보 전달받는 VO")
+    @Schema(description = "회원 설문 정보")
     @Getter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class MemberCheckUp {
@@ -98,7 +98,7 @@ public class Member extends BaseTimeEntity {
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate birthDate;
 
-        @Schema(description = "성별", example = "남자", requiredMode = REQUIRED)
+        @Schema(description = "성별", example = "MALE", requiredMode = REQUIRED)
         @NotNull(message = "성별을 입력해주세요.")
         private Gender gender;
 
@@ -139,7 +139,7 @@ public class Member extends BaseTimeEntity {
         }
 
 
-        /** 회원 설문 정보 반영 */
+        /** 설문 정보 반영 */
         private void applyTo(Member member) {
             member.birthDate = this.birthDate;
             member.gender = this.gender;

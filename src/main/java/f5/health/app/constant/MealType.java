@@ -7,9 +7,9 @@ public enum MealType {
     DINNER("저녁"),
     DESSERT("간식");
 
-    private final String type;
+    private final String label;
 
-    MealType(String type) {
-        this.type = type;
+    MealType(String label) {
+        this.label = label;
     }
 }

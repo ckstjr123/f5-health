@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "MEAL_FOODS")
+@Table(name = "MEAL_FOOD")
 public class MealFood {
 
     @Id
@@ -17,7 +17,7 @@ public class MealFood {
     @Column(name = "MEAL_FOOD_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY) //양방향
+    @ManyToOne(fetch = FetchType.LAZY) //양방향 매핑
     @JoinColumn(name = "MEAL_ID")
     private Meal meal;
 

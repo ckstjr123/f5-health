@@ -12,8 +12,8 @@ import java.util.List;
 
 /** 건강 일지 엔티티 */
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "HEALTH_REPORT", uniqueConstraints = {@UniqueConstraint(columnNames = {"MEMBER_ID", "END_DATE"})})
 public class HealthReport {
 
@@ -61,4 +61,13 @@ public class HealthReport {
 
     @Column(name = "REPORTED_AT")
     private LocalDateTime reportedAt; // 실제 작성 시각
+
+
+    /** HealthReport ↔ Meal 양방향 매핑 */
+    public void addAllMeals(List<Meal> meals) {
+        this.meals.addAll(meals);
+        for (Meal meal : meals) {
+            meal.setReport(this);
+        }
+    }
 }

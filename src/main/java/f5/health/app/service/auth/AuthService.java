@@ -1,7 +1,7 @@
 package f5.health.app.service.auth;
 
 import f5.health.app.constant.OAuth2Provider;
-import f5.health.app.dto.device.DeviceAndMemberRole;
+import f5.health.app.vo.device.DeviceAndMemberRole;
 import f5.health.app.entity.Device.Device;
 import f5.health.app.entity.Member;
 import f5.health.app.exception.auth.AccessDeniedException;
@@ -18,14 +18,12 @@ import f5.health.app.service.member.MemberService;
 import f5.health.app.vo.auth.OAuth2LoginResult;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static f5.health.app.constant.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
 import static f5.health.app.constant.OAuth2LoginStatus.SIGNUP_REQUIRED;
 import static f5.health.app.constant.OAuth2Provider.KAKAO;
-import static f5.health.app.exception.auth.AuthErrorCode.FORBIDDEN_REQUEST;
 import static f5.health.app.exception.auth.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
 
 @Service

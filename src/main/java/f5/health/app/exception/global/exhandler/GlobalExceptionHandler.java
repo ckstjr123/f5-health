@@ -1,5 +1,6 @@
 package f5.health.app.exception.global.exhandler;
 
+import f5.health.app.exception.ErrorCode;
 import f5.health.app.exception.auth.AccessDeniedException;
 import f5.health.app.exception.auth.AuthenticationException;
 import f5.health.app.exception.global.BadRequestException;
@@ -44,7 +45,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ExceptionResult badRequestExHandler(BadRequestException ex) {
         log.warn("BadRequestExHandler", ex);
-        return ExceptionResult.from(ex.getErrorCode());
+        ErrorCode errorCode = ex.getErrorCode();
+        return ExceptionResult.of(errorCode, errorCode.getMessage());
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

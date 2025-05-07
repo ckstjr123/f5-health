@@ -1,4 +1,4 @@
-package f5.health.app.dto.device;
+package f5.health.app.vo.device;
 
 import f5.health.app.constant.Role;
 import f5.health.app.entity.Device.Device;

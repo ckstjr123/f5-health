@@ -1,9 +1,10 @@
-package f5.health.app.service.healthreport.vo.request;
+package f5.health.app.service.meal.vo.request;
 
-import f5.health.app.constant.MealType;
+import f5.health.app.constant.meal.MealType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,17 +31,12 @@ public class MealRequest {
     private List<MealFoodRequest> mealFoodRequestList;
 
     @Schema(description = "식사 분류", example = "BREAKFAST")
-    @NotNull
+    @NotNull(message = "식사 유형을 선택해 주세요.")
     private MealType mealType;
 
     @Schema(description = "식사 시각", example = "2025-05-07T07:31:28")
-    @NotNull
+    @NotNull(message = "식사 시간대를 입력해 주세요.")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @PastOrPresent
     private LocalDateTime mealTime;
-
-    public MealRequest(List<MealFoodRequest> mealFoodRequestList, MealType mealType, LocalDateTime mealTime) {
-        this.mealFoodRequestList = mealFoodRequestList;
-        this.mealType = mealType;
-        this.mealTime = mealTime;
-    }
 }

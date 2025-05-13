@@ -1,4 +1,4 @@
-package f5.health.app.service.healthreport.vo.request;
+package f5.health.app.service.meal.vo.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
@@ -27,9 +27,4 @@ public class MealFoodRequest {
     @Schema(description = "먹은 수량", example = "1")
     @DecimalMin(value = "0.25")
     private double count;
-
-    public MealFoodRequest(String foodCode, double count) {
-        this.foodCode = foodCode;
-        this.count = count;
-    }
 }

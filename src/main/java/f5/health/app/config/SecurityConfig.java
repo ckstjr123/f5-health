@@ -21,7 +21,6 @@ public class SecurityConfig {
     public static final String[] AUTH_EXCLUDE_URIS = {
             "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
             , "/favicon.ico", "/signin/oauth2/{provider}", "/signup/oauth2/{provider}", "/refresh",
-
     };
     private final JwtProvider jwtProvider;
     private final AuthenticationEntryPoint authenticationEntryPoint;

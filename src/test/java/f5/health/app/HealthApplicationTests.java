@@ -10,4 +10,3 @@ class HealthApplicationTests {
 	void contextLoads() {
 	}
 }
-

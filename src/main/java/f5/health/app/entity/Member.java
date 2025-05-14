@@ -17,6 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
@@ -208,6 +209,29 @@ public class Member extends BaseTimeEntity {
         private int calculateWeekSmokingCost() {
             return (this.daySmokeCigarettes * ONE_CIGARETTE_PRICE) * 7;
         }
+
+        /**
+         * 하루 권장 칼로리(TDEE) 계산
+         */
+        public double calculateRecommendedCalories() {
+            int age = Period.between(this.birthDate, LocalDate.now()).getYears();
+            double bmr;
+
+            if (this.gender == Gender.MALE) {
+                bmr = 66.47 + (13.75 * this.weight) + (5 * this.height) - (6.76 * age);
+            } else {
+                bmr = 655.1 + (9.56 * this.weight) + (1.85 * this.height) - (4.68 * age);
+            }
+
+            double activityMultiplier = switch (this.weekExerciseFreq) {
+                case 0, 1 -> 1.2;
+                case 2, 3, 4 -> 1.375;
+                default -> 1.55;
+            };
+
+            return bmr * activityMultiplier;
+        }
+
     }
 
 }

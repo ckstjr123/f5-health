@@ -32,7 +32,7 @@ public class GptFeedbackService {
                 - 음주량: %d 잔
                 - 걸음 수: %d
                 - 운동 종류: %s
-                - 운동 시간: %d 분
+                - 운동 시간: %d 초
                 - 운동 칼로리 소모: %d kcal
                 - 심박수: %d bpm
                 - 총 소모 칼로리: %d kcal
@@ -42,7 +42,7 @@ public class GptFeedbackService {
                 - 단백질: %.1f g
                 - 지방: %.1f g
 
-                위 데이터를 바탕으로 한국어 건강 피드백을 작성해 주세요.
+                위 데이터를 바탕으로 한국어 건강 피드백을 작성해 주세요. 
             """,
                     dto.getWaterIntake(), dto.getSmokingAmount(), dto.getAlcoholAmount(), dto.getStepCount(),
                     dto.getExerciseType(), dto.getExerciseDuration(), dto.getExerciseCalories(), dto.getHeartRate(),
@@ -57,7 +57,7 @@ public class GptFeedbackService {
                 .model("gpt-4o")
                 .messages(List.of(systemMessage, userMessage))
                 .temperature(0.7)
-                .maxTokens(500)
+                .maxTokens(100)
                 .build();
 
         ChatCompletionResult result = openAiService.createChatCompletion(request);

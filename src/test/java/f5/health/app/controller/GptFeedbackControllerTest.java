@@ -42,14 +42,14 @@ class GptFeedbackControllerTest {
         dto.setHeartRate(75);
         dto.setTotalCaloriesBurned(1800);
         dto.setSleepHours(7);
-        dto.setKcal(2200);
+        dto.setKcal(2200.0);
         dto.setCarbohydrate(250.0);
         dto.setProtein(90.0);
         dto.setFat(70.0);
 
         when(gptFeedbackService.getFeedback(dto)).thenReturn("건강을 잘 유지하고 있습니다!");
 
-        mockMvc.perform(post("/api/feedback")
+        mockMvc.perform(post("/api/feedback/generate")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())

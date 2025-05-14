@@ -18,6 +18,8 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+# 시크릿 파일 Git 추적 금지
+src/main/resources/application-secret.properties
 application.properties
 .idea
 *.iws

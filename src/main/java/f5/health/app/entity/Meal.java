@@ -40,7 +40,7 @@ public class Meal {
     private LocalDateTime mealTime;
 
     @Column(name = "TOTAL_KCAL")
-    private int totalKcal; // 계산된 식사 섭취 칼로리
+    private int totalKcal; // 계산된 식사 총 섭취 칼로리
 
 
     public static Meal newInstance(MealType mealType, LocalDateTime mealTime, List<MealFood> mealFoods) {
@@ -72,5 +72,4 @@ public class Meal {
                 .mapToInt(mealFood -> mealFood.calculateMealFoodKcal())
                 .sum();
     }
-
 }

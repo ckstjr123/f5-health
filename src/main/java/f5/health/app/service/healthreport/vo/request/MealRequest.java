@@ -34,9 +34,9 @@ public class MealRequest {
     @NotNull(message = "식사 유형을 선택해 주세요.")
     private MealType mealType;
 
-    @Schema(description = "식사 시각", example = "2025-05-07T07:31:28")
-    @NotNull(message = "식사 시간대를 입력해 주세요.")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @PastOrPresent
+    @Schema(description = "식사 시각", example = "2025-05-07T07:31:28", nullable = true)
+//    @NotNull(message = "식사 시간대를 입력해 주세요.")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @PastOrPresent
     private LocalDateTime mealTime;
 }

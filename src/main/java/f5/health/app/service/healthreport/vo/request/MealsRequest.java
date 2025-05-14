@@ -30,6 +30,7 @@ public final class MealsRequest {
 
 
     /** 식단에 기록된 모든 음식의 foodCode를 Set으로 모아서 반환 */
+    @Schema(hidden = true)
     public Set<String> getEatenFoodCodeSet() {
         return this.mealRequestList.stream()
                 .flatMap(mealRequest -> mealRequest.getMealFoodsRequest().stream()) // flatMap: 하나의 연속된 스트림으로 만들어서 반환
@@ -38,11 +39,13 @@ public final class MealsRequest {
     }
 
     /** 식사 횟수 */
+    @Schema(hidden = true)
     public int getMealCount() {
         return this.mealRequestList.size();
     }
 
     /** 식사당 메뉴 기록 개수가 담긴 리스트 반환 */
+    @Schema(hidden = true)
     public List<Integer> getMenuCountsPerMeal() {
         return this.mealRequestList.stream()
                 .map(meal -> meal.getMealFoodsRequest().size())

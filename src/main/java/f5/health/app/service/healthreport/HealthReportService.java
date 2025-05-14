@@ -62,7 +62,6 @@ public class HealthReportService {
         Member writer = memberService.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 
 
-
         // 리포트 생성(계산된 점수 회원 totalHealthLifeScore에 누적됨) 및 저장(cascade)
         HealthReport report = HealthReport.builder(writer, meals)
                 .healthLifeScore(100)

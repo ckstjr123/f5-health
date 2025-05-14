@@ -27,6 +27,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Table(name = "MEMBER")
 public class Member extends BaseTimeEntity {
 
+    private static final int DAYS_IN_WEEK = 7;
     private static final int ONE_CIGARETTE_PRICE = 225;
 
     @Id
@@ -73,8 +74,6 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "DAY_SMOKE_CIGARETTES")
     private int daySmokeCigarettes; // 0이면 비흡연자
-    @Column(name = "WEEK_SMOKING_COST")
-    private int weekSmokingCost;
     @Column(name = "SMOKING_SAVED_MONEY")
     private int smokingSavedMoney; // 흡연 절약 금액
 
@@ -86,10 +85,10 @@ public class Member extends BaseTimeEntity {
     private int alcoholSavedMoney; // 음주 절약 금액
     
     @Column(name = "WEEK_EXERCISE_FREQ")
-    private int weekExerciseFreq;
+    private int weekExerciseFrequency;
 
     @Column(name = "HEALTH_ITEMS_RECOMMEND")
-    private String healthItemsRecommend; // 절약 금액에 대한 gpt 건강 아이템 추천 결과(maxTokens: 50)
+    private String healthItemsRecommend; // 절약 금액에 대한 gpt 건강 아이템 추천 결과(maxTokens: 30)
     
     /** 회원 생성 메서드 */
     public static Member createMember(String oauthId, String email, String nickname, Role role, MemberCheckUp memberCheckUp) {
@@ -109,13 +108,14 @@ public class Member extends BaseTimeEntity {
         this.totalHealthLifeScore += score;
     }
 
-    public void calculateSmokingSavedMoney(final int smokedCigarettes) {
-        this.smokingSavedMoney += (this.daySmokeCigarettes - smokedCigarettes) * ONE_CIGARETTE_PRICE;
+    public void accumulateSmokingSavedMoneyForDay(final int smokedCigarettes) {
+        this.smokingSavedMoney += (daySmokeCigarettes - smokedCigarettes) * ONE_CIGARETTE_PRICE;
     }
 
-    public void calculateAlcoholSavedMoney(final int consumedAlcoholDrinks) {
-//        주 평균 음주량 / 7
-        // *
+    public void accumulateAlcoholSavedMoneyForDay(final int consumedAlcoholDrinks) {
+        int pricePerDrink = (weekAlcoholCost / weekAlcoholDrinks);
+        int dayAlcoholDrinks = (weekAlcoholDrinks / DAYS_IN_WEEK);
+        this.alcoholSavedMoney += (dayAlcoholDrinks - consumedAlcoholDrinks) * pricePerDrink;
     }
 
     public int getTotalSavedMoney() {
@@ -166,11 +166,11 @@ public class Member extends BaseTimeEntity {
         private int weekAlcoholCost;
 
         @Schema(description = "주평균 운동 횟수", example = "3", requiredMode = REQUIRED)
-        @Range(min = 0, max = 7)
-        private int weekExerciseFreq;
+        @Range(min = 0, max = DAYS_IN_WEEK)
+        private int weekExerciseFrequency;
 
         /** 테스트용 생성자 */
-        public MemberCheckUp(LocalDate birthDate, Gender gender, int height, int weight, BloodType bloodType, int daySmokeCigarettes, int weekAlcoholDrinks, int weekExerciseFreq) {
+        public MemberCheckUp(LocalDate birthDate, Gender gender, int height, int weight, BloodType bloodType, int daySmokeCigarettes, int weekAlcoholDrinks, int weekExerciseFrequency) {
             this.birthDate = birthDate;
             this.gender = gender;
             this.height = height;
@@ -178,7 +178,7 @@ public class Member extends BaseTimeEntity {
             this.bloodType = bloodType;
             this.daySmokeCigarettes = daySmokeCigarettes;
             this.weekAlcoholDrinks = weekAlcoholDrinks;
-            this.weekExerciseFreq = weekExerciseFreq;
+            this.weekExerciseFrequency = weekExerciseFrequency;
         }
 
 
@@ -191,7 +191,7 @@ public class Member extends BaseTimeEntity {
             member.bloodType = this.bloodType;
             this.applySmokingInfoOf(member);
             this.applyAlcoholDrinkingInfoOf(member);
-            member.weekExerciseFreq = this.weekExerciseFreq;
+            member.weekExerciseFrequency = this.weekExerciseFrequency;
         }
 
         private void applyAlcoholDrinkingInfoOf(Member member) {
@@ -201,12 +201,6 @@ public class Member extends BaseTimeEntity {
 
         private void applySmokingInfoOf(Member member) {
             member.daySmokeCigarettes = this.daySmokeCigarettes;
-            member.weekSmokingCost = calculateWeekSmokingCost();
-        }
-
-        /** 일평균 흡연 개비 수로 주 흡연 소비 금액 계산 */
-        private int calculateWeekSmokingCost() {
-            return (this.daySmokeCigarettes * ONE_CIGARETTE_PRICE) * 7;
         }
     }
 

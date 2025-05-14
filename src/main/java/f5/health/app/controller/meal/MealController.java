@@ -3,12 +3,20 @@ package f5.health.app.controller.meal;
 import f5.health.app.constant.EnumModel;
 import f5.health.app.constant.EnumModelMapper;
 import f5.health.app.constant.meal.MealType;
+import f5.health.app.entity.Meal;
+import f5.health.app.exception.global.NotFoundException;
+import f5.health.app.repository.MealRepository;
+import f5.health.app.vo.meal.response.MealResponse;
+import f5.health.app.vo.meal.response.MealsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static f5.health.app.exception.meal.MealErrorCode.NOT_FOUND_MEAL;
 
 @RestController
 @RequestMapping("/meal")
@@ -16,12 +24,18 @@ import java.util.List;
 public class MealController implements MealApiDocs {
 
     private final EnumModelMapper enumMapper;
-    
-    @GetMapping("/types")
+    private final MealRepository mealRepository;
+
+    @GetMapping("/meal/types")
     public List<? extends EnumModel> mealTypes() {
         return enumMapper.get(MealType.class);
     }
 
-    /** mealId 식단 조회 */
 
+    @GetMapping("/{mealId}")
+    public MealResponse meal(@PathVariable Long mealId) {
+        Meal meal = mealRepository.findById(mealId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEAL, mealId.toString()));
+        return MealResponse.withMealFoods(meal);
+    }
 }

@@ -36,13 +36,8 @@ public interface AuthApiDocs {
                     description = "신규 회원이므로 회원 추가 정보를 받기 위해 “/signup” url 요청 필요"
             ),
             @ApiResponse(
-<<<<<<< HEAD
-                        responseCode = "401",
-                    description = "oauth 로그인 인증 실패",
-=======
                     responseCode = "401",
                     description = "OAuth 로그인 인증 실패",
->>>>>>> 68478866b5ce7932d04063d14a9948bcba226df9
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })

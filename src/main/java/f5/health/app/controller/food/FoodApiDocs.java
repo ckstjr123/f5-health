@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 
 @Tag(name = "음식 조회 API", description = "음식 검색 & 음식 상세 정보 제공")
 public interface FoodApiDocs {
@@ -27,12 +28,12 @@ public interface FoodApiDocs {
                     content = @Content(schema = @Schema(implementation = FieldErrorsResult.class))
             )
     })
-    FoodSearchResponse foods(String foodSearchQuery);
+    FoodSearchResponse foods(@NotBlank String foodSearchQuery);
 
 
     @Operation(summary = "음식 상세 조회", description = "식품 영양 정보",
             parameters = {
-                    @Parameter(in = ParameterIn.PATH, name = "foodCode", description = "식품 코드(PK)", required = true),
+                    @Parameter(in = ParameterIn.PATH, name = "foodCode", description = "식품 코드(PK)", required = true)
             }
     )
     @ApiResponses({

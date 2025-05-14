@@ -44,11 +44,10 @@ public class HealthReportService {
         LocalDateTime endDateTime = reportRequest.getEndDateTime();
         this.validateDuplicateReport(memberId, endDateTime.toLocalDate());
 
-        
         // 식단
         List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
 
-        
+
         
         // 프롬포트(gpt 건강 피드백)
 
@@ -60,8 +59,8 @@ public class HealthReportService {
 
         // member: , 배지 체크, 절약 금액 계산 및 gpt 건강 아이템(운동 기구) 피드백
         Member writer = memberService.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
-
-
+//        writer.accumulateSmokingSavedMoneyForDay();
+//        writer.accumulateAlcoholSavedMoneyForDay();
 
         // 리포트 생성(계산된 점수 회원 totalHealthLifeScore에 누적됨) 및 저장(cascade)
         HealthReport report = HealthReport.builder(writer, meals)

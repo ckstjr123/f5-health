@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static f5.health.app.jwt.JwtProvider.JWT_EXCEPTION_ATTRIBUTE;
+import static f5.health.app.jwt.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
 
 @Component
 @RequiredArgsConstructor

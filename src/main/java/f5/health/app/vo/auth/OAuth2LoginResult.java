@@ -1,6 +1,6 @@
 package f5.health.app.vo.auth;
 
-import f5.health.app.constant.OAuth2LoginStatus;
+import f5.health.app.constant.auth.OAuth2LoginStatus;
 import f5.health.app.jwt.vo.JwtResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -24,7 +24,6 @@ public class OAuth2LoginResult {
     public static OAuth2LoginResult of(OAuth2LoginStatus signInStatus, JwtResponse tokenResponse) {
         return new OAuth2LoginResult(signInStatus, tokenResponse);
     }
-
 
     public HttpStatusCode httpStatus() {
         return this.oauth2LoginStatus.httpStatus();

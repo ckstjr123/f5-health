@@ -22,4 +22,8 @@ public class ExceptionResult {
     public static ExceptionResult from(final ErrorCode errorCode) {
         return new ExceptionResult(errorCode.getCode(), errorCode.getMessage());
     }
+
+    public static ExceptionResult of(final ErrorCode errorCode, final String message) {
+        return new ExceptionResult(errorCode.getCode(), message);
+    }
 }

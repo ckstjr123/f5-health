@@ -1,6 +1,7 @@
 package f5.health.app.controller.auth;
 
-import f5.health.app.constant.OAuth2Provider;
+import f5.health.app.constant.auth.OAuth2Provider;
+import f5.health.app.jwt.JwtMember;
 import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.AuthService;
 import f5.health.app.service.auth.vo.OAuth2LoginRequest;
@@ -11,10 +12,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import static f5.health.app.jwt.JwtConst.REFRESH_TOKEN_HEADER;
 
 @Slf4j
 @RestController
@@ -42,9 +43,17 @@ public class AuthController implements AuthApiDocs {
         return new ResponseEntity<>(tokenResponse, HttpStatus.CREATED);
     }
 
-    @PostMapping("/reissue")
-    public JwtResponse reissue(JwtReissueRequest jwtReissueRequest) {
-        // JwtResponse tokenResponse = this.authService.refresh(jwtReissueRequest.getRefreshToken());
-        return null;
+    @PatchMapping("/refresh")
+    public JwtResponse refresh(@RequestHeader(REFRESH_TOKEN_HEADER) String refreshToken) {
+        return this.authService.refresh(refreshToken);
     }
+
+
+    @PostMapping("/logout")
+    public void logout(@AuthenticationPrincipal JwtMember logoutMember,
+                       @RequestHeader(REFRESH_TOKEN_HEADER) String refreshToken) {
+        Long logoutMemberId = logoutMember.getId();
+        this.authService.logout(logoutMemberId, refreshToken);
+    }
+
 }

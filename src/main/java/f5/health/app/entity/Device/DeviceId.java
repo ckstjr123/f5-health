@@ -18,7 +18,7 @@ public class DeviceId {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @Column(name = "UDID")
+    @Column(name = "UDID", length = 36)
     private String udid; // iOS identifierForVendor
 
     public DeviceId(Member member, String udid) {

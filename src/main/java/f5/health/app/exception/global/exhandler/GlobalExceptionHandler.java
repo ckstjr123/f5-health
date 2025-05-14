@@ -1,5 +1,8 @@
 package f5.health.app.exception.global.exhandler;
 
+import f5.health.app.exception.ErrorCode;
+import f5.health.app.exception.auth.AccessDeniedException;
+import f5.health.app.exception.auth.AuthenticationException;
 import f5.health.app.exception.global.BadRequestException;
 import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.exception.response.CustomFieldError;
@@ -35,13 +38,27 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ExceptionResult notFoundExHandler(NotFoundException ex) {
         log.warn("NotFoundExHandler", ex);
-        return ExceptionResult.from(ex.getErrorCode());
+        return ExceptionResult.of(ex.getErrorCode(), ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
     public ExceptionResult badRequestExHandler(BadRequestException ex) {
         log.warn("BadRequestExHandler", ex);
+        return ExceptionResult.of(ex.getErrorCode(), ex.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(AuthenticationException.class)
+    public ExceptionResult authenticationExHandler(AuthenticationException ex) {
+        log.warn("AuthenticationExHandler", ex);
         return ExceptionResult.from(ex.getErrorCode());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ExceptionResult accessDeniedExHandler(AccessDeniedException ex) {
+        log.warn("AccessDeniedExHandler", ex);
+        return ExceptionResult.of(ex.getErrorCode(), ex.getMessage());
     }
 }

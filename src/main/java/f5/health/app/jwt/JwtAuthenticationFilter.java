@@ -22,7 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static f5.health.app.config.SecurityConfig.AUTH_EXCLUDE_URIS;
-import static f5.health.app.jwt.JwtCustomClaimNames.ROLE;
+import static f5.health.app.jwt.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
+import static f5.health.app.jwt.JwtConst.ROLE;
 import static f5.health.app.jwt.JwtProvider.ACCESS_TOKEN_TYPE;
 
 /**
@@ -54,13 +55,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Claims atClaims = jwtProvider.parseClaims(accessToken);
 
             // 임시 세션 보관용 유저 객체 생성
-            JwtUser loginMember = new JwtUser(Long.valueOf(atClaims.getSubject()), atClaims.get(ROLE, String.class));
+            JwtMember loginMember = new JwtMember(Long.valueOf(atClaims.getSubject()), atClaims.get(ROLE, String.class));
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(loginMember, null, List.of(new SimpleGrantedAuthority(loginMember.getRole())));
             SecurityContextHolder.getContext().setAuthentication(authentication); // 인증된 유저에 대해 현재 요청 동안에만 사용될 임시 세션
-            log.info("Access token authentication success, memberId={}", loginMember.getMemberId());
+            log.info("Access token authentication success, memberId={}", loginMember.getId());
         } catch (AuthenticationException ex) {
-            request.setAttribute(JwtProvider.JWT_EXCEPTION_ATTRIBUTE, ex.getErrorCode()); // AuthenticationEntryPoint에서 처리
+            request.setAttribute(JWT_EXCEPTION_ATTRIBUTE, ex.getErrorCode()); // AuthenticationEntryPoint에서 처리
             throw ex;
         }
 

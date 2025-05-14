@@ -1,6 +1,6 @@
 package f5.health.app.service.auth.vo;
 
-import f5.health.app.constant.System;
+import f5.health.app.constant.device.System;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,9 +21,4 @@ public class DeviceInfo {
     @Schema(description = "flutter device_info_plus 패키지를 통해 얻은 systemName", example = "iOS", requiredMode = REQUIRED)
     @NotNull(message = "device system name cannot be null")
     private System os;
-
-    public DeviceInfo(String udid, System os) {
-        this.udid = udid;
-        this.os = os;
-    }
 }

@@ -4,7 +4,6 @@ import f5.health.app.exception.auth.AuthErrorCode;
 import f5.health.app.exception.auth.AuthenticationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-import static f5.health.app.jwt.JwtCustomClaimNames.ROLE;
+import static f5.health.app.jwt.JwtConst.ROLE;
 
 @Slf4j
 @Component
@@ -24,7 +23,6 @@ public class JwtProvider {
 
     public static final String ACCESS_TOKEN_TYPE = "Bearer";
     private final long ACCESS_TOKEN_EXPIRE_MS = Duration.ofMinutes(30).toMillis();
-    public static final String JWT_EXCEPTION_ATTRIBUTE = "JWT_EXCEPTION";
     private final SecretKey secretKey;
 
     public JwtProvider(@Value("${spring.jwt.secret}") String secret) {
@@ -67,7 +65,6 @@ public class JwtProvider {
         }
     }
 
-    @Getter
     public final class RefreshToken {
 
         private static final long REFRESH_TOKEN_EXPIRE_MS = Duration.ofDays(7).toMillis();
@@ -84,6 +81,14 @@ public class JwtProvider {
                     .expiration(expirationDate)
                     .signWith(secretKey)
                     .compact();
+        }
+
+        public String value() {
+            return this.value;
+        }
+
+        public Date getExpiration() {
+            return this.expiration;
         }
 
         @Override

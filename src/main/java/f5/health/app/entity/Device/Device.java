@@ -1,6 +1,6 @@
 package f5.health.app.entity.Device;
 
-import f5.health.app.constant.System;
+import f5.health.app.constant.device.System;
 import f5.health.app.entity.Member;
 import f5.health.app.jwt.JwtProvider;
 import jakarta.persistence.*;
@@ -29,13 +29,18 @@ public class Device {
     @Column(name = "REFRESH_TOKEN_EXP")
     private Date refreshTokenExpiration;
 
-
     public static Device of(Member member, String udid, System os, JwtProvider.RefreshToken refreshToken) {
         Device device = new Device();
         device.deviceId = new DeviceId(member, udid);
         device.os = os;
-        device.refreshToken = refreshToken.getValue();
+        device.refreshToken = refreshToken.value();
         device.refreshTokenExpiration = refreshToken.getExpiration();
         return device;
+    }
+
+
+    public void rotateRefreshToken(JwtProvider.RefreshToken refreshToken) {
+        this.refreshToken = refreshToken.value();
+        this.refreshTokenExpiration = refreshToken.getExpiration();
     }
 }

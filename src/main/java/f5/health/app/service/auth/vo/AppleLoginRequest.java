@@ -22,10 +22,5 @@ public class AppleLoginRequest {
     @Schema(description = "요청 디바이스 정보가 담긴 오브젝트", requiredMode = REQUIRED)
     @NotNull(message = "deviceInfo cannot be null")
     private DeviceInfo deviceInfo;
-
-    public AppleLoginRequest(String identityToken, DeviceInfo deviceInfo) {
-        this.identityToken = identityToken;
-        this.deviceInfo = deviceInfo;
-    }
 }
 */

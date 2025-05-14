@@ -13,6 +13,10 @@ public class NotFoundException extends BadRequestException {
         super(errorCode);
     }
 
+    public NotFoundException(ErrorCode errorCode, String targetId) {
+        super(errorCode, errorCode.getMessage() + " (targetId: {" + targetId + "})");
+    }
+
     public NotFoundException(ErrorCode errorCode, Throwable cause) {
         super(errorCode, cause);
     }

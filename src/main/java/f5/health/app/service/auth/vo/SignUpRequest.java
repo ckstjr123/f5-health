@@ -25,11 +25,6 @@ public class SignUpRequest {
     @Valid
     private Member.MemberCheckUp memberCheckUp;
 
-    public SignUpRequest(OAuth2LoginRequest loginRequest, Member.MemberCheckUp memberCheckUp) {
-        this.loginRequest = loginRequest;
-        this.memberCheckUp = memberCheckUp;
-    }
-
 
     @Schema(hidden = true)
     public String getAccessToken() {
@@ -40,5 +35,4 @@ public class SignUpRequest {
     public DeviceInfo getDeviceInfo() {
         return this.loginRequest.getDeviceInfo();
     }
-
 }

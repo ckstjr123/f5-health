@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static f5.health.app.exception.food.FoodErrorCode.NOT_FOUND_FOOD;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 
 @RestController
-@RequestMapping("/food")
+@RequestMapping(value = "/food", produces = APPLICATION_JSON_UTF8_VALUE)
 @RequiredArgsConstructor
 public class FoodController implements FoodApiDocs {
 

@@ -48,8 +48,9 @@ public class HealthReportService {
         List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
 
 
-        
-        // 프롬포트(gpt 건강 피드백)
+
+        // 음식 1인분 탄단지  * 수량해서 프롬포트 파라미터 전달, 프롬포트(gpt 건강 피드백)
+
 
 
 
@@ -57,7 +58,7 @@ public class HealthReportService {
 
 
 
-        // member: , 배지 체크, 절약 금액 계산 및 gpt 건강 아이템(운동 기구) 피드백
+        // member: , 배지 체크, 절약 금액 계산하고 절약 금액이 '일정 금액 이상일 때만' gpt 건강 아이템(운동 기구) 피드백
         Member writer = memberService.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 //        writer.accumulateSmokingSavedMoneyForDay();
 //        writer.accumulateAlcoholSavedMoneyForDay();

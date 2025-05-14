@@ -9,21 +9,21 @@ import lombok.NoArgsConstructor;
  * [액세스 토큰 전송 후 응답받은 OAuth2 카카오 로그인 사용자 정보]
  * HTTP/1.1 200 OK
  * {
- *     "id":123456789,
- *     "connected_at": "2022-04-11T01:45:28Z",
- *     "kakao_account": {
- *         // 프로필 또는 닉네임 동의항목 필요
- *         "profile_nickname_needs_agreement	": false,
- *         "profile": {
- *             // 프로필 또는 닉네임 동의항목 필요
- *             "nickname": "홍길동",
- *         },
- *         // 카카오계정(이메일) 동의항목 필요
- *         "email_needs_agreement":false,
- *         "is_email_valid": true,
- *         "is_email_verified": true,
- *         "email": "sample@sample.com",
- *     }
+ * "id":123456789,
+ * "connected_at": "2022-04-11T01:45:28Z",
+ * "kakao_account": {
+ * // 프로필 또는 닉네임 동의항목 필요
+ * "profile_nickname_needs_agreement	": false,
+ * "profile": {
+ * // 프로필 또는 닉네임 동의항목 필요
+ * "nickname": "홍길동",
+ * },
+ * // 카카오계정(이메일) 동의항목 필요
+ * "email_needs_agreement":false,
+ * "is_email_valid": true,
+ * "is_email_verified": true,
+ * "email": "sample@sample.com",
+ * }
  * }
  */
 @Getter

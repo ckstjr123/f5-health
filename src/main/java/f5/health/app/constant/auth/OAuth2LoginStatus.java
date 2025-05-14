@@ -1,4 +1,4 @@
-package f5.health.app.constant;
+package f5.health.app.constant.auth;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

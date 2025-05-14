@@ -43,7 +43,7 @@ public interface FoodApiDocs {
             ),
             @ApiResponse(
                     responseCode = "401",
-                    description = "인증 실패",
+                    description = "인증되지 않은 사용자",
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             ),
             @ApiResponse(

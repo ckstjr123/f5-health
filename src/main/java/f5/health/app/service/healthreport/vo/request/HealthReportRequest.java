@@ -5,17 +5,31 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+
 /** HealthReportController -> HealthReportService 전달용 VO */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ReportRequest {
-    private HealthKit healthKit;
-    private  MealsRequest mealsRequest;
+public final class HealthReportRequest {
 
-    public static ReportRequest of(HealthKit healthKit, MealsRequest mealsRequest) {
-        ReportRequest reportRequest = new ReportRequest();
+    private HealthKit healthKit;
+    private MealsRequest mealsRequest;
+
+    public static HealthReportRequest of(HealthKit healthKit, MealsRequest mealsRequest) {
+        HealthReportRequest reportRequest = new HealthReportRequest();
         reportRequest.healthKit = healthKit;
         reportRequest.mealsRequest = mealsRequest;
         return reportRequest;
+    }
+
+    public LocalDateTime getStartDateTime() {
+        return healthKit.getPeriod().getStartDateTime();
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return healthKit.getPeriod().getEndDateTime();
     }
 }

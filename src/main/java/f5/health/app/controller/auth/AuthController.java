@@ -1,10 +1,9 @@
 package f5.health.app.controller.auth;
 
-import f5.health.app.constant.OAuth2Provider;
+import f5.health.app.constant.auth.OAuth2Provider;
 import f5.health.app.jwt.JwtMember;
 import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.AuthService;
-import f5.health.app.service.auth.vo.DeviceInfo;
 import f5.health.app.service.auth.vo.OAuth2LoginRequest;
 import f5.health.app.service.auth.vo.SignUpRequest;
 import f5.health.app.vo.auth.OAuth2LoginResult;
@@ -31,8 +30,6 @@ public class AuthController implements AuthApiDocs {
                                                     @RequestBody @Valid OAuth2LoginRequest loginRequest) {
 
         OAuth2LoginResult oauth2loginResult = this.authService.login(provider, loginRequest);
-        DeviceInfo deviceInfo = loginRequest.getDeviceInfo();
-        log.info("Login device:{} {}", deviceInfo.getOs(), deviceInfo.getUdid());
 
         return new ResponseEntity<>(oauth2loginResult, oauth2loginResult.httpStatus());
     }
@@ -51,12 +48,12 @@ public class AuthController implements AuthApiDocs {
         return this.authService.refresh(refreshToken);
     }
 
+
     @PostMapping("/logout")
     public void logout(@AuthenticationPrincipal JwtMember logoutMember,
                        @RequestHeader(REFRESH_TOKEN_HEADER) String refreshToken) {
         Long logoutMemberId = logoutMember.getId();
         this.authService.logout(logoutMemberId, refreshToken);
-        log.info("Logout memberId:{}", logoutMemberId);
     }
 
 }

@@ -1,13 +1,14 @@
 package f5.health.app.entity;
 
-import f5.health.app.constant.Badge;
-import f5.health.app.constant.BloodType;
-import f5.health.app.constant.Gender;
-import f5.health.app.constant.Role;
+import f5.health.app.constant.member.badge.Badge;
+import f5.health.app.constant.member.BloodType;
+import f5.health.app.constant.member.Gender;
+import f5.health.app.constant.member.Role;
 import f5.health.app.entity.base.BaseTimeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,8 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Table(name = "MEMBER")
 public class Member extends BaseTimeEntity {
 
+    private static final int ONE_CIGARETTE_PRICE = 225;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_ID")
@@ -43,6 +46,9 @@ public class Member extends BaseTimeEntity {
     @Column(name = "ROLE")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "TOTAL_HEALTH_LIFE_SCORE")
+    private long totalHealthLifeScore; // 생활 점수 누적
 
     @Column(name = "BADGE")
     @Enumerated(EnumType.STRING)
@@ -65,15 +71,25 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private BloodType bloodType;
 
-    @Column(name = "DAY_SMOKING_AVG")
-    private int daySmokingAvg; // 0이면 비흡연자
+    @Column(name = "DAY_SMOKE_CIGARETTES")
+    private int daySmokeCigarettes; // 0이면 비흡연자
+    @Column(name = "WEEK_SMOKING_COST")
+    private int weekSmokingCost;
+    @Column(name = "SMOKING_SAVED_MONEY")
+    private int smokingSavedMoney; // 흡연 절약 금액
 
-    @Column(name = "WEEK_ALCOHOL_AVG")
-    private int weekAlcoholAvg;
-
+    @Column(name = "WEEK_ALCOHOL_DRINKS")
+    private int weekAlcoholDrinks;
+    @Column(name = "WEEK_ALCOHOL_COST")
+    private int weekAlcoholCost;
+    @Column(name = "ALCOHOL_SAVED_MONEY")
+    private int alcoholSavedMoney; // 음주 절약 금액
+    
     @Column(name = "WEEK_EXERCISE_FREQ")
     private int weekExerciseFreq;
 
+    @Column(name = "HEALTH_ITEMS_RECOMMEND")
+    private String healthItemsRecommend; // 절약 금액에 대한 gpt 건강 아이템 추천 결과(maxTokens: 50)
     
     /** 회원 생성 메서드 */
     public static Member createMember(String oauthId, String email, String nickname, Role role, MemberCheckUp memberCheckUp) {
@@ -88,7 +104,30 @@ public class Member extends BaseTimeEntity {
     }
 
 
-    @Schema(description = "회원 설문 정보")
+    /** 회원 생활 점수 누적 */
+    public void addHealthLifeScore(final int score) {
+        this.totalHealthLifeScore += score;
+    }
+
+    public void calculateSmokingSavedMoney(final int smokedCigarettes) {
+        this.smokingSavedMoney += (this.daySmokeCigarettes - smokedCigarettes) * ONE_CIGARETTE_PRICE;
+    }
+
+    public void calculateAlcoholSavedMoney(final int consumedAlcoholDrinks) {
+//        주 평균 음주량 / 7
+        // *
+    }
+
+    public int getTotalSavedMoney() {
+        return (smokingSavedMoney + alcoholSavedMoney);
+    }
+
+    public void updateHealthItemsRecommend(String gptHealthItemsRecommend) {
+        this.healthItemsRecommend = gptHealthItemsRecommend;
+    }
+
+
+    @Schema(description = "회원가입 설문 정보")
     @Getter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class MemberCheckUp {
@@ -116,25 +155,29 @@ public class Member extends BaseTimeEntity {
 
         @Schema(description = "일평균 흡연량(개비)", example = "8", requiredMode = REQUIRED)
         @Range(min = 0, max = 30)
-        private int daySmokingAvg;
+        private int daySmokeCigarettes;
 
         @Schema(description = "주평균 알코올 섭취량(잔)", example = "6", requiredMode = REQUIRED)
         @Range(min = 0, max = 50)
-        private int weekAlcoholAvg;
+        private int weekAlcoholDrinks;
+
+        @Schema(description = "주 음주 소비 금액", example = "16000", requiredMode = REQUIRED)
+        @PositiveOrZero
+        private int weekAlcoholCost;
 
         @Schema(description = "주평균 운동 횟수", example = "3", requiredMode = REQUIRED)
         @Range(min = 0, max = 7)
         private int weekExerciseFreq;
 
         /** 테스트용 생성자 */
-        public MemberCheckUp(LocalDate birthDate, Gender gender, int height, int weight, BloodType bloodType, int daySmokingAvg, int weekAlcoholAvg, int weekExerciseFreq) {
+        public MemberCheckUp(LocalDate birthDate, Gender gender, int height, int weight, BloodType bloodType, int daySmokeCigarettes, int weekAlcoholDrinks, int weekExerciseFreq) {
             this.birthDate = birthDate;
             this.gender = gender;
             this.height = height;
             this.weight = weight;
             this.bloodType = bloodType;
-            this.daySmokingAvg = daySmokingAvg;
-            this.weekAlcoholAvg = weekAlcoholAvg;
+            this.daySmokeCigarettes = daySmokeCigarettes;
+            this.weekAlcoholDrinks = weekAlcoholDrinks;
             this.weekExerciseFreq = weekExerciseFreq;
         }
 
@@ -146,9 +189,24 @@ public class Member extends BaseTimeEntity {
             member.height = this.height;
             member.weight = this.weight;
             member.bloodType = this.bloodType;
-            member.daySmokingAvg = this.daySmokingAvg;
-            member.weekAlcoholAvg = this.weekAlcoholAvg;
+            this.applySmokingInfoOf(member);
+            this.applyAlcoholDrinkingInfoOf(member);
             member.weekExerciseFreq = this.weekExerciseFreq;
+        }
+
+        private void applyAlcoholDrinkingInfoOf(Member member) {
+            member.weekAlcoholDrinks = this.weekAlcoholDrinks;
+            member.weekAlcoholCost = this.weekAlcoholCost;
+        }
+
+        private void applySmokingInfoOf(Member member) {
+            member.daySmokeCigarettes = this.daySmokeCigarettes;
+            member.weekSmokingCost = calculateWeekSmokingCost();
+        }
+
+        /** 일평균 흡연 개비 수로 주 흡연 소비 금액 계산 */
+        private int calculateWeekSmokingCost() {
+            return (this.daySmokeCigarettes * ONE_CIGARETTE_PRICE) * 7;
         }
     }
 

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /** 식사 항목 엔티티 */
 @Getter
@@ -30,6 +29,13 @@ public class MealFood {
     private double count; // 해당 음식 섭취 수량(0.5, 1 , 1.5...)
 
 
+    public static MealFood newInstance(Food food, double count) {
+        MealFood mealFood = new MealFood();
+        mealFood.food = food;
+        mealFood.count = count;
+        return mealFood;
+    }
+
     /** MEAL ↔ MEAL_FOOD 양방향 연관관계 매핑 */
     public void setMeal(Meal meal) {
         this.meal = meal;
@@ -39,5 +45,4 @@ public class MealFood {
     public int calculateMealFoodKcal() {
         return (int) (this.food.calculateOneServingKcal() * this.count);
     }
-
 }

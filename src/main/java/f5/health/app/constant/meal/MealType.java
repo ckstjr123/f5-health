@@ -1,6 +1,8 @@
-package f5.health.app.constant;
+package f5.health.app.constant.meal;
 
-public enum MealType {
+import f5.health.app.constant.MappingEnum;
+
+public enum MealType implements MappingEnum {
 
     BREAKFAST("아침"),
     LUNCH("점심"),
@@ -11,5 +13,10 @@ public enum MealType {
 
     MealType(String label) {
         this.label = label;
+    }
+
+    @Override
+    public String getLabel() {
+        return this.label;
     }
 }

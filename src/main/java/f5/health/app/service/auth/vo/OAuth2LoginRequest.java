@@ -21,9 +21,4 @@ public class OAuth2LoginRequest {
     @Schema(description = "요청 디바이스 정보가 담긴 오브젝트", requiredMode = REQUIRED)
     @NotNull(message = "deviceInfo cannot be null")
     private DeviceInfo deviceInfo;
-
-    public OAuth2LoginRequest(String accessToken, DeviceInfo deviceInfo) {
-        this.accessToken = accessToken;
-        this.deviceInfo = deviceInfo;
-    }
 }

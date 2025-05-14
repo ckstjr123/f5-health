@@ -1,4 +1,4 @@
-package f5.health.app.constant;
+package f5.health.app.constant.member;
 
 public enum Gender {
     MALE("남자"), FEMALE("여자");

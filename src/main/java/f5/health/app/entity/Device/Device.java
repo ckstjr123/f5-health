@@ -1,6 +1,6 @@
 package f5.health.app.entity.Device;
 
-import f5.health.app.constant.System;
+import f5.health.app.constant.device.System;
 import f5.health.app.entity.Member;
 import f5.health.app.jwt.JwtProvider;
 import jakarta.persistence.*;

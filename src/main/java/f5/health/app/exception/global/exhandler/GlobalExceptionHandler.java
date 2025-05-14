@@ -38,15 +38,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ExceptionResult notFoundExHandler(NotFoundException ex) {
         log.warn("NotFoundExHandler", ex);
-        return ExceptionResult.from(ex.getErrorCode());
+        return ExceptionResult.of(ex.getErrorCode(), ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BadRequestException.class)
     public ExceptionResult badRequestExHandler(BadRequestException ex) {
         log.warn("BadRequestExHandler", ex);
-        ErrorCode errorCode = ex.getErrorCode();
-        return ExceptionResult.of(errorCode, errorCode.getMessage());
+        return ExceptionResult.of(ex.getErrorCode(), ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

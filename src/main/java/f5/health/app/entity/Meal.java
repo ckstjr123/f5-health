@@ -1,6 +1,6 @@
 package f5.health.app.entity;
 
-import f5.health.app.constant.MealType;
+import f5.health.app.constant.meal.MealType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -41,6 +41,15 @@ public class Meal {
 
     @Column(name = "TOTAL_KCAL")
     private int totalKcal; // 계산된 식사 섭취 칼로리
+
+
+    public static Meal newInstance(MealType mealType, LocalDateTime mealTime, List<MealFood> mealFoods) {
+        Meal meal = new Meal();
+        meal.mealType = mealType;
+        meal.mealTime = mealTime;
+        meal.addAllMealFoods(mealFoods);
+        return meal;
+    }
 
 
     /** HealthReport ↔ Meal 양방향 매핑 */

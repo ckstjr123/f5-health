@@ -1,7 +1,9 @@
-package f5.health.app.constant.member;
+package f5.health.app.constant.member.badge;
 
 import f5.health.app.constant.MappingEnum;
+import lombok.Getter;
 
+@Getter
 public enum Badge implements MappingEnum {
     BEGINNER("비기너", 0L),
     ACTIVE("액티브", 2100L),
@@ -14,10 +16,5 @@ public enum Badge implements MappingEnum {
     Badge(String label, long cutOffScore) {
         this.label = label;
         this.cutOffScore = cutOffScore;
-    }
-
-    @Override
-    public String getLabel() {
-        return this.label;
     }
 }

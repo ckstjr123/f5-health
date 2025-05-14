@@ -1,3 +1,4 @@
+/*
 package f5.health.app.config;
 
 import f5.health.app.jwt.JwtMember;
@@ -25,3 +26,4 @@ public class JpaAuditingConfig {
                 .map(principal -> ((JwtMember) principal).getId());
     }
 }
+*/

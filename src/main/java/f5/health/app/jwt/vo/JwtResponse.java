@@ -23,4 +23,3 @@ public final class JwtResponse {
         this.refreshToken = refreshToken;
     }
 }
-

@@ -1,4 +1,4 @@
-package f5.health.app.service.meal.vo.request;
+package f5.health.app.service.healthreport.vo.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;

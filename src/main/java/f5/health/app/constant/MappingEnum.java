@@ -1,6 +1,6 @@
 package f5.health.app.constant;
 
-public interface EnumMapping {
+public interface MappingEnum {
     String getLabel();
-    String getValue();
+    String name();
 }

@@ -1,8 +1,7 @@
 package f5.health.app.formatter;
 
-import f5.health.app.constant.OAuth2Provider;
+import f5.health.app.constant.auth.OAuth2Provider;
 import org.springframework.format.Formatter;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.text.ParseException;
 import java.util.Locale;

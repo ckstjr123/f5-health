@@ -1,6 +1,6 @@
 package f5.health.app.controller.auth;
 
-import f5.health.app.constant.OAuth2Provider;
+import f5.health.app.constant.auth.OAuth2Provider;
 import f5.health.app.exception.response.ExceptionResult;
 import f5.health.app.jwt.JwtMember;
 import f5.health.app.jwt.vo.JwtResponse;
@@ -37,7 +37,7 @@ public interface AuthApiDocs {
             ),
             @ApiResponse(
                     responseCode = "401",
-                    description = "oauth 로그인 인증 실패",
+                    description = "OAuth 로그인 인증 실패",
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
@@ -102,7 +102,7 @@ public interface AuthApiDocs {
             ),
             @ApiResponse(
                     responseCode = "401",
-                    description = "인증 실패",
+                    description = "인증되지 않은 사용자",
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             ),
             @ApiResponse(

@@ -1,9 +1,9 @@
 package f5.health.app.repository.device;
 
-import f5.health.app.constant.BloodType;
-import f5.health.app.constant.Gender;
-import f5.health.app.constant.Role;
-import f5.health.app.repository.HealthReportRepository;
+import f5.health.app.constant.member.BloodType;
+import f5.health.app.constant.member.Gender;
+import f5.health.app.constant.member.Role;
+import f5.health.app.repository.FoodRepository;
 import f5.health.app.vo.device.DeviceAndMemberRole;
 import f5.health.app.entity.Device.Device;
 import f5.health.app.entity.Member;
@@ -19,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
-import static f5.health.app.constant.System.iOS;
+import static f5.health.app.constant.device.System.iOS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -75,7 +77,6 @@ public class DeviceRepositoryTest {
 
         assertThat(this.deviceRepository.findById(logoutDevice.getDeviceId())).isEmpty();
     }
-
 
     private Member joinMember() {
         Member member = Member.createMember("OAuthId", "email", "nickname", Role.USER,

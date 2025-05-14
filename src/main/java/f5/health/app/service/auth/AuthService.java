@@ -1,6 +1,6 @@
 package f5.health.app.service.auth;
 
-import f5.health.app.constant.OAuth2Provider;
+import f5.health.app.constant.auth.OAuth2Provider;
 import f5.health.app.vo.device.DeviceAndMemberRole;
 import f5.health.app.entity.Device.Device;
 import f5.health.app.entity.Member;
@@ -21,9 +21,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static f5.health.app.constant.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
-import static f5.health.app.constant.OAuth2LoginStatus.SIGNUP_REQUIRED;
-import static f5.health.app.constant.OAuth2Provider.KAKAO;
+import static f5.health.app.constant.auth.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
+import static f5.health.app.constant.auth.OAuth2LoginStatus.SIGNUP_REQUIRED;
+import static f5.health.app.constant.auth.OAuth2Provider.KAKAO;
 import static f5.health.app.exception.auth.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
 
 @Service
@@ -83,7 +83,7 @@ public class AuthService {
             case KAKAO:
                 return oauth2KakaoClient.getKakaoUserInfo(KAKAO.accessTokenPrefix() + accessToken);
             default:
-                throw new IllegalStateException("Unsupported OAuth2 Provider: " + provider);
+                throw new IllegalStateException("Unsupported OAuth2 provider: " + provider);
         }
     }
 

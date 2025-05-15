@@ -3,13 +3,12 @@ package f5.health.app.repository.device;
 import f5.health.app.constant.member.BloodType;
 import f5.health.app.constant.member.Gender;
 import f5.health.app.constant.member.Role;
-import f5.health.app.repository.FoodRepository;
-import f5.health.app.vo.device.DeviceAndMemberRole;
 import f5.health.app.entity.Device.Device;
 import f5.health.app.entity.Member;
 import f5.health.app.jwt.JwtProvider;
 import f5.health.app.repository.DeviceRepository;
 import f5.health.app.repository.MemberRepository;
+import f5.health.app.vo.device.DeviceAndMemberRole;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.proxy.HibernateProxy;
@@ -19,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
 
 import static f5.health.app.constant.device.System.iOS;
 import static org.assertj.core.api.Assertions.assertThat;

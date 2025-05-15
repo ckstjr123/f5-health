@@ -48,8 +48,10 @@ public class HealthReportService {
         List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
 
 
+//        meals.stream().mapToInt(meal -> meal.getTotalKcal()).sum();
 
-        // 음식 1인분 탄단지  * 수량해서 프롬포트 파라미터 전달, 프롬포트(gpt 건강 피드백)
+
+        // 음식 1인분 탄단지 * 수량해서 프롬포트 파라미터 전달, 프롬포트(gpt 건강 피드백)
 
 
 
@@ -58,12 +60,15 @@ public class HealthReportService {
 
 
 
-        // member: , 배지 체크, 절약 금액 계산하고 절약 금액이 '일정 금액 이상일 때만' gpt 건강 아이템(운동 기구) 피드백
+
+
+        // member: 배지 체크, 절약 금액 계산 뒤 절약 금액이 '일정 금액 이상일 때만' gpt 건강 아이템(운동 기구) 피드백
+        // 절약금액이 일정 금액보다 낮아졌는데 기존에 피드백 받은 결과가 존재하면 null로 업데이트
         Member writer = memberService.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 //        writer.accumulateSmokingSavedMoneyForDay();
 //        writer.accumulateAlcoholSavedMoneyForDay();
 
-        // 리포트 생성(계산된 점수 회원 totalHealthLifeScore에 누적됨) 및 저장(cascade)
+        // 리포트 생성(계산된 점수 회원 totalHealthLifeScore에 누적됨, 배지 체크 로직 추가 필요) 후 저장(cascade)
         HealthReport report = HealthReport.builder(writer, meals)
                 .healthLifeScore(100)
                 .waterIntake(250)

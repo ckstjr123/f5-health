@@ -2,9 +2,9 @@ package f5.health.app.service;
 
 import com.theokanning.openai.completion.chat.*;
 import com.theokanning.openai.service.OpenAiService;
-import f5.health.app.dto.FeedbackRequestDto;
-import f5.health.app.dto.FeedbackResponseDto;
-import f5.health.app.score.LifestyleScoreCalculator;
+import f5.health.app.service.healthreport.dto.FeedbackRequestDto;
+import f5.health.app.service.healthreport.dto.FeedbackResponseDto;
+import f5.health.app.service.healthreport.HealthLifeScoreCalculator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +12,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GptFeedbackService {
+public class GptService {
 
     private final OpenAiService openAiService;
-    private final LifestyleScoreCalculator scoreCalculator = new LifestyleScoreCalculator();
+    private final HealthLifeScoreCalculator scoreCalculator = new HealthLifeScoreCalculator();
 
     public FeedbackResponseDto getScoreAndFeedback(FeedbackRequestDto dto) {
 
         // 1. 점수 계산
-        LifestyleScoreCalculator calculator = new LifestyleScoreCalculator();
+        HealthLifeScoreCalculator calculator = new HealthLifeScoreCalculator();
         int score = 0;
         score += calculator.waterScore(dto.getWaterIntake());
         score += calculator.smokingScore(dto.getSmokingAmount());

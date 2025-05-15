@@ -9,11 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 public class OpenAIConfig {
 
     @Value("${openai.api.key}")
-    private String secretKey;
+    private String openApiKey;
 
     @Bean
     public OpenAiService openAiService() {
-        return new OpenAiService(secretKey);
+        return new OpenAiService(openApiKey);
     }
 }
-

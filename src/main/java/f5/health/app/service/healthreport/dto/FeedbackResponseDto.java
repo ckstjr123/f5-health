@@ -1,4 +1,4 @@
-package f5.health.app.dto;
+package f5.health.app.service.healthreport.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class FeedbackResponseDto {
-    private int lifestyleScore;
+    private int healthLifeScore;
     private String feedbackMessage;
 }

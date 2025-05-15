@@ -1,26 +1,22 @@
-package f5.health.app.repository;
+package f5.health.app.repository.member;
 
-import f5.health.app.HealthApplication;
-import f5.health.app.constant.BloodType;
-import f5.health.app.constant.Gender;
-import f5.health.app.constant.Role;
+import f5.health.app.constant.member.BloodType;
+import f5.health.app.constant.member.Gender;
+import f5.health.app.constant.member.Role;
 import f5.health.app.entity.Member;
 import f5.health.app.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = HealthApplication.class)
-@Transactional // 테스트 후 자동 롤백
-@ActiveProfiles("test")
+@DataJpaTest
 public class MemberRepositoryTest {
 
     @Autowired
@@ -32,7 +28,7 @@ public class MemberRepositoryTest {
     void setup() {
         Member.MemberCheckUp checkUp = new Member.MemberCheckUp(
                 LocalDate.of(1990, 1, 1),
-                Gender.남자,
+                Gender.MALE,
                 175, 70,
                 BloodType.A,
                 0, 3, 4

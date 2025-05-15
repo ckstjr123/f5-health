@@ -60,6 +60,7 @@ public class Meal {
     /** Meal ↔ MealFood 양방향 매핑 */
     public void addAllMealFoods(List<MealFood> mealFoods) {
         this.mealFoods.addAll(mealFoods);
+
         for (MealFood mealFood : mealFoods) {
             mealFood.setMeal(this);
         }

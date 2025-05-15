@@ -1,4 +1,4 @@
-package f5.health.app.dto;
+package f5.health.app.service.healthreport.dto;
 
 import lombok.Getter;
 import lombok.Setter;

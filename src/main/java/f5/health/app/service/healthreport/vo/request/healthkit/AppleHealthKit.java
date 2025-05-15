@@ -1,4 +1,4 @@
-package f5.health.app.vo.healthreport.request.healthkit;
+package f5.health.app.service.healthreport.vo.request.healthkit;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;

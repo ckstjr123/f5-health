@@ -1,6 +1,6 @@
-package f5.health.app.score;
+package f5.health.app.service.healthreport;
 
-public class LifestyleScoreCalculator {
+public class HealthLifeScoreCalculator {
 
     public int waterScore(int waterIntake) {
         if (waterIntake >= 1500) return 10;

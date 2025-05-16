@@ -1,6 +1,6 @@
 package f5.health.app.vo.meal.response;
 
-import f5.health.app.entity.Meal;
+import f5.health.app.entity.meal.Meal;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -21,9 +21,6 @@ public final class MealResponse {
 
     @Schema(description = "식사한 음식들 정보 및 수량이 담긴 리스트. 리포트 조회 메인에선 null, 리포트에서 아침 식사 상세 정보와 같은 식단 정보 조회 시 응답", nullable = true)
     private final List<MealFoodResponse> mealFoodResponseList;
-    
-//    @Schema(description = "해당 식사 타입")
-//    private final EnumModel mealType;
 
     @Schema(description = "해당 식사 타입 label", example = "저녁")
     private final String mealTypeLabel;

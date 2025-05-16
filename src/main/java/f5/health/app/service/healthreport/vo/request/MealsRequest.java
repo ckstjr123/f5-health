@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static f5.health.app.entity.Meal.MEAL_TYPE_COUNT;
+import static f5.health.app.entity.meal.Meal.MEAL_TYPE_COUNT;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
@@ -29,11 +29,11 @@ public final class MealsRequest {
     private List<MealRequest> mealRequestList;
 
 
-    /** 식단에 기록된 모든 음식의 foodCode를 Set으로 모아서 반환 */
+    /** 모든 식단에 기록된 음식의 foodCode를 Set으로 모아서 반환 */
     @Schema(hidden = true)
     public Set<String> getEatenFoodCodeSet() {
         return this.mealRequestList.stream()
-                .flatMap(mealRequest -> mealRequest.getMealFoodsRequest().stream()) // flatMap: 하나의 연속된 스트림으로 만들어서 반환
+                .flatMap(mealRequest -> mealRequest.getMealFoodRequestList().stream()) // flatMap: 하나의 연속된 스트림으로 만들어서 반환
                 .map(MealFoodRequest::getFoodCode)
                 .collect(Collectors.toSet());
     }
@@ -48,7 +48,7 @@ public final class MealsRequest {
     @Schema(hidden = true)
     public List<Integer> getMenuCountsPerMeal() {
         return this.mealRequestList.stream()
-                .map(meal -> meal.getMealFoodsRequest().size())
+                .map(meal -> meal.getMealFoodRequestList().size())
                 .toList();
     }
 }

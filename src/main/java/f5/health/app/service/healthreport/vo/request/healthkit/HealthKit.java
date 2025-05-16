@@ -1,5 +1,6 @@
 package f5.health.app.service.healthreport.vo.request.healthkit;
 
+import f5.health.app.service.healthreport.vo.request.healthkit.applekit.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +30,42 @@ public final class HealthKit {
     @NotNull(message = "사용자 입력 건강 데이터가 전달되지 않았습니다.")
     @Valid
     private CustomHealthKit customHealthKit;
+
+
+    @Schema(hidden = true)
+    public Activity getActivity() {
+        return appleHealthKit.getActivity();
+    }
+
+    @Schema(hidden = true)
+    public SleepAnalysis getSleepAnalysis() {
+        return appleHealthKit.getSleepAnalysis();
+    }
+
+    @Schema(hidden = true)
+    public VitalSigns getVitalSigns() {
+        return appleHealthKit.getVitalSigns();
+    }
+
+    @Schema(hidden = true)
+    public Workouts getWorkouts() {
+        return appleHealthKit.getWorkouts();
+    }
+
+    @Schema(hidden = true)
+    public int getWaterIntake() {
+        return customHealthKit.getWaterIntake();
+    }
+
+    @Schema(hidden = true)
+    public int getSmokedCigarettes() {
+        return customHealthKit.getSmokedCigarettes();
+    }
+
+    @Schema(hidden = true)
+    public int getConsumedAlcoholDrinks() {
+        return customHealthKit.getConsumedAlcoholDrinks();
+    }
 
 
     @Getter

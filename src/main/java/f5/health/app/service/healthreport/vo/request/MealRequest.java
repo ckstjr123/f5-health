@@ -4,18 +4,16 @@ import f5.health.app.constant.meal.MealType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static f5.health.app.entity.Meal.MENU_LIMIT_SIZE_PER_MEAL;
+import static f5.health.app.entity.meal.Meal.MENU_LIMIT_SIZE_PER_MEAL;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
@@ -28,7 +26,7 @@ public class MealRequest {
     @Valid
     @NotNull(message = "식사한 음식은 최소 한개 이상이어야 합니다.")
     @Size(min = 1, max = MENU_LIMIT_SIZE_PER_MEAL, message = "식사당 기록 가능한 메뉴 최대 개수는 " + MENU_LIMIT_SIZE_PER_MEAL + "개입니다.")
-    private List<MealFoodRequest> mealFoodsRequest;
+    private List<MealFoodRequest> mealFoodRequestList;
 
     @Schema(description = "식사 분류", example = "BREAKFAST")
     @NotNull(message = "식사 유형을 선택해 주세요.")

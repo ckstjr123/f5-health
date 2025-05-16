@@ -1,7 +1,5 @@
 package f5.health.app.service.healthreport.vo.request;
 
-import f5.health.app.service.healthreport.vo.request.healthkit.AppleHealthKit;
-import f5.health.app.service.healthreport.vo.request.healthkit.CustomHealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,13 +29,5 @@ public final class HealthReportRequest {
 
     public LocalDateTime getEndDateTime() {
         return healthKit.getPeriod().getEndDateTime();
-    }
-
-    public AppleHealthKit getAppleHealthKit() {
-        return healthKit.getAppleHealthKit();
-    }
-
-    public CustomHealthKit getCustomHealthKit() {
-        return healthKit.getCustomHealthKit();
     }
 }

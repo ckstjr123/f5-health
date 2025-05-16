@@ -1,5 +1,7 @@
 package f5.health.app.entity;
 
+import f5.health.app.entity.meal.Meal;
+import f5.health.app.vo.openai.response.PromptCompletion;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -80,7 +82,7 @@ public class HealthReport {
 
     private void validateHealthLifeScore(int score) {
         if (score < MIN_HEALTH_LIFE_SCORE || MAX_HEALTH_LIFE_SCORE < score) {
-            throw new IllegalArgumentException("healthLifeScore must be between ["
+            throw new IllegalArgumentException("score must be between ["
                     + MIN_HEALTH_LIFE_SCORE + "] and [" + MAX_HEALTH_LIFE_SCORE + "]. rejected int value: [" + score + "].");
         }
     }
@@ -120,8 +122,8 @@ public class HealthReport {
             return this;
         }
 
-        public HealthReportBuilder healthFeedback(final String gptHealthFeedback) {
-            report.healthFeedback = gptHealthFeedback;
+        public HealthReportBuilder healthFeedback(final PromptCompletion healthFeedback) {
+            report.healthFeedback = healthFeedback.getContent();
             return this;
         }
 

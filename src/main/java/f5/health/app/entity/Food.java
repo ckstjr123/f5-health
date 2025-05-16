@@ -49,14 +49,31 @@ public class Food {
     private String foodWeight;
 
 
-    /** 영양성분 함량 기준량과 식품 중량에 따라 해당 음식 1인분 칼로리 계산 */
-    public int calculateOneServingKcal() {
-        double nutConStdQua = Double.parseDouble(parseNumericString(this.nutritionContentStdQuantity));
-        double foodSize = Double.parseDouble(parseNumericString(this.foodWeight));
-        return (int) ((foodSize / nutConStdQua) * this.kcal);
+    /** 해당 메뉴 칼로리 함량 */
+    public int calculateServingKcal() {
+        return (int) (calculateServingRatio() * this.kcal);
     }
 
-    /** 단위 문자 제거(숫자, 소수점 제외) */
+    // ========= 탄수화물, 단백질, 지방 함량 ========= //
+    public double calculateServingCarbohydrate() {
+        return (calculateServingRatio() * this.carbohydrate);
+    }
+    public double calculateServingProtein() {
+        return (calculateServingRatio() * this.protein);
+    }
+    public double calculateServingFat() {
+        return (calculateServingRatio() * this.fat);
+    }
+
+
+    /** 식품 중량과 영양성분 함량 기준량에 따른 1인분 영양성분 함량 구하는 용도 */
+    private double calculateServingRatio() {
+        double foodWeight = Double.parseDouble(parseNumericString(this.foodWeight));
+        double nutritionContentStdQuantity = Double.parseDouble(parseNumericString(this.nutritionContentStdQuantity));
+        return (foodWeight / nutritionContentStdQuantity);
+    }
+
+    /** 단위(g, ml) 제거 */
     private String parseNumericString(String unitStr) {
         return unitStr.replaceAll("[^\\d.]", "");
     }

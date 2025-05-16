@@ -1,7 +1,7 @@
 package f5.health.app.service.device;
 
 import f5.health.app.vo.device.DeviceAndMemberRole;
-import f5.health.app.entity.Device.Device;
+import f5.health.app.entity.device.Device;
 import f5.health.app.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

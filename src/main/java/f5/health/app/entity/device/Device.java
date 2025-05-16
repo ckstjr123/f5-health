@@ -1,4 +1,4 @@
-package f5.health.app.entity.Device;
+package f5.health.app.entity.device;
 
 import f5.health.app.constant.device.System;
 import f5.health.app.entity.Member;

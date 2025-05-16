@@ -1,16 +1,23 @@
 package f5.health.app.service.healthreport;
 
-import f5.health.app.entity.*;
-import f5.health.app.exception.food.FoodErrorCode;
+import f5.health.app.entity.HealthReport;
+import f5.health.app.entity.Member;
+import f5.health.app.entity.meal.EatenFoodMap;
+import f5.health.app.entity.meal.Meal;
 import f5.health.app.exception.global.DuplicateEntityException;
 import f5.health.app.exception.global.NotFoundException;
-import f5.health.app.repository.FoodRepository;
 import f5.health.app.repository.HealthReportRepository;
+import f5.health.app.service.food.FoodService;
 import f5.health.app.service.healthreport.vo.request.HealthReportRequest;
-import f5.health.app.service.healthreport.vo.request.MealFoodRequest;
 import f5.health.app.service.healthreport.vo.request.MealsRequest;
+import f5.health.app.service.healthreport.vo.request.NutritionFacts;
+import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.service.member.MemberService;
+import f5.health.app.service.openai.GptService;
+import f5.health.app.service.openai.HealthFeedbackPrompt;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
+import f5.health.app.vo.meal.response.MealResponse;
+import f5.health.app.vo.meal.response.MealsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,11 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static f5.health.app.exception.healthreport.HealthReportErrorCode.DUPLICATED_REPORT_SUBMIT;
 import static f5.health.app.exception.member.MemberErrorCode.NOT_FOUND_MEMBER;
@@ -34,7 +37,9 @@ import static f5.health.app.exception.member.MemberErrorCode.NOT_FOUND_MEMBER;
 public class HealthReportService {
 
     private final MemberService memberService;
-    private final FoodRepository foodRepository;
+    private final FoodService foodService;
+    private final GptService gptService;
+    private final HealthLifeStyleScoreCalculator healthLifeStyleScoreCalculator;
     private final HealthReportRepository reportRepository;
 
 
@@ -46,40 +51,32 @@ public class HealthReportService {
 
         // 식단
         List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
-
-
-//        meals.stream().mapToInt(meal -> meal.getTotalKcal()).sum();
-
-
-        // 음식 1인분 탄단지 * 수량해서 프롬포트 파라미터 전달, 프롬포트(gpt 건강 피드백)
-
-
-
+        MealsResponse mealsResponse = MealsResponse.from(meals.stream()
+                .map(meal -> MealResponse.only(meal))
+                .toList());
 
         // 점수 계산
-
-
-
-
+        HealthKit healthKit = reportRequest.getHealthKit();
+        NutritionFacts nutritionFacts = NutritionFacts.from(meals);
+        int healthLifeScore = healthLifeStyleScoreCalculator.calculateScore(healthKit, nutritionFacts);
 
         // member: 배지 체크, 절약 금액 계산 뒤 절약 금액이 '일정 금액 이상일 때만' gpt 건강 아이템(운동 기구) 피드백
-        // 절약금액이 일정 금액보다 낮아졌는데 기존에 피드백 받은 결과가 존재하면 null로 업데이트
+        // 절약금액이 일정 금액보다 낮으면 디폴트 메시지로 업데이트
         Member writer = memberService.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 //        writer.accumulateSmokingSavedMoneyForDay();
 //        writer.accumulateAlcoholSavedMoneyForDay();
 
         // 리포트 생성(계산된 점수 회원 totalHealthLifeScore에 누적됨, 배지 체크 로직 추가 필요) 후 저장(cascade)
         HealthReport report = HealthReport.builder(writer, meals)
-                .healthLifeScore(100)
-                .waterIntake(250)
-                .smokeCigarettes(8)
-                .alcoholDrinks(5)
-                .healthFeedback("gpt_health_feedback")
+                .healthLifeScore(healthLifeScore)
+                .waterIntake(healthKit.getWaterIntake())
+                .smokeCigarettes(healthKit.getSmokedCigarettes())
+                .alcoholDrinks(healthKit.getConsumedAlcoholDrinks())
+                .healthFeedback(gptService.call(new HealthFeedbackPrompt(healthKit, nutritionFacts)))
                 .startDateTime(reportRequest.getStartDateTime())
                 .endDateTime(endDateTime)
                 .build();
         this.reportRepository.save(report);
-
 
         // HealthReportResponse DTO 생성
         return new HealthReportResponse();
@@ -88,30 +85,10 @@ public class HealthReportService {
 
     /** 식단 기록 요청 VO를 바탕으로 식단 엔티티 리스트 생성 */
     private List<Meal> createMeals(MealsRequest mealsRequest) {
-        Set<String> eatenFoodCodeSet = mealsRequest.getEatenFoodCodeSet();
-        List<Food> eatenFoods = this.foodRepository.findByFoodCodeIn(eatenFoodCodeSet);
-
-        // 각 식사에서 먹은 음식을 꺼내기 위해 음식 코드와 음식 매핑
-        Map<String, Food> eatenFoodMap = eatenFoods.stream().collect(Collectors.toMap(Food::getFoodCode, Function.identity())); // Function.identity(): eatenFood -> eatenFood
-
+        EatenFoodMap eatenFoodMap = foodService.findFoodsBy(mealsRequest.getEatenFoodCodeSet());
         return mealsRequest.getMealRequestList().stream()
-                .map(mealRequest -> {
-                    List<MealFood> mealFoods = this.createMealFoods(eatenFoodMap, mealRequest.getMealFoodsRequest());
-                    return Meal.newInstance(mealRequest.getMealType(), mealRequest.getMealTime(), mealFoods);
-                })
-                .toList();
-    }
-
-    /** 식사당 먹은 음식 및 각 수량을 나타내는 MealFoods */
-    private List<MealFood> createMealFoods(final Map<String, Food> eatenFoodMap, List<MealFoodRequest> mealFoodsRequest) {
-        return mealFoodsRequest.stream()
-                .map(mealFoodRequest -> {
-                    Food food = eatenFoodMap.get(mealFoodRequest.getFoodCode());
-                    if (food == null) {
-                        throw new NotFoundException(FoodErrorCode.NOT_FOUND_FOOD, mealFoodRequest.getFoodCode());
-                    }
-                    return MealFood.newInstance(food, mealFoodRequest.getCount());
-                })
+                .map(mealRequest ->
+                        Meal.newInstance(eatenFoodMap, mealRequest))
                 .toList();
     }
 

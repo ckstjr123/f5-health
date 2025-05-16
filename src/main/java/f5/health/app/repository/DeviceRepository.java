@@ -1,8 +1,8 @@
 package f5.health.app.repository;
 
 import f5.health.app.vo.device.DeviceAndMemberRole;
-import f5.health.app.entity.Device.Device;
-import f5.health.app.entity.Device.DeviceId;
+import f5.health.app.entity.device.Device;
+import f5.health.app.entity.device.DeviceId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

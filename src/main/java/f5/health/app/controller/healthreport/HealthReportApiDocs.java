@@ -5,7 +5,7 @@ import f5.health.app.exception.response.ExceptionResult;
 import f5.health.app.exception.response.FieldErrorsResult;
 import f5.health.app.jwt.JwtMember;
 import f5.health.app.service.healthreport.vo.request.MealsRequest;
-import f5.health.app.vo.healthreport.request.healthkit.HealthKit;
+import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

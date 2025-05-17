@@ -1,7 +1,7 @@
 package f5.health.app.vo.meal.response;
 
 import f5.health.app.controller.food.FoodResponse;
-import f5.health.app.entity.MealFood;
+import f5.health.app.entity.meal.MealFood;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

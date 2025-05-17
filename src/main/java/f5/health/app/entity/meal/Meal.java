@@ -1,6 +1,9 @@
-package f5.health.app.entity;
+package f5.health.app.entity.meal;
 
 import f5.health.app.constant.meal.MealType;
+import f5.health.app.entity.HealthReport;
+import f5.health.app.service.healthreport.vo.request.MealFoodRequest;
+import f5.health.app.service.healthreport.vo.request.MealRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,13 +45,22 @@ public class Meal {
     @Column(name = "TOTAL_KCAL")
     private int totalKcal; // 계산된 식사 총 섭취 칼로리
 
-
-    public static Meal newInstance(MealType mealType, LocalDateTime mealTime, List<MealFood> mealFoods) {
+    /** 식단 생성 메서드 */
+    public static Meal newInstance(final EatenFoodMap eatenFoodMap, MealRequest mealRequest) {
         Meal meal = new Meal();
-        meal.mealType = mealType;
-        meal.mealTime = mealTime;
-        meal.addAllMealFoods(mealFoods);
+        meal.mealType = mealRequest.getMealType();
+        meal.mealTime = mealRequest.getMealTime();
+        meal.addAllMealFoods(createMealFoods(eatenFoodMap, mealRequest.getMealFoodRequestList()));
         return meal;
+    }
+
+    /** 식사당 먹은 음식 및 각 수량을 나타내는 MealFoods */
+    private static List<MealFood> createMealFoods(final EatenFoodMap eatenFoodMap, List<MealFoodRequest> mealFoodRequestList) {
+        return mealFoodRequestList.stream()
+                .map(mealFoodRequest -> {
+                    return MealFood.newInstance(eatenFoodMap, mealFoodRequest);
+                })
+                .toList();
     }
 
 
@@ -66,10 +78,28 @@ public class Meal {
         this.setTotalKcal(); //
     }
 
-    /** 해당 식사 총 칼로리 계산 */
+    /** 식사 섭취 칼로리 */
     private void setTotalKcal() {
         this.totalKcal = this.mealFoods.stream()
-                .mapToInt(mealFood -> mealFood.calculateMealFoodKcal())
+                .mapToInt(MealFood::calculateMealFoodKcal)
                 .sum();
     }
+
+    // ================= 식사 총 섭취 탄수화물, 단백질, 지방 ================= //
+    public double getTotalCarbohydrate() {
+        return this.mealFoods.stream()
+                .mapToDouble(MealFood::calculateMealFoodCarbohydrate)
+                .sum();
+    }
+    public double getTotalProtein() {
+        return this.mealFoods.stream()
+                .mapToDouble(MealFood::calculateMealFoodProtein)
+                .sum();
+    }
+    public double getTotalFat() {
+        return this.mealFoods.stream()
+                .mapToDouble(MealFood::calculateMealFoodFat)
+                .sum();
+    }
+
 }

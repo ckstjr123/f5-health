@@ -1,7 +1,7 @@
 package f5.health.app.vo.device;
 
 import f5.health.app.constant.member.Role;
-import f5.health.app.entity.Device.Device;
+import f5.health.app.entity.device.Device;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

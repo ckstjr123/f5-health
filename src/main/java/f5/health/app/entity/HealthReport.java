@@ -1,5 +1,7 @@
 package f5.health.app.entity;
 
+import f5.health.app.entity.meal.Meal;
+import f5.health.app.vo.openai.response.PromptCompletion;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -63,7 +65,7 @@ public class HealthReport {
     private LocalTime endTime; // 'HH:mm'
 
     @Column(name = "REPORTED_AT")
-    private LocalDateTime reportedAt; // 실제 작성 시각
+    private LocalDateTime reportedAt;
 
     public static HealthReportBuilder builder(Member writer, List<Meal> meals) {
         return new HealthReportBuilder(writer, meals);
@@ -80,7 +82,7 @@ public class HealthReport {
 
     private void validateHealthLifeScore(int score) {
         if (score < MIN_HEALTH_LIFE_SCORE || MAX_HEALTH_LIFE_SCORE < score) {
-            throw new IllegalArgumentException("healthLifeScore must be between ["
+            throw new IllegalArgumentException("score must be between ["
                     + MIN_HEALTH_LIFE_SCORE + "] and [" + MAX_HEALTH_LIFE_SCORE + "]. rejected int value: [" + score + "].");
         }
     }
@@ -98,10 +100,11 @@ public class HealthReport {
             report.addAllMeals(meals);
         }
 
-        public HealthReportBuilder healthLifeScore(final int score) {
+         /** 계산된 스코어 기록, 회원 총점에 스코어 누적 및 배지 체크 */
+         public HealthReportBuilder healthLifeScore(final int score) {
             report.validateHealthLifeScore(score);
             report.healthLifeScore = score;
-            report.member.addHealthLifeScore(score);
+            report.member.addHealthLifeScore(score); //
             return this;
         }
 
@@ -120,8 +123,8 @@ public class HealthReport {
             return this;
         }
 
-        public HealthReportBuilder healthFeedback(final String gptHealthFeedback) {
-            report.healthFeedback = gptHealthFeedback;
+        public HealthReportBuilder healthFeedback(final PromptCompletion healthFeedback) {
+            report.healthFeedback = healthFeedback.getContent();
             return this;
         }
 
@@ -140,5 +143,4 @@ public class HealthReport {
             return this.report;
         }
     }
-
 }

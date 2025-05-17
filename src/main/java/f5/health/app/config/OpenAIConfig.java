@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 @Configuration
 public class OpenAIConfig {
 
+    public static final String OPEN_AI_MODEL = "gpt-4o";
+    public static final Double SAMPLING_TEMPERATURE = 0.7;
+
     @Value("${openai.api.key}")
     private String secretKey;
 
@@ -16,4 +19,3 @@ public class OpenAIConfig {
         return new OpenAiService(secretKey);
     }
 }
-

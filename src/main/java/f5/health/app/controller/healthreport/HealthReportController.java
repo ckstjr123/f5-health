@@ -4,7 +4,7 @@ import f5.health.app.jwt.JwtMember;
 import f5.health.app.service.healthreport.HealthReportService;
 import f5.health.app.service.healthreport.vo.request.HealthReportRequest;
 import f5.health.app.service.healthreport.vo.request.MealsRequest;
-import f5.health.app.vo.healthreport.request.healthkit.HealthKit;
+import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

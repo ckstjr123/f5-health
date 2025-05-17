@@ -5,6 +5,7 @@ import f5.health.app.constant.member.BloodType;
 import f5.health.app.constant.member.Gender;
 import f5.health.app.constant.member.Role;
 import f5.health.app.entity.base.BaseTimeEntity;
+import f5.health.app.vo.openai.response.PromptCompletion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -73,12 +74,12 @@ public class Member extends BaseTimeEntity {
     private BloodType bloodType;
 
     @Column(name = "DAY_SMOKE_CIGARETTES")
-    private int daySmokeCigarettes; // 0이면 비흡연자
+    private int daySmokeCigarettes; // 일일 흡연량(0이면 비흡연자)
     @Column(name = "SMOKING_SAVED_MONEY")
     private int smokingSavedMoney; // 흡연 절약 금액
 
     @Column(name = "WEEK_ALCOHOL_DRINKS")
-    private int weekAlcoholDrinks;
+    private int weekAlcoholDrinks; // 주 알코올 섭취량(잔)
     @Column(name = "WEEK_ALCOHOL_COST")
     private int weekAlcoholCost;
     @Column(name = "ALCOHOL_SAVED_MONEY")
@@ -86,6 +87,9 @@ public class Member extends BaseTimeEntity {
     
     @Column(name = "WEEK_EXERCISE_FREQ")
     private int weekExerciseFrequency;
+
+    @Column(name = "RECOMMENDED_CALORIES")
+    private Integer recommendedCalories; //키, 성별, 몸무게, 활동량에 따른 개인별 권장칼로리
 
     @Column(name = "HEALTH_ITEMS_RECOMMEND")
     private String healthItemsRecommend; // 절약 금액에 대한 gpt 건강 아이템 추천 결과(maxTokens: 30)
@@ -99,13 +103,44 @@ public class Member extends BaseTimeEntity {
         member.role = role;
         member.badge = Badge.BEGINNER;
         memberCheckUp.applyTo(member);
+        member.calculateAndStoreRecommendedCalories();
         return member;
     }
+    /** 권장 칼로리 계산 */
+    public void calculateAndStoreRecommendedCalories() {
+        int age = calculateAge(this.birthDate, LocalDate.now());
 
+        double bmr;
+        if (this.gender == Gender.MALE) {
+            bmr = 66.47 + (13.75 * weight) + (5 * height) - (6.76 * age);
+        } else {
+            bmr = 655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age);
+        }
 
-    /** 회원 생활 점수 누적 */
+        double activityFactor;
+        if (weekExerciseFrequency >= 5) {
+            activityFactor = 1.55;
+        } else if (weekExerciseFrequency >= 2) {
+            activityFactor = 1.375;
+        } else {
+            activityFactor = 1.2;
+        }
+
+        this.recommendedCalories = (int) Math.round(bmr * activityFactor);
+    }
+
+    private int calculateAge(LocalDate birthDate, LocalDate today) {
+        return today.getYear() - birthDate.getYear() -
+                ((today.getDayOfYear() < birthDate.getDayOfYear()) ? 1 : 0);
+    }
+
+    /** 회원 점수 누적 및 배지 체크 */
     public void addHealthLifeScore(final int score) {
         this.totalHealthLifeScore += score;
+    }
+
+    private void setBadge(Badge badge) {
+        this.badge = badge;
     }
 
     public void accumulateSmokingSavedMoneyForDay(final int smokedCigarettes) {
@@ -122,8 +157,8 @@ public class Member extends BaseTimeEntity {
         return (smokingSavedMoney + alcoholSavedMoney);
     }
 
-    public void updateHealthItemsRecommend(String gptHealthItemsRecommend) {
-        this.healthItemsRecommend = gptHealthItemsRecommend;
+    public void updateHealthItemsRecommend(PromptCompletion healthItemsRecommend) {
+        this.healthItemsRecommend = healthItemsRecommend.getContent();
     }
 
 

@@ -3,11 +3,10 @@ package f5.health.app.controller.meal;
 import f5.health.app.constant.EnumModel;
 import f5.health.app.constant.EnumModelMapper;
 import f5.health.app.constant.meal.MealType;
-import f5.health.app.entity.Meal;
+import f5.health.app.entity.meal.Meal;
 import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.repository.MealRepository;
 import f5.health.app.vo.meal.response.MealResponse;
-import f5.health.app.vo.meal.response.MealsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +25,7 @@ public class MealController implements MealApiDocs {
     private final EnumModelMapper enumMapper;
     private final MealRepository mealRepository;
 
-    @GetMapping("/meal/types")
+    @GetMapping("/types")
     public List<? extends EnumModel> mealTypes() {
         return enumMapper.get(MealType.class);
     }

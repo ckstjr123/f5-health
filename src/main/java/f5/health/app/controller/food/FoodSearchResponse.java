@@ -2,9 +2,7 @@ package f5.health.app.controller.food;
 
 import f5.health.app.entity.Food;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -36,7 +34,7 @@ public class FoodSearchResponse {
         public FoodSearchResult(Food food) {
             this.foodCode = food.getFoodCode();
             this.foodName = food.getFoodName();
-            this.kcal = food.calculateOneServingKcal();
+            this.kcal = food.calculateServingKcal();
         }
     }
 }

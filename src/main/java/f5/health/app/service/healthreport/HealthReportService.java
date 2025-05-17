@@ -83,7 +83,7 @@ public class HealthReportService {
                 .build());
 
         // HealthReportResponse DTO 생성
-        return new HealthReportResponse();
+        return new HealthReportResponse(); // -------------------------------
     }
 
     private void accumulateSavedMoney(Member writer, HealthKit healthKit) {

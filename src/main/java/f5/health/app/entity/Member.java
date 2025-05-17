@@ -74,12 +74,12 @@ public class Member extends BaseTimeEntity {
     private BloodType bloodType;
 
     @Column(name = "DAY_SMOKE_CIGARETTES")
-    private int daySmokeCigarettes; // 0이면 비흡연자
+    private int daySmokeCigarettes; // 일일 흡연량(0이면 비흡연자)
     @Column(name = "SMOKING_SAVED_MONEY")
     private int smokingSavedMoney; // 흡연 절약 금액
 
     @Column(name = "WEEK_ALCOHOL_DRINKS")
-    private int weekAlcoholDrinks;
+    private int weekAlcoholDrinks; // 주 알코올 섭취량(잔)
     @Column(name = "WEEK_ALCOHOL_COST")
     private int weekAlcoholCost;
     @Column(name = "ALCOHOL_SAVED_MONEY")

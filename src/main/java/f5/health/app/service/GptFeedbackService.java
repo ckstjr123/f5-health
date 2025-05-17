@@ -30,8 +30,8 @@ public class GptFeedbackService {
         score += calculator.heartRateScore(dto.getHeartRate());
         score += calculator.totalCaloriesBurnedScore(dto.getTotalCaloriesBurned());
         score += calculator.sleepScore(dto.getSleepHours());
-        //score += calculator.intakeCaloriesScore(dto.getKcal());
-        //score += calculator.pfcBalanceScore(dto.getCarbohydrate(), dto.getProtein(), dto.getFat());
+        score += calculator.intakeCaloriesScore(dto.getKcal());
+        score += calculator.pfcBalanceScore(dto.getCarbohydrate(), dto.getProtein(), dto.getFat());
 
         // 2. GPT 피드백 생성
         String prompt = String.format("""

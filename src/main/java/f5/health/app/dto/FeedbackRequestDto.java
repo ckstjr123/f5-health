@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 public class FeedbackRequestDto {
 
-    // 2. 상세 건강 수치 (daily 용)
+    //상세 생활 수치 (daily 용)
     private Integer waterIntake;
     private Integer alcoholAmount;
     private Integer smokingAmount;

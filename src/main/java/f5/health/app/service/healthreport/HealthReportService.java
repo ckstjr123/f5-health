@@ -8,18 +8,16 @@ import f5.health.app.exception.global.DuplicateEntityException;
 import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.repository.HealthReportRepository;
 import f5.health.app.service.food.FoodService;
+import f5.health.app.service.healthreport.openai.GptService;
+import f5.health.app.service.healthreport.openai.prompt.HealthFeedbackPrompt;
+import f5.health.app.service.healthreport.openai.prompt.HealthItemsRecommendPrompt;
 import f5.health.app.service.healthreport.vo.request.HealthReportRequest;
 import f5.health.app.service.healthreport.vo.request.MealsRequest;
 import f5.health.app.service.healthreport.vo.request.NutritionFacts;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts;
 import f5.health.app.service.member.MemberService;
-import f5.health.app.service.healthreport.openai.GptService;
-import f5.health.app.service.healthreport.openai.prompt.HealthFeedbackPrompt;
-import f5.health.app.service.healthreport.openai.prompt.HealthItemsRecommendPrompt;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
-import f5.health.app.vo.meal.response.MealResponse;
-import f5.health.app.vo.meal.response.MealsResponse;
 import f5.health.app.vo.openai.response.PromptCompletion;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +62,16 @@ public class HealthReportService {
         // 식단
         List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
         NutritionFacts nutritionFacts = NutritionFacts.from(meals);
+
+
+        //         HealthFeedbackPrompt prompt = new HealthFeedbackPrompt(
+//                 healthKit,
+//                 nutritionFacts,
+//                 writer.getGender().label(), // 또는 .name()
+//                 writer.getHeight(),
+//                 writer.getWeight(),
+//                 writer.getRecommendedCalories()
+//         );
 
         // 리포트 저장(계산된 점수가 회원 총점에 누적되고 배지 세팅됨)
         HealthReport report = HealthReport.builder(writer, meals)

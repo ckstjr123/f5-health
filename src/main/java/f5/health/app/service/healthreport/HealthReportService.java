@@ -61,14 +61,16 @@ public class HealthReportService {
         MealsResponse mealsResponse = MealsResponse.from(meals.stream()
                 .map(meal -> MealResponse.only(meal))
                 .toList());
+        //회원정보 조회
+        Member writer = memberService.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 
         // 점수 계산
         HealthKit healthKit = reportRequest.getHealthKit();
         NutritionFacts nutritionFacts = NutritionFacts.from(meals);
-        int healthLifeScore = healthLifeStyleScoreCalculator.calculateScore(healthKit, nutritionFacts);
+        int healthLifeScore = healthLifeStyleScoreCalculator.calculateScore(writer, healthKit, nutritionFacts);
         
         // 절약 금액 로직
-        Member writer = memberService.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
         this.accumulateSavedMoney(writer, healthKit);
 
         HealthFeedbackPrompt prompt = new HealthFeedbackPrompt(

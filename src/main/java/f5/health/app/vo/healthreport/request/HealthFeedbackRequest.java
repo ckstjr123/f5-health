@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+/** GptController 용*/
 public class HealthFeedbackRequest {
     private HealthKit healthKit;
     private NutritionFacts nutritionFacts;

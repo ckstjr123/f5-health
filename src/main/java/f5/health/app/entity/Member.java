@@ -137,6 +137,7 @@ public class Member extends BaseTimeEntity {
     /** 회원 점수 누적 및 배지 체크 */
     public void addHealthLifeScore(final int score) {
         this.totalHealthLifeScore += score;
+        this.setBadge(Badge.fromTotalScore(totalHealthLifeScore));
     }
 
     private void setBadge(Badge badge) {

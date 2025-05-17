@@ -23,7 +23,7 @@ public class HealthReportController implements HealthReportApiDocs {
 
     private final HealthReportService reportService;
 
-    @PostMapping("/submit") //()
+    @PostMapping("/submit")
     public HealthReportResponse submit(@AuthenticationPrincipal JwtMember loginMember,
                                        @RequestBody @Valid HealthKit healthKit, @RequestBody @Valid MealsRequest mealsRequest) {
         return this.reportService.submit(loginMember.getId(), HealthReportRequest.of(healthKit, mealsRequest));

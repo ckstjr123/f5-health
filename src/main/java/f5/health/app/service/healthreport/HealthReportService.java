@@ -56,34 +56,28 @@ public class HealthReportService {
         LocalDateTime endDateTime = reportRequest.getEndDateTime();
         this.validateDuplicateReport(memberId, endDateTime.toLocalDate());
 
-        // 식단
-        List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
-        MealsResponse mealsResponse = MealsResponse.from(meals.stream()
-                .map(meal -> MealResponse.only(meal))
-                .toList());
-
-        // 점수 계산
-        HealthKit healthKit = reportRequest.getHealthKit();
-        NutritionFacts nutritionFacts = NutritionFacts.from(meals);
-        int healthLifeScore = healthLifeStyleScoreCalculator.calculateScore(healthKit, nutritionFacts);
-        
         // 절약 금액 로직
+        HealthKit healthKit = reportRequest.getHealthKit();
         Member writer = memberService.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
         this.accumulateSavedMoney(writer, healthKit);
 
-        // 리포트 생성(계산된 점수 회원 총점에 누적됨, addHealthLifeScore(): 배지 체크 로직 추가 필요) 후 저장(cascade)
-        this.reportRepository.save(HealthReport.builder(writer, meals)
-                .healthLifeScore(healthLifeScore)
+        // 식단
+        List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
+        NutritionFacts nutritionFacts = NutritionFacts.from(meals);
+
+        // 리포트 저장(계산된 점수가 회원 총점에 누적되고 배지 세팅됨)
+        HealthReport report = HealthReport.builder(writer, meals)
+                .healthLifeScore(this.healthLifeStyleScoreCalculator.calculateScore(healthKit, nutritionFacts))
                 .waterIntake(healthKit.getWaterIntake())
                 .smokeCigarettes(healthKit.getSmokedCigarettes())
                 .alcoholDrinks(healthKit.getConsumedAlcoholDrinks())
                 .healthFeedback(gptService.call(new HealthFeedbackPrompt(healthKit, nutritionFacts)))
                 .startDateTime(reportRequest.getStartDateTime())
                 .endDateTime(endDateTime)
-                .build());
+                .build();
+        this.reportRepository.save(report);
 
-        // HealthReportResponse DTO 생성
-        return new HealthReportResponse(); // -------------------------------
+        return new HealthReportResponse(report, meals);
     }
 
     private void accumulateSavedMoney(Member writer, HealthKit healthKit) {

@@ -69,7 +69,7 @@ public final class HealthKit {
 
 
     @Getter
-    @Schema(description = "건강 데이터 수집 기간", requiredMode = REQUIRED)
+    @Schema(description = "건강 관측 기간", requiredMode = REQUIRED)
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Period {
 

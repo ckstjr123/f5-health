@@ -96,8 +96,7 @@ public class HealthReportService {
     private void recommendHealthItems(Member writer, Workouts workouts) {
         int totalSavedMoney = writer.getTotalSavedMoney();
         PromptCompletion HealthItemsRecommend = (MINIMUM_SAVED_MONEY_REQUIRED <= totalSavedMoney) ?
-                gptService.call(new HealthItemsRecommendPrompt(totalSavedMoney, writer.getHeight(), writer.getWeight(), workouts))
-                : SAVED_MONEY_DEFAULT_COMPLETION.get();
+                gptService.call(new HealthItemsRecommendPrompt(writer, workouts)) : SAVED_MONEY_DEFAULT_COMPLETION.get();
 
         writer.updateHealthItemsRecommend(HealthItemsRecommend); //
     }

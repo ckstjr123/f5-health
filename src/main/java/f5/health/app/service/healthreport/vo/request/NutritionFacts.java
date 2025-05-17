@@ -27,7 +27,6 @@ public class NutritionFacts {
             totalProtein += meal.getTotalProtein();
             totalFat += meal.getTotalFat();
         }
-
         return new NutritionFacts(totalKcal, totalCarbohydrate, totalProtein, totalFat);
     }
 }

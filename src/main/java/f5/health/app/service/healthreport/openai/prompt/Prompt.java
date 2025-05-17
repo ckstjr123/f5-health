@@ -1,4 +1,4 @@
-package f5.health.app.service.openai;
+package f5.health.app.service.healthreport.openai.prompt;
 
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 

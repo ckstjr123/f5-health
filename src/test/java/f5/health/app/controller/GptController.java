@@ -1,7 +1,7 @@
 package f5.health.app.controller;
 
-import f5.health.app.service.openai.GptService;
-import f5.health.app.service.openai.HealthFeedbackPrompt;
+import f5.health.app.service.healthreport.openai.GptService;
+import f5.health.app.service.healthreport.openai.prompt.HealthFeedbackPrompt;
 import f5.health.app.service.healthreport.vo.request.NutritionFacts;
 import f5.health.app.vo.openai.response.PromptCompletion;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;

@@ -65,7 +65,7 @@ public class HealthReport {
     private LocalTime endTime; // 'HH:mm'
 
     @Column(name = "REPORTED_AT")
-    private LocalDateTime reportedAt; // 실제 작성 시각
+    private LocalDateTime reportedAt;
 
     public static HealthReportBuilder builder(Member writer, List<Meal> meals) {
         return new HealthReportBuilder(writer, meals);
@@ -100,10 +100,11 @@ public class HealthReport {
             report.addAllMeals(meals);
         }
 
-        public HealthReportBuilder healthLifeScore(final int score) {
+         /** 계산된 스코어 기록, 회원 총점에 스코어 누적 및 배지 체크 */
+         public HealthReportBuilder healthLifeScore(final int score) {
             report.validateHealthLifeScore(score);
             report.healthLifeScore = score;
-            report.member.addHealthLifeScore(score);
+            report.member.addHealthLifeScore(score); //
             return this;
         }
 
@@ -142,5 +143,4 @@ public class HealthReport {
             return this.report;
         }
     }
-
 }

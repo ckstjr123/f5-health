@@ -5,6 +5,7 @@ import f5.health.app.constant.member.BloodType;
 import f5.health.app.constant.member.Gender;
 import f5.health.app.constant.member.Role;
 import f5.health.app.entity.base.BaseTimeEntity;
+import f5.health.app.vo.openai.response.PromptCompletion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -103,9 +104,13 @@ public class Member extends BaseTimeEntity {
     }
 
 
-    /** 회원 생활 점수 누적 */
+    /** 회원 점수 누적 및 배지 체크 */
     public void addHealthLifeScore(final int score) {
         this.totalHealthLifeScore += score;
+    }
+
+    private void setBadge(Badge badge) {
+        this.badge = badge;
     }
 
     public void accumulateSmokingSavedMoneyForDay(final int smokedCigarettes) {
@@ -122,8 +127,8 @@ public class Member extends BaseTimeEntity {
         return (smokingSavedMoney + alcoholSavedMoney);
     }
 
-    public void updateHealthItemsRecommend(String gptHealthItemsRecommend) {
-        this.healthItemsRecommend = gptHealthItemsRecommend;
+    public void updateHealthItemsRecommend(PromptCompletion healthItemsRecommend) {
+        this.healthItemsRecommend = healthItemsRecommend.getContent();
     }
 
 

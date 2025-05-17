@@ -71,13 +71,22 @@ public class HealthReportService {
         Member writer = memberService.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
         this.accumulateSavedMoney(writer, healthKit);
 
+        HealthFeedbackPrompt prompt = new HealthFeedbackPrompt(
+                healthKit,
+                nutritionFacts,
+                writer.getGender().label(), // 또는 .name()
+                writer.getHeight(),
+                writer.getWeight(),
+                writer.getRecommendedCalories()
+        );
+
         // 리포트 생성(계산된 점수 회원 총점에 누적됨, addHealthLifeScore(): 배지 체크 로직 추가 필요) 후 저장(cascade)
         this.reportRepository.save(HealthReport.builder(writer, meals)
                 .healthLifeScore(healthLifeScore)
                 .waterIntake(healthKit.getWaterIntake())
                 .smokeCigarettes(healthKit.getSmokedCigarettes())
                 .alcoholDrinks(healthKit.getConsumedAlcoholDrinks())
-                .healthFeedback(gptService.call(new HealthFeedbackPrompt(healthKit, nutritionFacts)))
+                .healthFeedback(gptService.call(prompt))
                 .startDateTime(reportRequest.getStartDateTime())
                 .endDateTime(endDateTime)
                 .build());

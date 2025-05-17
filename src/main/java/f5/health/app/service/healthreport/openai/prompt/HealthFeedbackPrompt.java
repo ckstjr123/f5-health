@@ -21,6 +21,7 @@ import static f5.health.app.config.OpenAIConfig.SAMPLING_TEMPERATURE;
 public class HealthFeedbackPrompt implements Prompt {
 
     private static final int MAX_TOKENS = 100;
+
     private final CustomHealthKit customKit;
     private final Activity activity;
     private final SleepAnalysis sleepAnalysis;
@@ -28,13 +29,24 @@ public class HealthFeedbackPrompt implements Prompt {
     private final VitalSigns vitalSigns;
     private final NutritionFacts nutritionFacts;
 
-    public HealthFeedbackPrompt(HealthKit healthKit, NutritionFacts nutritionFacts) {
+    //사용자 정보
+    private final String gender;
+    private final int height;
+    private final int weight;
+    private final int recommendedCalories;
+
+    public HealthFeedbackPrompt(HealthKit healthKit, NutritionFacts nutritionFacts, String gender, int height, int weight, int recommendedCalories) {
         this.customKit = healthKit.getCustomHealthKit();
         this.activity = healthKit.getActivity();
         this.sleepAnalysis = healthKit.getSleepAnalysis();
         this.workouts = healthKit.getWorkouts();
         this.vitalSigns = healthKit.getVitalSigns();
         this.nutritionFacts = nutritionFacts;
+
+        this.gender = gender;
+        this.height = height;
+        this.weight = weight;
+        this.recommendedCalories = recommendedCalories;
     }
 
     @Override
@@ -42,7 +54,12 @@ public class HealthFeedbackPrompt implements Prompt {
         Set<String> workoutTypes = workouts.getWorkoutTypes();
 
         String prompt = MessageFormat.format("""
-                        다음은 사용자의 일일 건강 기록입니다:
+                        다음은 사용자의 신체 및 건강 기록입니다:
+                        
+                        성별: {0}
+                        키: {1} cm
+                        몸무게: {2} kg
+                        권장 칼로리: {3} kcal
                         
                         음수량: %d ml
                         흡연량: %d 개비
@@ -67,6 +84,7 @@ public class HealthFeedbackPrompt implements Prompt {
                         * 문장은 간결하고 명확하게 구성해 주세요.
                         * 진지하지만 너무 무겁지 않게 조언해 주세요.
                         """
+                , gender, height, weight, recommendedCalories
                 , customKit.getWaterIntake(), customKit.getSmokedCigarettes(), customKit.getConsumedAlcoholDrinks()
                 , activity.getStepCount(), activity.getAppleExerciseTime(), activity.getActiveEnergyBurned()
                 , vitalSigns.getHeartRate()

@@ -22,9 +22,9 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MealsRequest {
     
-    @Schema(description = "식단 리스트")
+    @Schema(description = "식사 리스트")
     @Valid
-    @NotNull(message = "식단을 최소 한개 작성해 주세요.")
+    @NotNull(message = "식사를 최소 한개 이상 작성해 주세요.")
     @Size(min = 1, max = MEAL_TYPE_COUNT, message = "식사는 하루에 " + MEAL_TYPE_COUNT + "개로 분류됩니다.")
     private List<MealRequest> mealRequestList;
 
@@ -33,7 +33,7 @@ public final class MealsRequest {
     @Schema(hidden = true)
     public Set<String> getEatenFoodCodeSet() {
         return this.mealRequestList.stream()
-                .flatMap(mealRequest -> mealRequest.getMealFoodRequestList().stream()) // flatMap: 하나의 연속된 스트림으로 만들어서 반환
+                .flatMap(mealRequest -> mealRequest.getMealFoodRequestList().stream()) // flatMap: 하나의 연속된 스트림으로 만듦
                 .map(MealFoodRequest::getFoodCode)
                 .collect(Collectors.toSet());
     }

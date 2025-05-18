@@ -9,6 +9,9 @@ import f5.health.app.service.healthreport.vo.request.healthkit.applekit.SleepAna
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.VitalSigns;
 import org.springframework.stereotype.Component;
 
+import static f5.health.app.constant.member.Gender.FEMALE;
+import static f5.health.app.constant.member.Gender.MALE;
+
 @Component
 public class HealthLifeStyleScoreCalculator {
 
@@ -19,9 +22,9 @@ public class HealthLifeStyleScoreCalculator {
         int activeEnergyBurned = (int) activity.getActiveEnergyBurned();
         int totalKcal = nutritionFacts.getTotalKcal();
 
-        return waterIntakeScore(member, healthKit.getWaterIntake())
-                + smokingScore(member, healthKit.getSmokedCigarettes())
-                + alcoholScore(member, healthKit.getConsumedAlcoholDrinks())
+        return waterIntakeScore(member.getWeight(), member.getGender(), healthKit.getWaterIntake())
+                + smokingScore(member.getDaySmokeCigarettes(), healthKit.getSmokedCigarettes())
+                + alcoholScore(member.getWeekAlcoholDrinks(), healthKit.getConsumedAlcoholDrinks())
                 + stepCountScore(activity.getStepCount())
                 + workoutScore((int) activity.getAppleExerciseTime(), activeEnergyBurned)
                 + heartRateScore(vitalSigns.getHeartRate())
@@ -31,14 +34,12 @@ public class HealthLifeStyleScoreCalculator {
                 + pfcBalanceScore(totalKcal, nutritionFacts.getTotalCarbohydrate(), nutritionFacts.getTotalProtein(), nutritionFacts.getTotalFat());
     }
 
-    private int waterIntakeScore(Member member, int waterIntake) {
-        int weight = member.getWeight();
-        double recommendedIntake;
-
+    private int waterIntakeScore(int weight, Gender gender, int waterIntake) {
+        double recommendedIntake = 0.0;
         // 성별에 따른 수분 권장 섭취량 계산 (ml 단위)
-        if (member.getGender() == Gender.MALE) {
+        if (gender == MALE) {
             recommendedIntake = weight * 35.0;  // 남성: 35ml/kg
-        } else {
+        } else if (gender == FEMALE) {
             recommendedIntake = weight * 31.0;  // 여성: 31ml/kg
         }
 
@@ -51,10 +52,8 @@ public class HealthLifeStyleScoreCalculator {
         return 0;
     }
 
-
-    private int smokingScore(Member member, int smokedCigarettes) {
-        int baseline = member.getDaySmokeCigarettes(); // 설문에서 등록된 평소 흡연량
-
+    private int smokingScore(int daySmokeCigarettes, int smokedCigarettes) {
+        int baseline = daySmokeCigarettes;
         // 비흡연자라면 그대로 가중치 적용
         if (baseline == 0) {
             return smokedCigarettes == 0 ? 15 : 0;
@@ -71,10 +70,9 @@ public class HealthLifeStyleScoreCalculator {
         return 0; // 늘었거나 그대로인 경우
     }
 
-
-    private int alcoholScore(Member member, int consumedAlcoholDrinks) {
-        int baseline = member.getWeekAlcoholDrinks(); // 설문에서 입력된 주간 음주량
-        int avgPerDay = baseline / 7; // 평균 하루 음주량
+    private int alcoholScore(int weekAlcoholDrinks, int consumedAlcoholDrinks) {
+        int baseline = weekAlcoholDrinks;
+        int avgPerDay = baseline / 7;
 
         // 비음주자의 경우
         if (baseline == 0) {

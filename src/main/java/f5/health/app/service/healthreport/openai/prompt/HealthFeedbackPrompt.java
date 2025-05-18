@@ -3,6 +3,7 @@ package f5.health.app.service.healthreport.openai.prompt;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
+import f5.health.app.entity.Member;
 import f5.health.app.service.healthreport.vo.request.NutritionFacts;
 import f5.health.app.service.healthreport.vo.request.healthkit.CustomHealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
@@ -35,18 +36,18 @@ public class HealthFeedbackPrompt implements Prompt {
     private final int weight;
     private final int recommendedCalories;
 
-    public HealthFeedbackPrompt(HealthKit healthKit, NutritionFacts nutritionFacts, String gender, int height, int weight, int recommendedCalories) {
+    public HealthFeedbackPrompt(Member member, HealthKit healthKit, NutritionFacts nutritionFacts) {
+        this.gender = member.getGender().label();
+        this.height = member.getHeight();
+        this.weight = member.getWeight();
+        this.recommendedCalories = member.getRecommendedCalories();
+
         this.customKit = healthKit.getCustomHealthKit();
         this.activity = healthKit.getActivity();
         this.sleepAnalysis = healthKit.getSleepAnalysis();
         this.workouts = healthKit.getWorkouts();
         this.vitalSigns = healthKit.getVitalSigns();
         this.nutritionFacts = nutritionFacts;
-
-        this.gender = gender;
-        this.height = height;
-        this.weight = weight;
-        this.recommendedCalories = recommendedCalories;
     }
 
     @Override

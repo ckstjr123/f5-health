@@ -18,7 +18,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.Period;
 
+import static f5.health.app.constant.member.Gender.MALE;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
@@ -84,16 +86,13 @@ public class Member extends BaseTimeEntity {
     private int weekAlcoholCost;
     @Column(name = "ALCOHOL_SAVED_MONEY")
     private int alcoholSavedMoney; // 음주 절약 금액
-    
+
     @Column(name = "WEEK_EXERCISE_FREQ")
     private int weekExerciseFrequency;
 
-    @Column(name = "RECOMMENDED_CALORIES")
-    private Integer recommendedCalories; //키, 성별, 몸무게, 활동량에 따른 개인별 권장칼로리
-
     @Column(name = "HEALTH_ITEMS_RECOMMEND")
     private String healthItemsRecommend; // 절약 금액에 대한 gpt 건강 아이템 추천 결과(maxTokens: 30)
-    
+
     /** 회원 생성 메서드 */
     public static Member createMember(String oauthId, String email, String nickname, Role role, MemberCheckUp memberCheckUp) {
         Member member = new Member();
@@ -103,35 +102,31 @@ public class Member extends BaseTimeEntity {
         member.role = role;
         member.badge = Badge.BEGINNER;
         memberCheckUp.applyTo(member);
-        member.calculateAndStoreRecommendedCalories();
         return member;
     }
-    /** 권장 칼로리 계산 */
-    public void calculateAndStoreRecommendedCalories() {
-        int age = calculateAge(this.birthDate, LocalDate.now());
 
-        double bmr;
-        if (this.gender == Gender.MALE) {
-            bmr = 66.47 + (13.75 * weight) + (5 * height) - (6.76 * age);
-        } else {
-            bmr = 655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age);
-        }
 
-        double activityFactor;
-        if (weekExerciseFrequency >= 5) {
-            activityFactor = 1.55;
-        } else if (weekExerciseFrequency >= 2) {
-            activityFactor = 1.375;
-        } else {
-            activityFactor = 1.2;
-        }
-
-        this.recommendedCalories = (int) Math.round(bmr * activityFactor);
+    public int getAge() {
+        return Period.between(this.birthDate, LocalDate.now()).getYears();
     }
 
-    private int calculateAge(LocalDate birthDate, LocalDate today) {
-        return today.getYear() - birthDate.getYear() -
-                ((today.getDayOfYear() < birthDate.getDayOfYear()) ? 1 : 0);
+    /** 키, 성별, 몸무게, 활동량에 따른 개인별 권장 칼로리 */
+    public int getRecommendedCalories() {
+        return (int) Math.round(calculateBmr() * getActivityFactor());
+    }
+
+    public double calculateBmr() {
+        int age = getAge();
+        return (this.gender == MALE) ? (66.47 + (13.75 * weight) + (5 * height) - (6.76 * age))
+                : (655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age));
+    }
+    private double getActivityFactor() {
+        if (weekExerciseFrequency >= 5) {
+            return 1.55;
+        } else if (weekExerciseFrequency >= 2) {
+            return 1.375;
+        }
+        return 1.2;
     }
 
     /** 회원 점수 누적 및 배지 체크 */

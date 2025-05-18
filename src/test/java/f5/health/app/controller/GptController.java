@@ -1,5 +1,6 @@
 package f5.health.app.controller;
 
+import f5.health.app.entity.Member;
 import f5.health.app.service.healthreport.openai.GptService;
 import f5.health.app.service.healthreport.openai.prompt.HealthFeedbackPrompt;
 import f5.health.app.vo.healthreport.request.HealthFeedbackRequest;
@@ -18,14 +19,7 @@ public class GptController {
     private final GptService gptFeedbackService;
 
     @PostMapping("/feedback")
-    public PromptCompletion healthFeedback(@RequestBody HealthFeedbackRequest request) {
-        return gptFeedbackService.call(new HealthFeedbackPrompt(
-                request.getHealthKit(),
-                request.getNutritionFacts(),
-                request.getGender(),
-                request.getHeight(),
-                request.getWeight(),
-                request.getRecommendedCalories()
-        ));
+    public PromptCompletion healthFeedback(@RequestBody Member member, @RequestBody HealthFeedbackRequest request) {
+        return gptFeedbackService.call(new HealthFeedbackPrompt(member, request.getHealthKit(), request.getNutritionFacts()));
     }
 }

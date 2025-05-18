@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import static f5.health.app.constant.member.Gender.FEMALE;
 import static f5.health.app.constant.member.Gender.MALE;
 
-@Component
 public class HealthLifeStyleScoreCalculator {
 
     public int calculateScore(Member member, HealthKit healthKit, NutritionFacts nutritionFacts) {

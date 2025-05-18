@@ -43,7 +43,7 @@ public class HealthReportService {
     private final MemberService memberService;
     private final FoodService foodService;
     private final GptService gptService;
-    private final HealthLifeStyleScoreCalculator healthLifeStyleScoreCalculator;
+    private final HealthLifeStyleScoreCalculator healthLifeStyleScoreCalculator = new HealthLifeStyleScoreCalculator();
     private final HealthReportRepository reportRepository;
 
     /** 리포트 조회 */
@@ -53,7 +53,6 @@ public class HealthReportService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_REPORT));
         return new HealthReportResponse(report, report.getMeals());
     }
-
 
     /** 리포트 등록 */
     @Transactional

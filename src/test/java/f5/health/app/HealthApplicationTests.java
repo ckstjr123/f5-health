@@ -7,7 +7,6 @@ class HealthApplicationTests {
 
 	@Test
 	void contextLoads() {
-
 	}
 
 }

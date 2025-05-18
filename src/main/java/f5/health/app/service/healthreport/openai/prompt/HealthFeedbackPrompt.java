@@ -12,7 +12,6 @@ import f5.health.app.service.healthreport.vo.request.healthkit.applekit.SleepAna
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.VitalSigns;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts;
 
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Set;
 
@@ -54,19 +53,19 @@ public class HealthFeedbackPrompt implements Prompt {
     public ChatCompletionRequest generate() {
         Set<String> workoutTypes = workouts.getWorkoutTypes();
 
-        String prompt = MessageFormat.format("""
+        String prompt = String.format("""
                         다음은 사용자의 신체 및 건강 기록입니다:
                         
-                        성별: {0}
-                        키: {1} cm
-                        몸무게: {2} kg
-                        권장 칼로리: {3} kcal
+                        성별: %s
+                        키: %d cm
+                        몸무게: %d kg
+                        권장 칼로리: %d kcal
                         
                         음수량: %d ml
                         흡연량: %d 개비
                         음주량: %d 잔
                         걸음 수: %d보"""
-                        + (!workoutTypes.isEmpty() ? String.format("운동 종류: %s", workoutTypes.toArray()) : "") + """
+                        + (!workoutTypes.isEmpty() ? String.format("운동 종류: %s", workoutTypes) : "") + """
                         운동 시간: %.0f분
                         소모 칼로리: %d kcal
                         심박수: %d bpm

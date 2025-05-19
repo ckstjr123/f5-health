@@ -14,4 +14,9 @@ public class Workouts {
 
     @Schema(description = "사용자 운동 유형", example = "walking")
     private Set<String> workoutTypes;
+
+    public static Workouts empty() {
+        return new Workouts();
+    }
+
 }

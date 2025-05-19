@@ -3,7 +3,7 @@ package f5.health.app.service.healthreport.openai.prompt;
 import com.theokanning.openai.completion.chat.ChatCompletionChoice;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
-import f5.health.app.vo.openai.response.PromptCompletion;
+import f5.health.app.entity.healthreport.PromptCompletion;
 
 import java.text.NumberFormat;
 import java.util.List;

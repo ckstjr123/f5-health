@@ -4,7 +4,7 @@ import f5.health.app.entity.Member;
 import f5.health.app.service.healthreport.openai.GptService;
 import f5.health.app.service.healthreport.openai.prompt.HealthFeedbackPrompt;
 import f5.health.app.vo.healthreport.request.HealthFeedbackRequest;
-import f5.health.app.vo.openai.response.PromptCompletion;
+import f5.health.app.entity.healthreport.PromptCompletion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

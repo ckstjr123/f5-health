@@ -7,9 +7,10 @@ import f5.health.app.constant.member.badge.BadgeEnumModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Set;
+
 @Configuration
 public class AppConfig {
-
 
     @Bean
     public EnumModelMapper enumMapper() {

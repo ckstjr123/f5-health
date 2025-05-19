@@ -11,8 +11,8 @@ public enum Badge implements MappingEnum {
 
     BEGINNER("비기너", 0L),
     ACTIVE("액티브", 2100L),
-    PRO("프로", 25000),
-    MASTER("마스터", 55000);
+    PRO("프로", 8500),
+    MASTER("마스터", 18000);
 
     private final String label;
     private final long cutOffScore;

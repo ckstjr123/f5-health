@@ -1,12 +1,13 @@
 package f5.health.app.service.healthreport;
 
-import f5.health.app.entity.HealthReport;
+import f5.health.app.entity.healthreport.HealthReport;
 import f5.health.app.entity.Member;
 import f5.health.app.entity.meal.EatenFoodMap;
 import f5.health.app.entity.meal.Meal;
 import f5.health.app.exception.global.DuplicateEntityException;
 import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.repository.HealthReportRepository;
+import f5.health.app.repository.MemberRepository;
 import f5.health.app.service.food.FoodService;
 import f5.health.app.service.healthreport.openai.GptService;
 import f5.health.app.service.healthreport.openai.prompt.HealthFeedbackPrompt;
@@ -16,9 +17,8 @@ import f5.health.app.service.healthreport.vo.request.MealsRequest;
 import f5.health.app.service.healthreport.vo.request.NutritionFacts;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts;
-import f5.health.app.service.member.MemberService;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
-import f5.health.app.vo.openai.response.PromptCompletion;
+import f5.health.app.entity.healthreport.PromptCompletion;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ import static f5.health.app.service.healthreport.openai.prompt.DEFAULT_COMPLETIO
 public class HealthReportService {
 
     public static final int MINIMUM_SAVED_MONEY_REQUIRED = 5000;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final FoodService foodService;
     private final GptService gptService;
     private final HealthLifeStyleScoreCalculator healthLifeStyleScoreCalculator = new HealthLifeStyleScoreCalculator();
@@ -54,6 +54,8 @@ public class HealthReportService {
         return new HealthReportResponse(report, report.getMeals());
     }
 
+    /** 점수 날짜 범위 조회 */
+
     /** 리포트 등록 */
     @Transactional
     public HealthReportResponse submit(Long memberId, HealthReportRequest reportRequest) {
@@ -62,7 +64,7 @@ public class HealthReportService {
 
         // 절약 금액 로직
         HealthKit healthKit = reportRequest.getHealthKit();
-        Member writer = memberService.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        Member writer = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
         this.accumulateSavedMoney(writer, healthKit);
 
         // 식단
@@ -93,10 +95,10 @@ public class HealthReportService {
     /** 절약 금액이 일정 금액 이상이면 gpt 건강 물품 피드백 요청, 일정 금액 미만이면 디폴트 메시지 */
     private void recommendHealthItems(Member writer, Workouts workouts) {
         int totalSavedMoney = writer.getTotalSavedMoney();
-        PromptCompletion HealthItemsRecommend = (MINIMUM_SAVED_MONEY_REQUIRED <= totalSavedMoney) ?
+        PromptCompletion healthItemsRecommend = (MINIMUM_SAVED_MONEY_REQUIRED <= totalSavedMoney) ?
                 gptService.call(new HealthItemsRecommendPrompt(writer, workouts)) : SAVED_MONEY_DEFAULT_COMPLETION.get();
 
-        writer.updateHealthItemsRecommend(HealthItemsRecommend); //
+        writer.updateHealthItemsRecommend(healthItemsRecommend); //
     }
 
     /** 식단 기록 요청 VO를 바탕으로 식단 리스트 생성 */

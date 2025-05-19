@@ -1,11 +1,12 @@
 package f5.health.app.entity;
 
-import f5.health.app.constant.member.badge.Badge;
 import f5.health.app.constant.member.BloodType;
 import f5.health.app.constant.member.Gender;
 import f5.health.app.constant.member.Role;
+import f5.health.app.constant.member.badge.Badge;
 import f5.health.app.entity.base.BaseTimeEntity;
-import f5.health.app.vo.openai.response.PromptCompletion;
+import f5.health.app.exception.global.BadRequestException;
+import f5.health.app.entity.healthreport.PromptCompletion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import static f5.health.app.constant.member.Gender.MALE;
+import static f5.health.app.exception.member.MemberErrorCode.INVALID_ALCOHOL_DRINKING_INFO;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
@@ -91,7 +93,7 @@ public class Member extends BaseTimeEntity {
     private int weekExerciseFrequency;
 
     @Column(name = "HEALTH_ITEMS_RECOMMEND")
-    private String healthItemsRecommend; // 절약 금액에 대한 gpt 건강 아이템 추천 결과(maxTokens: 30)
+    private String healthItemsRecommend; // 절약 금액에 대한 gpt 건강 아이템 추천 결과
 
     /** 회원 생성 메서드 */
     public static Member createMember(String oauthId, String email, String nickname, Role role, MemberCheckUp memberCheckUp) {
@@ -116,7 +118,7 @@ public class Member extends BaseTimeEntity {
     }
 
     public double calculateBmr() {
-        int age = getAge();
+        int age = this.getAge();
         return (this.gender == MALE) ? (66.47 + (13.75 * weight) + (5 * height) - (6.76 * age))
                 : (655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age));
     }
@@ -129,25 +131,41 @@ public class Member extends BaseTimeEntity {
         return 1.2;
     }
 
+    private void setBadge(Badge badge) {
+        this.badge = badge;
+    }
+
     /** 회원 점수 누적 및 배지 체크 */
     public void addHealthLifeScore(final int score) {
         this.totalHealthLifeScore += score;
         this.setBadge(Badge.fromTotalScore(totalHealthLifeScore));
     }
 
-    private void setBadge(Badge badge) {
-        this.badge = badge;
+
+    public boolean isSmoker() {
+        return (daySmokeCigarettes > 0); // 일일 흡연량이 1개비 이상이면 흡연자
     }
 
     public void accumulateSmokingSavedMoneyForDay(final int smokedCigarettes) {
-        this.smokingSavedMoney += (daySmokeCigarettes - smokedCigarettes) * ONE_CIGARETTE_PRICE;
+        if (isSmoker()) {
+            this.smokingSavedMoney += (daySmokeCigarettes - smokedCigarettes) * ONE_CIGARETTE_PRICE;
+        }
+    }
+
+
+    public boolean isAlcoholDrinker() {
+        return (weekAlcoholDrinks > 0); // 주 알코올 섭취량이 1잔 이상이면 음주자
     }
 
     public void accumulateAlcoholSavedMoneyForDay(final int consumedAlcoholDrinks) {
+        if (!isAlcoholDrinker()) {
+            return;
+        }
         int pricePerDrink = (weekAlcoholCost / weekAlcoholDrinks);
         int dayAlcoholDrinks = (weekAlcoholDrinks / DAYS_IN_WEEK);
         this.alcoholSavedMoney += (dayAlcoholDrinks - consumedAlcoholDrinks) * pricePerDrink;
     }
+
 
     public int getTotalSavedMoney() {
         return (smokingSavedMoney + alcoholSavedMoney);
@@ -162,6 +180,8 @@ public class Member extends BaseTimeEntity {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class MemberCheckUp {
+
+        private static final int NONE = 0;
 
         @Schema(description = "생년월일", example = "2000-04-18", requiredMode = REQUIRED)
         @NotNull(message = "생년월일을 입력해주세요.")
@@ -185,11 +205,11 @@ public class Member extends BaseTimeEntity {
         private BloodType bloodType;
 
         @Schema(description = "일평균 흡연량(개비)", example = "8", requiredMode = REQUIRED)
-        @Range(min = 0, max = 30)
+        @Range(min = NONE, max = 30)
         private int daySmokeCigarettes;
 
         @Schema(description = "주평균 알코올 섭취량(잔)", example = "6", requiredMode = REQUIRED)
-        @Range(min = 0, max = 50)
+        @Range(min = NONE, max = 50)
         private int weekAlcoholDrinks;
 
         @Schema(description = "주 음주 소비 금액", example = "16000", requiredMode = REQUIRED)
@@ -197,7 +217,7 @@ public class Member extends BaseTimeEntity {
         private int weekAlcoholCost;
 
         @Schema(description = "주평균 운동 횟수", example = "3", requiredMode = REQUIRED)
-        @Range(min = 0, max = DAYS_IN_WEEK)
+        @Range(min = NONE, max = DAYS_IN_WEEK)
         private int weekExerciseFrequency;
 
         /** 테스트용 생성자 */
@@ -226,6 +246,9 @@ public class Member extends BaseTimeEntity {
         }
 
         private void applyAlcoholDrinkingInfoOf(Member member) {
+            if ((weekAlcoholDrinks == NONE) ^ (weekAlcoholCost == NONE)) {
+                throw new BadRequestException(INVALID_ALCOHOL_DRINKING_INFO);
+            }
             member.weekAlcoholDrinks = this.weekAlcoholDrinks;
             member.weekAlcoholCost = this.weekAlcoholCost;
         }

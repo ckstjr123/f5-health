@@ -1,4 +1,4 @@
-package f5.health.app.vo.openai.response;
+package f5.health.app.entity.healthreport;
 
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import lombok.Getter;

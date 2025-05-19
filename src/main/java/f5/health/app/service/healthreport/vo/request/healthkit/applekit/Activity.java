@@ -26,8 +26,4 @@ public class Activity {
     @Schema(description = "운동 시간(분)", example = "42.5")
     @PositiveOrZero
     private double appleExerciseTime;
-
-    @Schema(description = "전신 움직임 소요 시간(분)", example = "30.5")
-    @PositiveOrZero
-    private double appleMoveTime;
 }

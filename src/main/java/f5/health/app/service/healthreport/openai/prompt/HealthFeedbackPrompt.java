@@ -67,7 +67,7 @@ public class HealthFeedbackPrompt implements Prompt {
                         걸음 수: %d보"""
                         + (!workoutTypes.isEmpty() ? String.format("운동 종류: %s", workoutTypes) : "") + """
                         운동 시간: %.0f분
-                        소모 칼로리: %d kcal
+                        소모 칼로리: %.0f kcal
                         심박수: %d bpm
                         렘 수면: %d시간
                         깊은 수면: %d시간

@@ -33,10 +33,7 @@ public class HealthItemRecommendService {
         // 추천 결과 저장
         member.updateHealthItemsRecommend(gptResponse);
 
-        return HealthItemRecommendationResponse.of(
-                member.getTotalSavedMoney(),
-                member.getHealthItemsRecommend()
-        );
+        return HealthItemRecommendationResponse.of(member);
 
     }
 }

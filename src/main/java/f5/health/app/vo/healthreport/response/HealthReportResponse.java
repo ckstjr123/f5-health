@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 @Getter
 @Schema(description = "건강 일지 저장/조회 응답")
 public class HealthReportResponse {
@@ -52,7 +54,7 @@ public class HealthReportResponse {
                 .map(meal -> MealResponse.only(meal))
                 .toList());
         this.startDateTime = report.getStartDateTime();
-        this.endDateTime = LocalDateTime.of(report.getEndDate(), report.getEndTime().truncatedTo(ChronoUnit.MINUTES));
-        this.reportedAt = report.getReportedAt().truncatedTo(ChronoUnit.SECONDS);
+        this.endDateTime = LocalDateTime.of(report.getEndDate(), report.getEndTime());
+        this.reportedAt = report.getReportedAt().truncatedTo(SECONDS);
     }
 }

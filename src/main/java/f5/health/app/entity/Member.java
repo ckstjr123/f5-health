@@ -7,6 +7,7 @@ import f5.health.app.constant.member.badge.Badge;
 import f5.health.app.entity.base.BaseTimeEntity;
 import f5.health.app.exception.global.BadRequestException;
 import f5.health.app.entity.healthreport.PromptCompletion;
+import f5.health.app.validation.member.AlcoholDrinkingInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -178,10 +179,9 @@ public class Member extends BaseTimeEntity {
 
     @Schema(description = "회원가입 설문 정보")
     @Getter
+    @AlcoholDrinkingInfo
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class MemberCheckUp {
-
-        private static final int NONE = 0;
 
         @Schema(description = "생년월일", example = "2000-04-18", requiredMode = REQUIRED)
         @NotNull(message = "생년월일을 입력해주세요.")
@@ -205,11 +205,11 @@ public class Member extends BaseTimeEntity {
         private BloodType bloodType;
 
         @Schema(description = "일평균 흡연량(개비)", example = "8", requiredMode = REQUIRED)
-        @Range(min = NONE, max = 30)
+        @Range(min = 0, max = 30)
         private int daySmokeCigarettes;
 
         @Schema(description = "주평균 알코올 섭취량(잔)", example = "6", requiredMode = REQUIRED)
-        @Range(min = NONE, max = 50)
+        @Range(min = 0, max = 50)
         private int weekAlcoholDrinks;
 
         @Schema(description = "주 음주 소비 금액", example = "16000", requiredMode = REQUIRED)
@@ -217,7 +217,7 @@ public class Member extends BaseTimeEntity {
         private int weekAlcoholCost;
 
         @Schema(description = "주평균 운동 횟수", example = "3", requiredMode = REQUIRED)
-        @Range(min = NONE, max = DAYS_IN_WEEK)
+        @Range(min = 0, max = DAYS_IN_WEEK)
         private int weekExerciseFrequency;
 
         /** 테스트용 생성자 */
@@ -246,9 +246,6 @@ public class Member extends BaseTimeEntity {
         }
 
         private void applyAlcoholDrinkingInfoOf(Member member) {
-            if ((weekAlcoholDrinks == NONE) ^ (weekAlcoholCost == NONE)) {
-                throw new BadRequestException(INVALID_ALCOHOL_DRINKING_INFO);
-            }
             member.weekAlcoholDrinks = this.weekAlcoholDrinks;
             member.weekAlcoholCost = this.weekAlcoholCost;
         }

@@ -49,7 +49,7 @@ public class MemberService {
     }
 
     private void validateDuplicateMember(String email) {
-        Optional<Member> findMember = this.memberRepository.findByEmail(email);
+        Optional<Member> findMember = memberRepository.findByEmail(email);
         if (!findMember.isEmpty()) {
             throw new MemberAlreadyJoinedException();
         }

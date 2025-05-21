@@ -53,5 +53,5 @@ public interface MemberApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    MemberSavings getSavings(JwtMember loginMember);
+    MemberSavings savings(JwtMember loginMember);
 }

@@ -5,11 +5,9 @@ import com.theokanning.openai.completion.chat.ChatMessageRole;
 import f5.health.app.entity.Member;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts;
 
-import java.text.MessageFormat;
 import java.util.List;
 
-import static f5.health.app.config.OpenAIConfig.OPEN_AI_MODEL;
-import static f5.health.app.config.OpenAIConfig.SAMPLING_TEMPERATURE;
+import static f5.health.app.config.OpenAIConfig.*;
 
 public class HealthItemsRecommendPrompt implements Prompt {
 
@@ -65,6 +63,7 @@ public class HealthItemsRecommendPrompt implements Prompt {
                         , new com.theokanning.openai.completion.chat.ChatMessage(ChatMessageRole.USER.value(), prompt)))
                 .temperature(SAMPLING_TEMPERATURE)
                 .maxTokens(MAX_TOKENS)
+                .stop(STOP_DELIMITERS)
                 .build();
     }
 }

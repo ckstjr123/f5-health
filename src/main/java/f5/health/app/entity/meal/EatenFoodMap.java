@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/** 각 음식 코드와 음식이 매핑된 맵(각 식사에서 먹은 음식을 꺼내기 위한 용도) */
+/** 각 음식 코드와 음식이 매핑된 맵(각 식사에서 먹은 음식을 꺼낼 때 사용) */
 public final class EatenFoodMap {
 
     private final Map<String, Food> eatenFoodMap;
@@ -27,4 +27,5 @@ public final class EatenFoodMap {
         }
         return food;
     }
+
 }

@@ -15,8 +15,7 @@ import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts
 import java.util.List;
 import java.util.Set;
 
-import static f5.health.app.config.OpenAIConfig.OPEN_AI_MODEL;
-import static f5.health.app.config.OpenAIConfig.SAMPLING_TEMPERATURE;
+import static f5.health.app.config.OpenAIConfig.*;
 
 public class HealthFeedbackPrompt implements Prompt {
 
@@ -106,6 +105,7 @@ public class HealthFeedbackPrompt implements Prompt {
                 .messages(List.of(systemMessage, userMessage))
                 .temperature(SAMPLING_TEMPERATURE)
                 .maxTokens(MAX_TOKENS)
+                .stop(STOP_DELIMITERS)
                 .build();
     }
 }

@@ -36,7 +36,6 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((registry) -> registry
                         .requestMatchers(AUTH_EXCLUDE_URIS).permitAll()
-//                        .requestMatchers("/admin").hasAuthority(Role.ADMIN.name())
                         .anyRequest().authenticated());
 
         return http.build();

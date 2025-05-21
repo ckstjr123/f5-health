@@ -20,7 +20,6 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 public class MealFoodRequest {
 
     @Schema(description = "음식 코드(PK)", example = "D402-145000000-0001")
-    @NotBlank
     @Length(min = FOOD_CODE_LENGTH, max = FOOD_CODE_LENGTH)
     private String foodCode;
 

@@ -10,10 +10,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 /**
  * 건강 일지 엔티티
@@ -131,13 +132,13 @@ public class HealthReport {
         }
 
         public HealthReportBuilder startDateTime(final LocalDateTime startDateTime) {
-            report.startDateTime = startDateTime.truncatedTo(ChronoUnit.MINUTES);
+            report.startDateTime = startDateTime.truncatedTo(MINUTES);
             return this;
         }
 
         public HealthReportBuilder endDateTime(final LocalDateTime endDateTime) {
             report.endDate = endDateTime.toLocalDate();
-            report.endTime = endDateTime.toLocalTime().truncatedTo(ChronoUnit.MINUTES);
+            report.endTime = endDateTime.toLocalTime().truncatedTo(MINUTES);
             return this;
         }
 

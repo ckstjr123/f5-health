@@ -8,14 +8,14 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Getter
-@Schema(description = "건강 생활 점수 변동치")
+@Schema(description = "생활 습관 점수 변동치")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class HealthLifeStyleScores {
+public class HealthLifeStyleScoreList {
 
-    @Schema(description = "날짜 범위로 조회된 점수 리스트")
+    @Schema(description = "날짜 범위로 조회된 점수 리스트", nullable = true)
     private final List<HealthLifeScore> scores;
 
-    public static HealthLifeStyleScores from(List<HealthLifeScore> scores) {
-        return new HealthLifeStyleScores(scores);
+    public static HealthLifeStyleScoreList from(List<HealthLifeScore> scores) {
+        return new HealthLifeStyleScoreList(scores);
     }
 }

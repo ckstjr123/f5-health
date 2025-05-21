@@ -1,7 +1,9 @@
 package f5.health.app.constant.auth;
 
+import static f5.health.app.jwt.JwtProvider.ACCESS_TOKEN_TYPE;
+
 public enum OAuth2Provider {
-    KAKAO("Bearer ");
+    KAKAO(ACCESS_TOKEN_TYPE + " ");
 //    , APPLE;
 
     private final String ACCESS_TOKEN_PREFIX;

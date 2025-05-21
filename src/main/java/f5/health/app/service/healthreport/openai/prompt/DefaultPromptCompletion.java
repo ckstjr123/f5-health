@@ -11,7 +11,7 @@ import java.util.Locale;
 
 import static f5.health.app.service.healthreport.HealthReportService.MINIMUM_SAVED_MONEY_REQUIRED;
 
-public enum DEFAULT_COMPLETION {
+public enum DefaultPromptCompletion {
 
     SAVED_MONEY_DEFAULT_COMPLETION(
             "\uD83D\uDCB0 총 절약 금액이 " +
@@ -21,7 +21,7 @@ public enum DEFAULT_COMPLETION {
 
     private final PromptCompletion completion;
 
-    DEFAULT_COMPLETION(String defaultMessage) {
+    DefaultPromptCompletion(String defaultMessage) {
         ChatCompletionChoice chatCompletionChoice = new ChatCompletionChoice();
         chatCompletionChoice.setMessage(new ChatMessage("default", defaultMessage));
         ChatCompletionResult defaultResult = new ChatCompletionResult();

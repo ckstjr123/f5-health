@@ -1,8 +1,8 @@
 package f5.health.app.controller.member;
 
 import f5.health.app.jwt.JwtMember;
-import f5.health.app.vo.member.response.MemberProfile;
 import f5.health.app.service.member.MemberService;
+import f5.health.app.vo.member.response.MemberProfile;
 import f5.health.app.vo.member.response.MemberSavings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,7 +23,8 @@ public class MemberController implements MemberApiDocs {
     }
 
     @GetMapping("/me/savings")
-    public MemberSavings getSavings(@AuthenticationPrincipal JwtMember loginMember) {
+    public MemberSavings savings(@AuthenticationPrincipal JwtMember loginMember) {
         return memberService.getMemberSavings(loginMember);
     }
+
 }

@@ -28,7 +28,7 @@ public interface FoodApiDocs {
                     content = @Content(schema = @Schema(implementation = FieldErrorsResult.class))
             )
     })
-    FoodSearchResponse foods(@NotBlank String foodSearchQuery);
+    FoodSearchResponse searchFoods(@NotBlank String foodSearchQuery);
 
 
     @Operation(summary = "음식 상세 조회", description = "식품 영양 정보",
@@ -44,7 +44,7 @@ public interface FoodApiDocs {
             ),
             @ApiResponse(
                     responseCode = "401",
-                    description = "인증되지 않은 사용자",
+                    description = "로그인 되지 않음",
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             ),
             @ApiResponse(
@@ -54,4 +54,29 @@ public interface FoodApiDocs {
             )
     })
     FoodResponse food(String foodCode);
+
+
+    @Operation(summary = "음식 상세 조회 리스트", description = "로컬에서 식단 임시 저장 시 식사한 음식들 상세 정보 조회",
+            parameters = {
+                    @Parameter(name = "eatenMealFoodsRequest", description = "먹은 음식들 요청", required = true)
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "음식 리스트 응답",
+                    content = @Content(schema = @Schema(implementation = FoodsResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "음식 코드 형식 오류",
+                    content = @Content(schema = @Schema(implementation = FieldErrorsResult.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "로그인 되지 않음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            )
+    })
+    FoodsResponse foods(EatenMealFoodsRequest eatenMealFoodsRequest);
 }

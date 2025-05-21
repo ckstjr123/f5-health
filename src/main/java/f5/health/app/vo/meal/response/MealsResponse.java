@@ -1,20 +1,24 @@
 package f5.health.app.vo.meal.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Getter
 @Schema(description = "식단 응답 컬렉션")
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MealsResponse {
 
+    @Schema(description = "개인별 권장 칼로리", example = "2000")
+    private final int recommendedCalories;
     private final List<MealResponse> mealResponseList;
 
-    public static MealsResponse from(List<MealResponse> mealResponseList) {
-        return new MealsResponse(mealResponseList);
+    private MealsResponse(int recommendedCalories, List<MealResponse> mealResponseList) {
+        this.recommendedCalories = recommendedCalories;
+        this.mealResponseList = mealResponseList;
+    }
+
+    public static MealsResponse of(int recommendedCalories, List<MealResponse> mealResponseList) {
+        return new MealsResponse(recommendedCalories, mealResponseList);
     }
 }

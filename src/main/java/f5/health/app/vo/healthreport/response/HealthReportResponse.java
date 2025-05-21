@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -19,7 +18,7 @@ public class HealthReportResponse {
 
     @Schema(description = "받은 점수", example = "80")
     private final int score;
-    
+
     @Schema(description = "수분 섭취량(ml)", example = "650")
     private final int waterIntake;
 
@@ -44,15 +43,17 @@ public class HealthReportResponse {
     @Schema(description = "리포트 작성 날짜", example = "2025-05-19T00:10")
     private final LocalDateTime reportedAt;
 
-    public HealthReportResponse(HealthReport report, List<Meal> meals) {
+    public HealthReportResponse(HealthReport report, int recommendedCalories, List<Meal> meals) {
         this.score = report.getHealthLifeScore();
         this.waterIntake = report.getWaterIntake();
         this.smokeCigarettes = report.getSmokeCigarettes();
         this.alcoholDrinks = report.getAlcoholDrinks();
         this.healthFeedback = report.getHealthFeedback();
-        this.mealsResponse = MealsResponse.from(meals.stream()
-                .map(meal -> MealResponse.only(meal))
-                .toList());
+        this.mealsResponse = MealsResponse.of(
+                recommendedCalories,
+                meals.stream()
+                        .map(meal -> MealResponse.only(meal))
+                        .toList());
         this.startDateTime = report.getStartDateTime();
         this.endDateTime = LocalDateTime.of(report.getEndDate(), report.getEndTime());
         this.reportedAt = report.getReportedAt().truncatedTo(SECONDS);

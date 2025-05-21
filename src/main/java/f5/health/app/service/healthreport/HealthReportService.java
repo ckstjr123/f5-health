@@ -56,7 +56,8 @@ public class HealthReportService {
     public HealthReportResponse findReport(Long memberId, LocalDate endDate) {
         HealthReport report = reportRepository.findByMemberIdAndEndDate(memberId, endDate)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_REPORT));
-        return new HealthReportResponse(report, report.getMeals());
+        Member writer = report.getMember();
+        return new HealthReportResponse(report, writer.getRecommendedCalories(), report.getMeals());
     }
 
     /** 날짜 범위로 점수 조회 */
@@ -93,7 +94,7 @@ public class HealthReportService {
                 .build();
 
         this.reportRepository.save(report); // 리포트 저장(계산된 점수가 회원 총점에 누적되고 배지 세팅, 식단 저장됨)
-        return new HealthReportResponse(report, meals);
+        return new HealthReportResponse(report, writer.getRecommendedCalories(), meals);
     }
 
     private void accumulateSavedMoney(Member writer, HealthKit healthKit) {

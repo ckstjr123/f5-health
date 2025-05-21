@@ -13,7 +13,7 @@ public interface HealthReportRepository extends JpaRepository<HealthReport, Long
     /** 해당 일자에 기록된 특정 회원의 리포트 조회 */
     Optional<HealthReport> findByMemberIdAndEndDate(Long memberId, LocalDate endDate);
 
-    List<HealthReport> findByMemberIdAndEndDateBetween(Long memberId, LocalDate start, LocalDate end);
+//    List<HealthReport> findByMemberIdAndEndDateBetween(Long memberId, LocalDate start, LocalDate end);
 
     List<HealthLifeScore> findScoresByMemberIdAndEndDateBetween(Long memberId, LocalDate start, LocalDate end);
 }

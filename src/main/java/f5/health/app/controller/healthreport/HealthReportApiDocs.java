@@ -80,7 +80,7 @@ public interface HealthReportApiDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "리포트 등록 완료(실제로 식단은 각 식사 타입과 총 칼로리만 응답됨)",
+                    description = "리포트 등록 완료(실제로 식단은 각 식사 타입과 총 칼로리만 응답)",
                     content = @Content(schema = @Schema(implementation = HealthReportResponse.class))
             ),
             @ApiResponse(

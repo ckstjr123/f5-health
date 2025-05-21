@@ -32,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static f5.health.app.exception.healthreport.HealthReportErrorCode.DUPLICATED_REPORT_SUBMIT;
 import static f5.health.app.exception.healthreport.HealthReportErrorCode.NOT_FOUND_REPORT;
@@ -112,7 +113,8 @@ public class HealthReportService {
 
     /** 식단 기록 요청 VO를 바탕으로 식단 리스트 생성 */
     private List<Meal> createMeals(MealsRequest mealsRequest) {
-        EatenFoodMap eatenFoodMap = new EatenFoodMap(foodRepository.findByFoodCodeIn(mealsRequest.getEatenFoodCodeSet()));
+        Set<String> eatenFoodCodeSet = mealsRequest.getEatenFoodCodeSet();
+        EatenFoodMap eatenFoodMap = new EatenFoodMap(this.foodRepository.findByFoodCodeIn(eatenFoodCodeSet));
         return mealsRequest.getMealRequestList().stream()
                 .map(mealRequest ->
                         Meal.newInstance(eatenFoodMap, mealRequest))

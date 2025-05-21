@@ -98,7 +98,7 @@ public class HealthReportService {
 
     private void accumulateSavedMoney(Member writer, HealthKit healthKit) {
         writer.accumulateSmokingSavedMoneyForDay(healthKit.getSmokedCigarettes());
-        writer.accumulateAlcoholSavedMoneyForDay(healthKit.getConsumedAlcoholDrinks());
+        writer.accumulateAlcoholSavedMoneyForDay(healthKit.getConsumedAlcoholDrinks(), healthKit.getAlcoholCost());
         this.recommendHealthItems(writer, healthKit.getWorkouts());
     }
 
@@ -114,7 +114,7 @@ public class HealthReportService {
     /** 식단 기록 요청 VO를 바탕으로 식단 리스트 생성 */
     private List<Meal> createMeals(MealsRequest mealsRequest) {
         Set<String> eatenFoodCodeSet = mealsRequest.getEatenFoodCodeSet();
-        EatenFoodMap eatenFoodMap = new EatenFoodMap(this.foodRepository.findByFoodCodeIn(eatenFoodCodeSet));
+        EatenFoodMap eatenFoodMap = new EatenFoodMap(foodRepository.findByFoodCodeIn(eatenFoodCodeSet));
         return mealsRequest.getMealRequestList().stream()
                 .map(mealRequest ->
                         Meal.newInstance(eatenFoodMap, mealRequest))

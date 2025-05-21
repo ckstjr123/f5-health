@@ -32,7 +32,7 @@ public interface MemberApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    MemberProfile getProfile(JwtMember loginMember);
+    MemberProfile profile(JwtMember loginMember);
 
 
     @Operation(summary = "회원 절약 금액", description = "절약 금액 관련 데이터 응답")

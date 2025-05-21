@@ -67,6 +67,11 @@ public final class HealthKit {
         return customHealthKit.getConsumedAlcoholDrinks();
     }
 
+    @Schema(hidden = true)
+    public int getAlcoholCost() {
+        return customHealthKit.getAlcoholCost();
+    }
+
 
     @Getter
     @Schema(description = "건강 관측 기간", requiredMode = REQUIRED)

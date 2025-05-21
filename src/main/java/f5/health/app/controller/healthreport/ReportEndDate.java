@@ -20,10 +20,10 @@ public class ReportEndDate {
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @PastOrPresent
-    private final LocalDate endDate;
+    private final LocalDate date;
 
     @Schema(hidden = true)
     public LocalDate get() {
-        return this.endDate;
+        return this.date;
     }
 }

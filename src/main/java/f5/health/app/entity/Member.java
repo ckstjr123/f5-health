@@ -5,13 +5,10 @@ import f5.health.app.constant.member.Gender;
 import f5.health.app.constant.member.Role;
 import f5.health.app.constant.member.badge.Badge;
 import f5.health.app.entity.base.BaseTimeEntity;
-import f5.health.app.exception.global.BadRequestException;
 import f5.health.app.entity.healthreport.PromptCompletion;
-import f5.health.app.validation.member.AlcoholDrinkingInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +20,6 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import static f5.health.app.constant.member.Gender.MALE;
-import static f5.health.app.exception.member.MemberErrorCode.INVALID_ALCOHOL_DRINKING_INFO;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
@@ -85,8 +81,6 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "WEEK_ALCOHOL_DRINKS")
     private int weekAlcoholDrinks; // 주 알코올 섭취량(잔)
-    @Column(name = "WEEK_ALCOHOL_COST")
-    private int weekAlcoholCost;
     @Column(name = "ALCOHOL_SAVED_MONEY")
     private int alcoholSavedMoney; // 음주 절약 금액
 
@@ -158,13 +152,13 @@ public class Member extends BaseTimeEntity {
         return (weekAlcoholDrinks > 0); // 주 알코올 섭취량이 1잔 이상이면 음주자
     }
 
-    public void accumulateAlcoholSavedMoneyForDay(final int consumedAlcoholDrinks) {
-        if (!isAlcoholDrinker()) {
+    public void accumulateAlcoholSavedMoneyForDay(final int consumedAlcoholDrinks, final int alcoholCost) {
+        if (!isAlcoholDrinker() || consumedAlcoholDrinks <= 0) {
             return;
         }
-        int pricePerDrink = (weekAlcoholCost / weekAlcoholDrinks);
+        double pricePerDrink = (double) alcoholCost / consumedAlcoholDrinks;
         int dayAlcoholDrinks = (weekAlcoholDrinks / DAYS_IN_WEEK);
-        this.alcoholSavedMoney += (dayAlcoholDrinks - consumedAlcoholDrinks) * pricePerDrink;
+        this.alcoholSavedMoney += (int) Math.round((dayAlcoholDrinks - consumedAlcoholDrinks) * pricePerDrink);
     }
 
 
@@ -179,7 +173,6 @@ public class Member extends BaseTimeEntity {
 
     @Schema(description = "회원가입 설문 정보")
     @Getter
-    @AlcoholDrinkingInfo
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class MemberCheckUp {
 
@@ -212,10 +205,6 @@ public class Member extends BaseTimeEntity {
         @Range(min = 0, max = 50)
         private int weekAlcoholDrinks;
 
-        @Schema(description = "주 음주 소비 금액", example = "16000", requiredMode = REQUIRED)
-        @PositiveOrZero
-        private int weekAlcoholCost;
-
         @Schema(description = "주평균 운동 횟수", example = "3", requiredMode = REQUIRED)
         @Range(min = 0, max = DAYS_IN_WEEK)
         private int weekExerciseFrequency;
@@ -232,7 +221,6 @@ public class Member extends BaseTimeEntity {
             this.weekExerciseFrequency = weekExerciseFrequency;
         }
 
-
         /** 설문 정보 반영 */
         private void applyTo(Member member) {
             member.birthDate = this.birthDate;
@@ -240,18 +228,9 @@ public class Member extends BaseTimeEntity {
             member.height = this.height;
             member.weight = this.weight;
             member.bloodType = this.bloodType;
-            this.applySmokingInfoOf(member);
-            this.applyAlcoholDrinkingInfoOf(member);
+            member.daySmokeCigarettes = this.daySmokeCigarettes; // 흡연
+            member.weekAlcoholDrinks = this.weekAlcoholDrinks; // 음주
             member.weekExerciseFrequency = this.weekExerciseFrequency;
-        }
-
-        private void applyAlcoholDrinkingInfoOf(Member member) {
-            member.weekAlcoholDrinks = this.weekAlcoholDrinks;
-            member.weekAlcoholCost = this.weekAlcoholCost;
-        }
-
-        private void applySmokingInfoOf(Member member) {
-            member.daySmokeCigarettes = this.daySmokeCigarettes;
         }
     }
 

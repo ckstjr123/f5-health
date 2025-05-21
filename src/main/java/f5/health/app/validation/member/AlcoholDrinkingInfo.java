@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = AlcoholDrinkingInfoValidator.class)
 public @interface AlcoholDrinkingInfo {
 
-    String message() default "음주량 정보가 올바르지 않습니다.";
+    String message() default "음주 정보가 올바르지 않습니다.";
 
     Class<?>[] groups() default {};
 

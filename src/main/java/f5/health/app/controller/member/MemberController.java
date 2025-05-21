@@ -18,7 +18,7 @@ public class MemberController implements MemberApiDocs {
     private final MemberService memberService;
 
     @GetMapping("/me")
-    public MemberProfile getProfile(@AuthenticationPrincipal JwtMember loginMember) {
+    public MemberProfile profile(@AuthenticationPrincipal JwtMember loginMember) {
         return memberService.getMyProfile(loginMember);
     }
 

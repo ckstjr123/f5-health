@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 @Tag(name = "음식 조회 API", description = "음식 검색 & 음식 상세 정보 제공")
@@ -58,7 +59,8 @@ public interface FoodApiDocs {
 
     @Operation(summary = "음식 상세 조회 리스트", description = "로컬에서 식단 임시 저장 시 식사한 음식들 상세 정보 조회",
             parameters = {
-                    @Parameter(name = "eatenMealFoodsRequest", description = "먹은 음식들 요청", required = true)
+                    @Parameter(name = "eatenMealFoodsRequest", description = "먹은 음식들 요청",
+                            content = @Content(schema = @Schema(implementation = EatenMealFoodsRequest.class)))
             }
     )
     @ApiResponses({
@@ -78,5 +80,5 @@ public interface FoodApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    FoodsResponse foods(EatenMealFoodsRequest eatenMealFoodsRequest);
+    FoodsResponse foods(@Valid EatenMealFoodsRequest eatenMealFoodsRequest);
 }

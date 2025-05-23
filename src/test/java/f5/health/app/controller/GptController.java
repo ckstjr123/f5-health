@@ -20,6 +20,6 @@ public class GptController {
 
     @PostMapping("/feedback")
     public PromptCompletion healthFeedback(@RequestBody Member member, @RequestBody HealthFeedbackRequest request) {
-        return gptFeedbackService.call(new HealthFeedbackPrompt(member, request.getHealthKit(), request.getNutritionFacts()));
+        return gptFeedbackService.call(new HealthFeedbackPrompt(member, request.getHealthKit(), request.getNutritionContents()));
     }
 }

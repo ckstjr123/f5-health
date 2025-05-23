@@ -2,6 +2,7 @@ package f5.health.app.controller.food;
 
 import f5.health.app.exception.response.ExceptionResult;
 import f5.health.app.exception.response.FieldErrorsResult;
+import f5.health.app.jwt.JwtMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 @Tag(name = "음식 조회 API", description = "음식 검색 & 음식 상세 정보 제공")
@@ -66,7 +66,7 @@ public interface FoodApiDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "음식 리스트 응답",
+                    description = "요청 사용자 권장 칼로리 및 음식 리스트 응답",
                     content = @Content(schema = @Schema(implementation = FoodsResponse.class))
             ),
             @ApiResponse(
@@ -80,5 +80,5 @@ public interface FoodApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    FoodsResponse foods(@Valid EatenMealFoodsRequest eatenMealFoodsRequest);
+    FoodsResponse foods(JwtMember loginMember, EatenMealFoodsRequest eatenMealFoodsRequest);
 }

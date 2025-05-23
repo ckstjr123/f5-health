@@ -2,24 +2,23 @@ package f5.health.app.service.healthreport;
 
 import f5.health.app.constant.member.Gender;
 import f5.health.app.entity.Member;
-import f5.health.app.service.healthreport.vo.request.NutritionFacts;
+import f5.health.app.service.healthreport.vo.MealsNutritionContents;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Activity;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.SleepAnalysis;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.VitalSigns;
-import org.springframework.stereotype.Component;
 
 import static f5.health.app.constant.member.Gender.FEMALE;
 import static f5.health.app.constant.member.Gender.MALE;
 
 public class HealthLifeStyleScoreCalculator {
 
-    public int calculateScore(Member member, HealthKit healthKit, NutritionFacts nutritionFacts) {
+    public int calculateScore(Member member, HealthKit healthKit, MealsNutritionContents nutritionContents) {
         Activity activity = healthKit.getActivity();
         VitalSigns vitalSigns = healthKit.getVitalSigns();
         SleepAnalysis sleepAnalysis = healthKit.getSleepAnalysis();
         int activeEnergyBurned = (int) activity.getActiveEnergyBurned();
-        int totalKcal = nutritionFacts.getTotalKcal();
+        int totalKcal = nutritionContents.getTotalKcal();
 
         return waterIntakeScore(member.getWeight(), member.getGender(), healthKit.getWaterIntake())
                 + smokingScore(member.getDaySmokeCigarettes(), healthKit.getSmokedCigarettes())
@@ -30,7 +29,7 @@ public class HealthLifeStyleScoreCalculator {
                 + totalCaloriesBurnedScore(activeEnergyBurned)
                 + sleepScore(sleepAnalysis.getAsleepREM() + sleepAnalysis.getAsleepCore() + sleepAnalysis.getAsleepDeep())
                 + caloriesIntakeScore(totalKcal, member.getRecommendedCalories())
-                + pfcBalanceScore(totalKcal, nutritionFacts.getTotalCarbohydrate(), nutritionFacts.getTotalProtein(), nutritionFacts.getTotalFat());
+                + pfcBalanceScore(totalKcal, nutritionContents.getTotalCarbohydrate(), nutritionContents.getTotalProtein(), nutritionContents.getTotalFat());
     }
 
     private int waterIntakeScore(int weight, Gender gender, int waterIntake) {

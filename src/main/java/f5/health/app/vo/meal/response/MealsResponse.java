@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-@Schema(description = "식단 응답 컬렉션")
+@Schema(description = "식단 응답")
 public class MealsResponse {
 
     @Schema(description = "개인별 권장 칼로리", example = "2000")

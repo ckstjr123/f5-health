@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/** 식사 항목 엔티티 */
+/** 식사 음식 엔티티 */
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,18 +51,18 @@ public class MealFood {
     /**
      * 해당 식사 메뉴 수량에 따른 칼로리 계산
      */
-    public int calculateMealFoodKcal() {
+    public int calculateKcal() {
         return (int) (food.calculateServingKcal() * count);
     }
 
     // ========= 섭취한 음식 수량에 따른 탄수화물, 단백질, 지방 함량 ========= //
-    public double calculateMealFoodCarbohydrate() {
+    public double calculateCarbohydrate() {
         return (food.calculateServingCarbohydrate() * count);
     }
-    public double calculateMealFoodProtein() {
+    public double calculateProtein() {
         return (food.calculateServingProtein() * count);
     }
-    public double calculateMealFoodFat() {
+    public double calculateFat() {
         return (food.calculateServingFat() * count);
     }
 

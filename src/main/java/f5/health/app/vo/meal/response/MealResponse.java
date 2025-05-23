@@ -12,7 +12,7 @@ import java.util.List;
 public final class MealResponse {
 
     /**
-     * 리포트 조회 시 나타나는 식단에는 식사한 음식 조회 X,
+     * 리포트 조회 시 식사한 음식 응답 X,
      * 식단 상세 정보(ex. 아침 식사 상세 정보) 조회 시
      * MealFoods(해당 식사에서 먹은 음식들 및 각 수량) 필요
      */
@@ -31,6 +31,15 @@ public final class MealResponse {
     @Schema(description = "식사 총 섭취 칼로리", example = "1800")
     private final int totalKcal;
 
+    @Schema(description = "식사 탄수화물", example = "100.5")
+    private final double totalCarbohydrate;
+
+    @Schema(description = "식사 단백질", example = "56.0")
+    private final double totalProtein;
+
+    @Schema(description = "식사 지방", example = "48.2")
+    private final double totalFat;
+
     private MealResponse(Meal meal, boolean isNeedMealFoods) {
         this.mealId = meal.getId();
         this.mealFoodResponseList = isNeedMealFoods ?
@@ -40,6 +49,9 @@ public final class MealResponse {
         this.mealTypeLabel = meal.getMealType().getLabel();
         this.mealTime = meal.getMealTime();
         this.totalKcal = meal.getTotalKcal();
+        this.totalCarbohydrate = meal.getTotalCarbohydrate();
+        this.totalProtein = meal.getTotalProtein();
+        this.totalFat = meal.getTotalFat();
     }
 
     public static MealResponse only(Meal meal) {

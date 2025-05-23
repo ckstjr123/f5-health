@@ -45,6 +45,15 @@ public class Meal {
     @Column(name = "TOTAL_KCAL")
     private int totalKcal; // 계산된 식사 총 섭취 칼로리
 
+    @Column(name = "TOTAL_CARBOHYDRATE")
+    private double totalCarbohydrate;
+
+    @Column(name = "TOTAL_PROTEIN")
+    private double totalProtein;
+
+    @Column(name = "TOTAL_FAT")
+    private double totalFat;
+
     /** 식단 생성 메서드 */
     public static Meal newInstance(final EatenFoodMap eatenFoodMap, MealRequest mealRequest) {
         Meal meal = new Meal();
@@ -75,31 +84,42 @@ public class Meal {
         for (MealFood mealFood : mealFoods) {
             mealFood.setMeal(this);
         }
-        this.setTotalKcal(); //
+        this.setNutritionContents(); //
     }
 
-    /** 식사 섭취 칼로리 */
+    /** 식사 총 섭취 칼로리 및 3대 영양소 계산해서 저장 */
+    private void setNutritionContents() {
+        this.totalKcal = 0;
+        this.totalCarbohydrate = 0.0; this.totalProtein = 0.0; this.totalFat = 0.0;
+        for (MealFood mealFood : this.mealFoods) {
+            this.totalKcal += mealFood.calculateKcal();
+            this.totalCarbohydrate += mealFood.calculateCarbohydrate();
+            this.totalProtein += mealFood.calculateProtein();
+            this.totalFat += mealFood.calculateFat();
+        }
+    }
+
+/*
     private void setTotalKcal() {
         this.totalKcal = this.mealFoods.stream()
-                .mapToInt(MealFood::calculateMealFoodKcal)
+                .mapToInt(MealFood::calculateKcal)
                 .sum();
     }
 
-    // ================= 식사 총 섭취 탄수화물, 단백질, 지방 ================= //
     public double getTotalCarbohydrate() {
         return this.mealFoods.stream()
-                .mapToDouble(MealFood::calculateMealFoodCarbohydrate)
+                .mapToDouble(MealFood::calculateCarbohydrate)
                 .sum();
     }
     public double getTotalProtein() {
         return this.mealFoods.stream()
-                .mapToDouble(MealFood::calculateMealFoodProtein)
+                .mapToDouble(MealFood::calculateProtein)
                 .sum();
     }
     public double getTotalFat() {
         return this.mealFoods.stream()
-                .mapToDouble(MealFood::calculateMealFoodFat)
+                .mapToDouble(MealFood::calculateFat)
                 .sum();
-    }
+    }*/
 
 }

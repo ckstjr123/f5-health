@@ -17,7 +17,7 @@ import f5.health.app.service.healthreport.openai.prompt.HealthItemsRecommendProm
 import f5.health.app.service.healthreport.vo.request.DateRangeQuery;
 import f5.health.app.service.healthreport.vo.request.HealthReportRequest;
 import f5.health.app.service.healthreport.vo.request.MealsRequest;
-import f5.health.app.service.healthreport.vo.request.NutritionFacts;
+import f5.health.app.service.healthreport.vo.MealsNutritionContents;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
@@ -81,14 +81,14 @@ public class HealthReportService {
 
         // 식단
         List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
-        NutritionFacts nutritionFacts = NutritionFacts.from(meals);
+        MealsNutritionContents nutritionContents = MealsNutritionContents.from(meals);
 
         HealthReport report = HealthReport.builder(writer, meals)
-                .healthLifeScore(this.healthLifeStyleScoreCalculator.calculateScore(writer, healthKit, nutritionFacts))
+                .healthLifeScore(this.healthLifeStyleScoreCalculator.calculateScore(writer, healthKit, nutritionContents))
                 .waterIntake(healthKit.getWaterIntake())
                 .smokeCigarettes(healthKit.getSmokedCigarettes())
                 .alcoholDrinks(healthKit.getConsumedAlcoholDrinks())
-                .healthFeedback(gptService.call(new HealthFeedbackPrompt(writer, healthKit, nutritionFacts)))
+                .healthFeedback(gptService.call(new HealthFeedbackPrompt(writer, healthKit, nutritionContents)))
                 .startDateTime(reportRequest.getStartDateTime())
                 .endDateTime(endDateTime)
                 .build();

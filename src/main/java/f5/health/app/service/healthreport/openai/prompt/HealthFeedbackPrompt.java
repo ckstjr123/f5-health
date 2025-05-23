@@ -4,7 +4,7 @@ import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import f5.health.app.entity.Member;
-import f5.health.app.service.healthreport.vo.request.NutritionFacts;
+import f5.health.app.service.healthreport.vo.MealsNutritionContents;
 import f5.health.app.service.healthreport.vo.request.healthkit.CustomHealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Activity;
@@ -26,7 +26,7 @@ public class HealthFeedbackPrompt implements Prompt {
     private final SleepAnalysis sleepAnalysis;
     private final Workouts workouts;
     private final VitalSigns vitalSigns;
-    private final NutritionFacts nutritionFacts;
+    private final MealsNutritionContents nutritionContents;
 
     //사용자 정보
     private final String gender;
@@ -34,7 +34,7 @@ public class HealthFeedbackPrompt implements Prompt {
     private final int weight;
     private final int recommendedCalories;
 
-    public HealthFeedbackPrompt(Member member, HealthKit healthKit, NutritionFacts nutritionFacts) {
+    public HealthFeedbackPrompt(Member member, HealthKit healthKit, MealsNutritionContents nutritionContents) {
         this.gender = member.getGender().label();
         this.height = member.getHeight();
         this.weight = member.getWeight();
@@ -45,7 +45,7 @@ public class HealthFeedbackPrompt implements Prompt {
         this.sleepAnalysis = healthKit.getSleepAnalysis();
         this.workouts = healthKit.getWorkouts();
         this.vitalSigns = healthKit.getVitalSigns();
-        this.nutritionFacts = nutritionFacts;
+        this.nutritionContents = nutritionContents;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class HealthFeedbackPrompt implements Prompt {
                 , activity.getStepCount(), activity.getAppleExerciseTime(), activity.getActiveEnergyBurned()
                 , vitalSigns.getHeartRate()
                 , sleepAnalysis.getAsleepREM(), sleepAnalysis.getAsleepDeep()
-                , nutritionFacts.getTotalKcal(), nutritionFacts.getTotalCarbohydrate(), nutritionFacts.getTotalProtein(), nutritionFacts.getTotalFat()
+                , nutritionContents.getTotalKcal(), nutritionContents.getTotalCarbohydrate(), nutritionContents.getTotalProtein(), nutritionContents.getTotalFat()
         );
 
         ChatMessage systemMessage = new ChatMessage(ChatMessageRole.SYSTEM.value(), """

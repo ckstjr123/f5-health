@@ -14,15 +14,17 @@ import f5.health.app.repository.MemberRepository;
 import f5.health.app.service.healthreport.openai.GptService;
 import f5.health.app.service.healthreport.openai.prompt.HealthFeedbackPrompt;
 import f5.health.app.service.healthreport.openai.prompt.HealthItemsRecommendPrompt;
+import f5.health.app.service.healthreport.scorepolicy.vo.HealthSnapshot;
+import f5.health.app.service.healthreport.vo.MealsNutritionContents;
 import f5.health.app.service.healthreport.vo.request.DateRangeQuery;
 import f5.health.app.service.healthreport.vo.request.HealthReportRequest;
 import f5.health.app.service.healthreport.vo.request.MealsRequest;
-import f5.health.app.service.healthreport.vo.MealsNutritionContents;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
 import f5.health.app.vo.member.response.HealthLifeScore;
 import f5.health.app.vo.member.response.HealthLifeStyleScoreList;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,8 +50,14 @@ public class HealthReportService {
     private final MemberRepository memberRepository;
     private final FoodRepository foodRepository;
     private final GptService gptService;
-    private final HealthLifeStyleScoreCalculator healthLifeStyleScoreCalculator = new HealthLifeStyleScoreCalculator();
+    private final HealthLifeStyleScoreCalculator healthLifeScoreCalculator = new HealthLifeStyleScoreCalculator();
     private final HealthReportRepository reportRepository;
+
+    @PostConstruct
+    public void init() {
+        healthLifeScoreCalculator.addScorePolicy(ScorePolicyRegistry.getAllPoliciySet());
+    }
+
 
     /** 일자별 조회 */
     @Transactional(readOnly = true)
@@ -83,8 +91,9 @@ public class HealthReportService {
         List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
         MealsNutritionContents nutritionContents = MealsNutritionContents.from(meals);
 
+        HealthSnapshot healthSnapshot = HealthSnapshot.of(writer, healthKit, nutritionContents);
         HealthReport report = HealthReport.builder(writer, meals)
-                .healthLifeScore(this.healthLifeStyleScoreCalculator.calculateScore(writer, healthKit, nutritionContents))
+                .healthLifeScore(healthLifeScoreCalculator.calculateScore(healthSnapshot))
                 .waterIntake(healthKit.getWaterIntake())
                 .smokeCigarettes(healthKit.getSmokedCigarettes())
                 .alcoholDrinks(healthKit.getConsumedAlcoholDrinks())
@@ -93,7 +102,7 @@ public class HealthReportService {
                 .endDateTime(endDateTime)
                 .build();
 
-        this.reportRepository.save(report); // 리포트 저장(계산된 점수가 회원 총점에 누적되고 배지 세팅, 식단 저장됨)
+        this.reportRepository.save(report); // 리포트 저장(계산된 점수 회원 총점에 누적되며 배지 세팅, 식단 저장됨)
         return new HealthReportResponse(report, writer.getRecommendedCalories(), meals);
     }
 
@@ -103,7 +112,7 @@ public class HealthReportService {
         this.recommendHealthItems(writer, healthKit.getWorkouts());
     }
 
-    /** 절약 금액이 일정 금액 이상이면 gpt 건강 물품 피드백 요청, 일정 금액 미만이면 디폴트 메시지 */
+    /** 절약 금액이 일정 금액 이상이면 gpt 건강 물품 피드백 요청 */
     private void recommendHealthItems(Member writer, Workouts workouts) {
         int totalSavedMoney = writer.getTotalSavedMoney();
         PromptCompletion healthItemsRecommend = (MINIMUM_SAVED_MONEY_REQUIRED <= totalSavedMoney) ?

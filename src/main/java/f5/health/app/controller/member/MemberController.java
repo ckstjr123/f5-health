@@ -2,13 +2,13 @@ package f5.health.app.controller.member;
 
 import f5.health.app.jwt.JwtMember;
 import f5.health.app.service.member.MemberService;
+import f5.health.app.vo.member.request.UpdateMemberInfoRequest;
 import f5.health.app.vo.member.response.MemberProfile;
 import f5.health.app.vo.member.response.MemberSavings;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/members")
@@ -27,4 +27,9 @@ public class MemberController implements MemberApiDocs {
         return memberService.getMemberSavings(loginMember);
     }
 
+    @PatchMapping("/me/edit")
+    public void editMemberInfo(@AuthenticationPrincipal JwtMember loginMember,
+                               @RequestBody @Valid UpdateMemberInfoRequest request) {
+        memberService.updateMemberInfo(loginMember.getId(), request);
+    }
 }

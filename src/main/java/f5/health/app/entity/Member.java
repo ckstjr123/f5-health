@@ -6,6 +6,7 @@ import f5.health.app.constant.member.Role;
 import f5.health.app.constant.member.badge.Badge;
 import f5.health.app.entity.base.BaseTimeEntity;
 import f5.health.app.entity.healthreport.PromptCompletion;
+import f5.health.app.vo.member.request.UpdateMemberInfoRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -170,6 +171,15 @@ public class Member extends BaseTimeEntity {
         this.healthItemsRecommend = healthItemsRecommend.getContent();
     }
 
+    public void updateMemberInfo(UpdateMemberInfoRequest request) {
+        this.nickname = request.getNickname();
+        this.height = request.getHeight();
+        this.weight = request.getWeight();
+        this.weekAlcoholDrinks = request.getWeekAlcoholDrinks();
+        this.daySmokeCigarettes = request.getDaySmokeCigarettes();
+        this.weekExerciseFrequency = request.getWeekExerciseFrequency();
+    }
+
 
     @Schema(description = "회원가입 설문 정보")
     @Getter
@@ -233,5 +243,5 @@ public class Member extends BaseTimeEntity {
             member.weekExerciseFrequency = this.weekExerciseFrequency;
         }
     }
-
+    
 }

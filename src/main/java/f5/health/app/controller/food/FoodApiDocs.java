@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 @Tag(name = "음식 조회 API", description = "음식 검색 & 음식 상세 정보 제공")
@@ -80,5 +81,5 @@ public interface FoodApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    FoodsResponse foods(JwtMember loginMember, EatenMealFoodsRequest eatenMealFoodsRequest);
+    FoodsResponse foods(JwtMember loginMember, @Valid EatenMealFoodsRequest eatenMealFoodsRequest);
 }

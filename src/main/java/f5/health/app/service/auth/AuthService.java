@@ -7,7 +7,7 @@ import f5.health.app.exception.auth.AccessDeniedException;
 import f5.health.app.exception.auth.RefreshViolationException;
 import f5.health.app.jwt.JwtProvider;
 import f5.health.app.jwt.vo.JwtResponse;
-import f5.health.app.service.auth.client.OAuth2KakaoClient;
+import f5.health.app.service.auth.client.oauth2client.OAuth2ClientService;
 import f5.health.app.service.auth.vo.DeviceInfo;
 import f5.health.app.service.auth.vo.OAuth2LoginRequest;
 import f5.health.app.service.auth.vo.SignUpRequest;
@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static f5.health.app.constant.auth.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
 import static f5.health.app.constant.auth.OAuth2LoginStatus.SIGNUP_REQUIRED;
-import static f5.health.app.constant.auth.OAuth2Provider.KAKAO;
 import static f5.health.app.exception.auth.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
 
 @Service
@@ -31,14 +30,13 @@ import static f5.health.app.exception.auth.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
 @Transactional
 public class AuthService {
 
-    private final OAuth2KakaoClient oauth2KakaoClient;
+    private final OAuth2ClientService oauth2ClientService;
     private final MemberService memberService;
     private final JwtProvider jwtProvider;
     private final DeviceService deviceService;
 
-
     public OAuth2LoginResult login(OAuth2Provider provider, OAuth2LoginRequest loginRequest) {
-        OAuth2UserInfo oauth2UserInfo = this.fetchOAuth2UserInfo(provider, loginRequest.getAccessToken());
+        OAuth2UserInfo oauth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, loginRequest.getAccessToken());
 
         return memberService.findByEmail(oauth2UserInfo.getEmail())
                 .map(findMember -> {
@@ -50,7 +48,7 @@ public class AuthService {
 
     public JwtResponse join(OAuth2Provider provider, SignUpRequest signUpRequest) {
         // 액세스 토큰을 통해 유저 정보 조회
-        OAuth2UserInfo oauth2Userinfo = this.fetchOAuth2UserInfo(provider, signUpRequest.getAccessToken());
+        OAuth2UserInfo oauth2Userinfo = oauth2ClientService.fetchOAuth2UserInfo(provider, signUpRequest.getAccessToken());
 
         Member joinMember = memberService.join(oauth2Userinfo, signUpRequest.getMemberCheckUp());
 
@@ -72,18 +70,6 @@ public class AuthService {
         }
 
         this.deviceService.deleteByMemberIdAndRefreshToken(logoutMemberId, refreshToken);
-    }
-
-
-    /** 액세스 토큰으로 사용자 정보 조회하는 API 호출 */
-    private OAuth2UserInfo fetchOAuth2UserInfo(OAuth2Provider provider, String accessToken) {
-        switch (provider) {
-//          case APPLE:
-            case KAKAO:
-                return oauth2KakaoClient.getKakaoUserInfo(KAKAO.accessTokenPrefix() + accessToken);
-            default:
-                throw new IllegalStateException("Unsupported OAuth2 provider: " + provider);
-        }
     }
 
     private JwtResponse issueTokensAndRegisterDevice(Member member, DeviceInfo deviceInfo) {

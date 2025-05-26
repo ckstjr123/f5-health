@@ -14,6 +14,7 @@ import f5.health.app.repository.MemberRepository;
 import f5.health.app.service.healthreport.openai.GptService;
 import f5.health.app.service.healthreport.openai.prompt.HealthFeedbackPrompt;
 import f5.health.app.service.healthreport.openai.prompt.HealthItemsRecommendPrompt;
+import f5.health.app.service.healthreport.scorepolicy.HealthLifestyleScorePolicy;
 import f5.health.app.service.healthreport.scorepolicy.vo.HealthSnapshot;
 import f5.health.app.service.healthreport.vo.MealsNutritionContents;
 import f5.health.app.service.healthreport.vo.request.DateRangeQuery;
@@ -24,7 +25,6 @@ import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
 import f5.health.app.vo.member.response.HealthLifeScore;
 import f5.health.app.vo.member.response.HealthLifeStyleScoreList;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,14 +50,7 @@ public class HealthReportService {
     private final MemberRepository memberRepository;
     private final FoodRepository foodRepository;
     private final GptService gptService;
-    private final HealthLifeStyleScoreCalculator healthLifeScoreCalculator = new HealthLifeStyleScoreCalculator();
     private final HealthReportRepository reportRepository;
-
-    @PostConstruct
-    public void init() {
-        healthLifeScoreCalculator.addScorePolicy(ScorePolicyRegistry.getAllPoliciySet());
-    }
-
 
     /** 일자별 조회 */
     @Transactional(readOnly = true)
@@ -83,17 +76,17 @@ public class HealthReportService {
         this.validateDuplicateReport(memberId, endDateTime.toLocalDate());
 
         // 절약 금액 로직
-        HealthKit healthKit = reportRequest.getHealthKit();
         Member writer = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        HealthKit healthKit = reportRequest.getHealthKit();
         this.accumulateSavedMoney(writer, healthKit);
 
         // 식단
         List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
         MealsNutritionContents nutritionContents = MealsNutritionContents.from(meals);
 
-        HealthSnapshot healthSnapshot = HealthSnapshot.of(writer, healthKit, nutritionContents);
+        HealthScoreCalculator healthScoreCalculator = new HealthScoreCalculator(HealthLifestyleScorePolicy.getInstance());
         HealthReport report = HealthReport.builder(writer, meals)
-                .healthLifeScore(healthLifeScoreCalculator.calculateScore(healthSnapshot))
+                .healthLifeScore(healthScoreCalculator.calculateScore(HealthSnapshot.of(writer, healthKit, nutritionContents)))
                 .waterIntake(healthKit.getWaterIntake())
                 .smokeCigarettes(healthKit.getSmokedCigarettes())
                 .alcoholDrinks(healthKit.getConsumedAlcoholDrinks())

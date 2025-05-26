@@ -171,6 +171,15 @@ public class Member extends BaseTimeEntity {
         this.healthItemsRecommend = healthItemsRecommend.getContent();
     }
 
+    public void updateMemberInfo(UpdateMemberInfoRequest request) {
+        this.nickname = request.getNickname();
+        this.height = request.getHeight();
+        this.weight = request.getWeight();
+        this.weekAlcoholDrinks = request.getWeekAlcoholDrinks();
+        this.daySmokeCigarettes = request.getDaySmokeCigarettes();
+        this.weekExerciseFrequency = request.getWeekExerciseFrequency();
+    }
+
 
     @Schema(description = "회원가입 설문 정보")
     @Getter
@@ -234,14 +243,5 @@ public class Member extends BaseTimeEntity {
             member.weekExerciseFrequency = this.weekExerciseFrequency;
         }
     }
-
-    public void updateMemberInfo(UpdateMemberInfoRequest request) {
-        if (request.getNickname() != null) this.nickname = request.getNickname();
-        if (request.getHeight() != null) this.height = request.getHeight();
-        if (request.getWeight() != null) this.weight = request.getWeight();
-        if (request.getWeekAlcoholDrinks() != null) this.weekAlcoholDrinks = request.getWeekAlcoholDrinks();
-        if (request.getDaySmokeCigarettes() != null) this.daySmokeCigarettes = request.getDaySmokeCigarettes();
-        if (request.getWeekExerciseFrequency() != null) this.weekExerciseFrequency = request.getWeekExerciseFrequency();
-    }
-
+    
 }

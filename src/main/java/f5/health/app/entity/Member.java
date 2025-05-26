@@ -234,4 +234,9 @@ public class Member extends BaseTimeEntity {
         }
     }
 
+    public void updateHeightAndWeight(int height, int weight) {
+        this.height = height;
+        this.weight = weight;
+    }
+
 }

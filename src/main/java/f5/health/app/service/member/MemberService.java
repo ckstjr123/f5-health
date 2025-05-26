@@ -36,6 +36,14 @@ public class MemberService {
         return new MemberProfile(member, enumMapper);
     }
 
+    @Transactional
+    public void updateMemberInfo(Long memberId, UpdateMemberInfoRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+
+        member.updateMemberInfo(request);
+    }
+
     /**
      * 회원 절약 금액 관련 데이터
      */
@@ -62,12 +70,5 @@ public class MemberService {
             throw new MemberAlreadyJoinedException();
         }
     }
-
-    @Transactional
-    public void updateMemberInfo(Long memberId, UpdateMemberInfoRequest request) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
-
-        member.updateMemberInfo(request);
-    }
+    
 }

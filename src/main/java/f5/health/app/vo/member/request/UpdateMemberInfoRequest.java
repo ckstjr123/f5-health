@@ -1,32 +1,26 @@
 package f5.health.app.vo.member.request;
 
-import jakarta.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
 public class UpdateMemberInfoRequest {
 
-    @NotBlank(message = "닉네임은 필수입니다.")
+    @Schema(description = "닉네임", example = "건강짱")
     private String nickname;
 
-    @Min(100)
-    @Max(230)
-    private int height;
+    @Schema(description = "키", example = "173")
+    private Integer height;
 
-    @Min(20)
-    @Max(200)
-    private int weight;
+    @Schema(description = "몸무게", example = "65")
+    private Integer weight;
 
-    @Min(0)
-    @Max(50)
-    private int weekAlcoholDrinks;
+    @Schema(description = "주 음주량(잔)", example = "5")
+    private Integer weekAlcoholDrinks;
 
-    @Min(0)
-    @Max(30)
-    private int daySmokeCigarettes;
+    @Schema(description = "일 흡연량(개비)", example = "3")
+    private Integer daySmokeCigarettes;
 
-    @Min(0)
-    @Max(7)
-    private int weekExerciseFrequency;
+    @Schema(description = "주 운동 빈도", example = "3")
+    private Integer weekExerciseFrequency;
 }
-

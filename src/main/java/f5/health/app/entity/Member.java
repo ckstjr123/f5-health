@@ -6,6 +6,7 @@ import f5.health.app.constant.member.Role;
 import f5.health.app.constant.member.badge.Badge;
 import f5.health.app.entity.base.BaseTimeEntity;
 import f5.health.app.entity.healthreport.PromptCompletion;
+import f5.health.app.vo.member.request.UpdateMemberInfoRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -234,15 +235,15 @@ public class Member extends BaseTimeEntity {
         }
     }
 
-    public void updateMemberInfo(String nickname, int height, int weight,
-                                 int weekAlcoholDrinks, int daySmokeCigarettes, int weekExerciseFrequency) {
-        this.nickname = nickname;
-        this.height = height;
-        this.weight = weight;
-        this.weekAlcoholDrinks = weekAlcoholDrinks;
-        this.daySmokeCigarettes = daySmokeCigarettes;
-        this.weekExerciseFrequency = weekExerciseFrequency;
+    public void updateMemberInfo(UpdateMemberInfoRequest request) {
+        if (request.getNickname() != null) this.nickname = request.getNickname();
+        if (request.getHeight() != null) this.height = request.getHeight();
+        if (request.getWeight() != null) this.weight = request.getWeight();
+        if (request.getWeekAlcoholDrinks() != null) this.weekAlcoholDrinks = request.getWeekAlcoholDrinks();
+        if (request.getDaySmokeCigarettes() != null) this.daySmokeCigarettes = request.getDaySmokeCigarettes();
+        if (request.getWeekExerciseFrequency() != null) this.weekExerciseFrequency = request.getWeekExerciseFrequency();
     }
+
 
 
 }

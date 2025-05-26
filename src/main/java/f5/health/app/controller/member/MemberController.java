@@ -30,6 +30,6 @@ public class MemberController implements MemberApiDocs {
     @PatchMapping("/me/edit")
     public void editMemberInfo(@AuthenticationPrincipal JwtMember loginMember,
                                @RequestBody @Valid UpdateMemberInfoRequest request) {
-        memberService.updateMemberInfo(loginMember, request);
+        memberService.updateMemberInfo(loginMember.getId(), request);
     }
 }

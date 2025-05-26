@@ -15,8 +15,7 @@ import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts
 import java.util.List;
 import java.util.Set;
 
-import static f5.health.app.config.OpenAIConfig.OPEN_AI_MODEL;
-import static f5.health.app.config.OpenAIConfig.SAMPLING_TEMPERATURE;
+import static f5.health.app.config.OpenAIConfig.*;
 
 public class HealthFeedbackPrompt implements Prompt {
 
@@ -67,7 +66,7 @@ public class HealthFeedbackPrompt implements Prompt {
                         걸음 수: %d보"""
                         + (!workoutTypes.isEmpty() ? String.format("운동 종류: %s", workoutTypes) : "") + """
                         운동 시간: %.0f분
-                        소모 칼로리: %d kcal
+                        소모 칼로리: %.0f kcal
                         심박수: %d bpm
                         렘 수면: %d시간
                         깊은 수면: %d시간
@@ -106,6 +105,7 @@ public class HealthFeedbackPrompt implements Prompt {
                 .messages(List.of(systemMessage, userMessage))
                 .temperature(SAMPLING_TEMPERATURE)
                 .maxTokens(MAX_TOKENS)
+                .stop(STOP_DELIMITERS)
                 .build();
     }
 }

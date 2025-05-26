@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     public static final String[] AUTH_EXCLUDE_URIS = {
-            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
+            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/foods", "/foods/search"
             , "/favicon.ico", "/signin/oauth2/{provider}", "/signup/oauth2/{provider}", "/refresh"
     };
     private final JwtProvider jwtProvider;
@@ -36,7 +36,6 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((registry) -> registry
                         .requestMatchers(AUTH_EXCLUDE_URIS).permitAll()
-//                        .requestMatchers("/admin").hasAuthority(Role.ADMIN.name())
                         .anyRequest().authenticated());
 
         return http.build();

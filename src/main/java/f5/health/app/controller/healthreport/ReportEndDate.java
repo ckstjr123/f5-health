@@ -16,14 +16,14 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @RequiredArgsConstructor
 public class ReportEndDate {
 
-    @Schema(description = "리포트가 기록되는 날짜", example = "2025-05-18")
+    @Schema(description = "리포트가 등록되는 날짜", example = "2025-05-18")
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @PastOrPresent
-    private final LocalDate endDate;
+    private final LocalDate date;
 
     @Schema(hidden = true)
     public LocalDate get() {
-        return this.endDate;
+        return this.date;
     }
 }

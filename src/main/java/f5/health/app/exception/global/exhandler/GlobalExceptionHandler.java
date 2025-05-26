@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public FieldErrorsResult methodArgumentNotValidExHandler(MethodArgumentNotValidException ex) {
         log.warn("MethodArgumentNotValidExHandler", ex);
+
         List<CustomFieldError> customFieldErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()

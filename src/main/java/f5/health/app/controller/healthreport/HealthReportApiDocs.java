@@ -3,8 +3,10 @@ package f5.health.app.controller.healthreport;
 import f5.health.app.exception.response.ExceptionResult;
 import f5.health.app.exception.response.FieldErrorsResult;
 import f5.health.app.jwt.JwtMember;
+import f5.health.app.service.healthreport.vo.request.DateRangeQuery;
 import f5.health.app.service.healthreport.vo.request.HealthReportRequest;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
+import f5.health.app.vo.member.response.HealthLifeStyleScoreList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,7 +41,34 @@ public interface HealthReportApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    HealthReportResponse findReport(JwtMember loginMember, ReportEndDate date);
+    HealthReportResponse report(JwtMember loginMember, ReportEndDate date);
+
+
+    @Operation(summary = "날짜 범위 내 점수 리스트", description = "하루를 대상으로 점수 조회하려면 {\"start\":\"2025-05-21\", \"end\":\"2025-05-21\"}",
+            parameters = {
+                    @Parameter(name = "dateRangeQuery", description = "요청 날짜 범위",
+                            content = @Content(schema = @Schema(implementation = DateRangeQuery.class)))
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "점수 리스트 응답",
+                    content = @Content(schema = @Schema(implementation = HealthLifeStyleScoreList.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "날짜 형식 오류",
+                    content = @Content(schema = @Schema(implementation = FieldErrorsResult.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "로그인 되지 않음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            )
+    })
+    HealthLifeStyleScoreList scores(JwtMember loginMember, DateRangeQuery dateRangeQuery);
+
 
 
     @Operation(summary = "리포트 등록", description = "HealthKit, 식단, 음주/흡연량 등 데이터 처리",
@@ -51,7 +80,7 @@ public interface HealthReportApiDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "리포트 등록 완료(실제로 식단은 각 식사 타입과 총 칼로리만 응답됨)",
+                    description = "리포트 등록 완료(실제로 식단은 각 식사 타입과 총 칼로리만 응답)",
                     content = @Content(schema = @Schema(implementation = HealthReportResponse.class))
             ),
             @ApiResponse(

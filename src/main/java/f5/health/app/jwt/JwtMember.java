@@ -16,6 +16,13 @@ public class JwtMember {
         this.role = role;
     }
 
+    public long getId() {
+        return id;
+    }
+    public void setId(long id) {
+        this.id = id;
+    }
+
 /*    public static JwtMemberBuilder builder() {
         return new JwtMemberBuilder();
     }

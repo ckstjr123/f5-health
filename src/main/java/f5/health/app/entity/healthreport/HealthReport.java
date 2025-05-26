@@ -1,7 +1,7 @@
-package f5.health.app.entity;
+package f5.health.app.entity.healthreport;
 
+import f5.health.app.entity.Member;
 import f5.health.app.entity.meal.Meal;
-import f5.health.app.vo.openai.response.PromptCompletion;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,8 +10,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 /**
  * 건강 일지 엔티티
@@ -52,7 +55,7 @@ public class HealthReport {
     private int alcoholDrinks;
 
     @Column(name = "HEALTH_FEEDBACK")
-    private String healthFeedback; // maxTokens(100)
+    private String healthFeedback; // GPT 건강 피드백 결과
 
     // startDateTime ~ endDateTime: 건강 관측 기간 //
     @Column(name = "START_DATE_TIME")
@@ -129,13 +132,13 @@ public class HealthReport {
         }
 
         public HealthReportBuilder startDateTime(final LocalDateTime startDateTime) {
-            report.startDateTime = startDateTime;
+            report.startDateTime = startDateTime.truncatedTo(MINUTES);
             return this;
         }
 
         public HealthReportBuilder endDateTime(final LocalDateTime endDateTime) {
             report.endDate = endDateTime.toLocalDate();
-            report.endTime = endDateTime.toLocalTime();
+            report.endTime = endDateTime.toLocalTime().truncatedTo(MINUTES);
             return this;
         }
 

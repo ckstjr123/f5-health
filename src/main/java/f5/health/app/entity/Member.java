@@ -1,15 +1,14 @@
 package f5.health.app.entity;
 
-import f5.health.app.constant.member.badge.Badge;
 import f5.health.app.constant.member.BloodType;
 import f5.health.app.constant.member.Gender;
 import f5.health.app.constant.member.Role;
+import f5.health.app.constant.member.badge.Badge;
 import f5.health.app.entity.base.BaseTimeEntity;
-import f5.health.app.vo.openai.response.PromptCompletion;
+import f5.health.app.entity.healthreport.PromptCompletion;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -82,8 +81,6 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "WEEK_ALCOHOL_DRINKS")
     private int weekAlcoholDrinks; // 주 알코올 섭취량(잔)
-    @Column(name = "WEEK_ALCOHOL_COST")
-    private int weekAlcoholCost;
     @Column(name = "ALCOHOL_SAVED_MONEY")
     private int alcoholSavedMoney; // 음주 절약 금액
 
@@ -91,7 +88,7 @@ public class Member extends BaseTimeEntity {
     private int weekExerciseFrequency;
 
     @Column(name = "HEALTH_ITEMS_RECOMMEND")
-    private String healthItemsRecommend; // 절약 금액에 대한 gpt 건강 아이템 추천 결과(maxTokens: 30)
+    private String healthItemsRecommend; // 절약 금액에 대한 gpt 건강 아이템 추천 결과
 
     /** 회원 생성 메서드 */
     public static Member createMember(String oauthId, String email, String nickname, Role role, MemberCheckUp memberCheckUp) {
@@ -116,7 +113,7 @@ public class Member extends BaseTimeEntity {
     }
 
     public double calculateBmr() {
-        int age = getAge();
+        int age = this.getAge();
         return (this.gender == MALE) ? (66.47 + (13.75 * weight) + (5 * height) - (6.76 * age))
                 : (655.1 + (9.56 * weight) + (1.85 * height) - (4.68 * age));
     }
@@ -129,25 +126,41 @@ public class Member extends BaseTimeEntity {
         return 1.2;
     }
 
+    private void setBadge(Badge badge) {
+        this.badge = badge;
+    }
+
     /** 회원 점수 누적 및 배지 체크 */
     public void addHealthLifeScore(final int score) {
         this.totalHealthLifeScore += score;
         this.setBadge(Badge.fromTotalScore(totalHealthLifeScore));
     }
 
-    private void setBadge(Badge badge) {
-        this.badge = badge;
+
+    public boolean isSmoker() {
+        return (daySmokeCigarettes > 0); // 일일 흡연량이 1개비 이상이면 흡연자
     }
 
     public void accumulateSmokingSavedMoneyForDay(final int smokedCigarettes) {
-        this.smokingSavedMoney += (daySmokeCigarettes - smokedCigarettes) * ONE_CIGARETTE_PRICE;
+        if (isSmoker()) {
+            this.smokingSavedMoney += (daySmokeCigarettes - smokedCigarettes) * ONE_CIGARETTE_PRICE;
+        }
     }
 
-    public void accumulateAlcoholSavedMoneyForDay(final int consumedAlcoholDrinks) {
-        int pricePerDrink = (weekAlcoholCost / weekAlcoholDrinks);
-        int dayAlcoholDrinks = (weekAlcoholDrinks / DAYS_IN_WEEK);
-        this.alcoholSavedMoney += (dayAlcoholDrinks - consumedAlcoholDrinks) * pricePerDrink;
+
+    public boolean isAlcoholDrinker() {
+        return (weekAlcoholDrinks > 0); // 주 알코올 섭취량이 1잔 이상이면 음주자
     }
+
+    public void accumulateAlcoholSavedMoneyForDay(final int consumedAlcoholDrinks, final int alcoholCost) {
+        if (!isAlcoholDrinker() || consumedAlcoholDrinks <= 0) {
+            return;
+        }
+        double pricePerDrink = (double) alcoholCost / consumedAlcoholDrinks;
+        int dayAlcoholDrinks = (weekAlcoholDrinks / DAYS_IN_WEEK);
+        this.alcoholSavedMoney += (int) Math.round((dayAlcoholDrinks - consumedAlcoholDrinks) * pricePerDrink);
+    }
+
 
     public int getTotalSavedMoney() {
         return (smokingSavedMoney + alcoholSavedMoney);
@@ -192,10 +205,6 @@ public class Member extends BaseTimeEntity {
         @Range(min = 0, max = 50)
         private int weekAlcoholDrinks;
 
-        @Schema(description = "주 음주 소비 금액", example = "16000", requiredMode = REQUIRED)
-        @PositiveOrZero
-        private int weekAlcoholCost;
-
         @Schema(description = "주평균 운동 횟수", example = "3", requiredMode = REQUIRED)
         @Range(min = 0, max = DAYS_IN_WEEK)
         private int weekExerciseFrequency;
@@ -212,7 +221,6 @@ public class Member extends BaseTimeEntity {
             this.weekExerciseFrequency = weekExerciseFrequency;
         }
 
-
         /** 설문 정보 반영 */
         private void applyTo(Member member) {
             member.birthDate = this.birthDate;
@@ -220,19 +228,15 @@ public class Member extends BaseTimeEntity {
             member.height = this.height;
             member.weight = this.weight;
             member.bloodType = this.bloodType;
-            this.applySmokingInfoOf(member);
-            this.applyAlcoholDrinkingInfoOf(member);
+            member.daySmokeCigarettes = this.daySmokeCigarettes; // 흡연
+            member.weekAlcoholDrinks = this.weekAlcoholDrinks; // 음주
             member.weekExerciseFrequency = this.weekExerciseFrequency;
         }
+    }
 
-        private void applyAlcoholDrinkingInfoOf(Member member) {
-            member.weekAlcoholDrinks = this.weekAlcoholDrinks;
-            member.weekAlcoholCost = this.weekAlcoholCost;
-        }
-
-        private void applySmokingInfoOf(Member member) {
-            member.daySmokeCigarettes = this.daySmokeCigarettes;
-        }
+    public void updateHeightAndWeight(int height, int weight) {
+        this.height = height;
+        this.weight = weight;
     }
 
 }

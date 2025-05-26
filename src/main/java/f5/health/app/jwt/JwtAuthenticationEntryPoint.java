@@ -15,6 +15,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static f5.health.app.jwt.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
 
@@ -26,11 +27,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         ErrorCode errorCode = (ErrorCode) request.getAttribute(JWT_EXCEPTION_ATTRIBUTE);
         if (errorCode != null) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             this.objectMapper.writeValue(response.getWriter(), ExceptionResult.from(errorCode));
         }
     }

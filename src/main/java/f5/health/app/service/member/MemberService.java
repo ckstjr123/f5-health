@@ -1,21 +1,47 @@
 package f5.health.app.service.member;
 
+import f5.health.app.constant.EnumModelMapper;
 import f5.health.app.constant.member.Role;
 import f5.health.app.entity.Member;
+import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.exception.member.MemberAlreadyJoinedException;
+import f5.health.app.jwt.JwtMember;
 import f5.health.app.repository.MemberRepository;
 import f5.health.app.service.auth.vo.oauth2userinfo.OAuth2UserInfo;
+import f5.health.app.vo.member.request.UpdatePhysicalRequest;
+import f5.health.app.vo.member.response.MemberProfile;
+import f5.health.app.vo.member.response.MemberSavings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static f5.health.app.exception.member.MemberErrorCode.NOT_FOUND_MEMBER;
 
 @Service
 @RequiredArgsConstructor
 //@Transactional
 public class MemberService {
 
+    private final EnumModelMapper enumMapper;
     private final MemberRepository memberRepository;
+
+    /** 내 정보 */
+    public MemberProfile getMyProfile(JwtMember loginMember) {
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        return new MemberProfile(member, enumMapper);
+    }
+
+    /** 회원 절약 금액 관련 데이터 */
+    public MemberSavings getMemberSavings(JwtMember loginMember) {
+        return memberRepository.getMemberSavingsById(loginMember.getId()).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+    }
+
+    public Optional<Member> findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
 
     /** 회원 중복 체크 후 회원가입 처리 */
     public Member join(OAuth2UserInfo userInfo, Member.MemberCheckUp memberCheckUp) {
@@ -24,19 +50,17 @@ public class MemberService {
         return memberRepository.save(joinMember);
     }
 
-    public Optional<Member> findById(Long memberId) {
-        return memberRepository.findById(memberId);
-    }
-
-    public Optional<Member> findByEmail(String email) {
-        return memberRepository.findByEmail(email);
-    }
-
-
     private void validateDuplicateMember(String email) {
-        Optional<Member> findMember = this.memberRepository.findByEmail(email);
+        Optional<Member> findMember = memberRepository.findByEmail(email);
         if (!findMember.isEmpty()) {
             throw new MemberAlreadyJoinedException();
         }
+    }
+
+    @Transactional
+    public void updatePhysicalInfo(JwtMember loginMember, UpdatePhysicalRequest request) {
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+        member.updateHeightAndWeight(request.getHeight(), request.getWeight());
     }
 }

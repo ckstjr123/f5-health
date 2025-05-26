@@ -1,7 +1,7 @@
 package f5.health.app.entity.meal;
 
 import f5.health.app.constant.meal.MealType;
-import f5.health.app.entity.HealthReport;
+import f5.health.app.entity.healthreport.HealthReport;
 import f5.health.app.service.healthreport.vo.request.MealFoodRequest;
 import f5.health.app.service.healthreport.vo.request.MealRequest;
 import jakarta.persistence.*;

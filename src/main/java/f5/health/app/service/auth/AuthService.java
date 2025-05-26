@@ -1,9 +1,8 @@
 package f5.health.app.service.auth;
 
 import f5.health.app.constant.auth.OAuth2Provider;
-import f5.health.app.vo.device.DeviceAndMemberRole;
-import f5.health.app.entity.device.Device;
 import f5.health.app.entity.Member;
+import f5.health.app.entity.device.Device;
 import f5.health.app.exception.auth.AccessDeniedException;
 import f5.health.app.exception.auth.RefreshViolationException;
 import f5.health.app.jwt.JwtProvider;
@@ -16,6 +15,7 @@ import f5.health.app.service.auth.vo.oauth2userinfo.OAuth2UserInfo;
 import f5.health.app.service.device.DeviceService;
 import f5.health.app.service.member.MemberService;
 import f5.health.app.vo.auth.OAuth2LoginResult;
+import f5.health.app.vo.device.DeviceAndMemberRole;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,7 @@ import static f5.health.app.exception.auth.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthService {
 
     private final OAuth2KakaoClient oauth2KakaoClient;
@@ -36,16 +37,17 @@ public class AuthService {
     private final DeviceService deviceService;
 
 
-    @Transactional
     public OAuth2LoginResult login(OAuth2Provider provider, OAuth2LoginRequest loginRequest) {
-        OAuth2UserInfo oauth2Userinfo = this.fetchOAuth2UserInfo(provider, loginRequest.getAccessToken());
+        OAuth2UserInfo oauth2UserInfo = this.fetchOAuth2UserInfo(provider, loginRequest.getAccessToken());
 
-        return memberService.findByEmail(oauth2Userinfo.getEmail())
-                .map(findMember -> OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, this.issueTokensAndRegisterDevice(findMember, loginRequest.getDeviceInfo())))
+        return memberService.findByEmail(oauth2UserInfo.getEmail())
+                .map(findMember -> {
+                    JwtResponse tokenResponse = this.issueTokensAndRegisterDevice(findMember, loginRequest.getDeviceInfo());
+                    return OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, tokenResponse);
+                })
                 .orElse(OAuth2LoginResult.of(SIGNUP_REQUIRED, null));
     }
 
-    @Transactional
     public JwtResponse join(OAuth2Provider provider, SignUpRequest signUpRequest) {
         // 액세스 토큰을 통해 유저 정보 조회
         OAuth2UserInfo oauth2Userinfo = this.fetchOAuth2UserInfo(provider, signUpRequest.getAccessToken());
@@ -55,17 +57,14 @@ public class AuthService {
         return this.issueTokensAndRegisterDevice(joinMember, signUpRequest.getDeviceInfo());
     }
 
-    @Transactional
     public JwtResponse refresh(String refreshToken) {
         this.jwtProvider.parseClaims(refreshToken);
-
         DeviceAndMemberRole deviceAndMemberRole = deviceService.findDeviceAndMemberRoleBy(refreshToken)
                 .orElseThrow(() -> new RefreshViolationException(NOT_MATCH_REFRESH_JWT));
 
         return this.refreshRotation(deviceAndMemberRole);
     }
 
-    @Transactional
     public void logout(Long logoutMemberId, String refreshToken) {
         Claims rtClaims = this.jwtProvider.parseClaims(refreshToken);
         if (!logoutMemberId.equals(Long.valueOf(rtClaims.getSubject()))) {

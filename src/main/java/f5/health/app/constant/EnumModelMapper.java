@@ -46,7 +46,4 @@ public class EnumModelMapper {
         return enumClassSet.stream().map(Class::getName).collect(Collectors.toMap(Function.identity(), enumClassName -> factory.get(enumClassName)));
     }
 
-    public Map<String, List<? extends EnumModel>> getAll() {
-        return factory;
-    }
 }

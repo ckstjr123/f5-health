@@ -3,7 +3,7 @@ package f5.health.app.service.healthreport.openai.prompt;
 import com.theokanning.openai.completion.chat.ChatCompletionChoice;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
-import f5.health.app.vo.openai.response.PromptCompletion;
+import f5.health.app.entity.healthreport.PromptCompletion;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Locale;
 
 import static f5.health.app.service.healthreport.HealthReportService.MINIMUM_SAVED_MONEY_REQUIRED;
 
-public enum DEFAULT_COMPLETION {
+public enum DefaultPromptCompletion {
 
     SAVED_MONEY_DEFAULT_COMPLETION(
             "\uD83D\uDCB0 총 절약 금액이 " +
@@ -21,7 +21,7 @@ public enum DEFAULT_COMPLETION {
 
     private final PromptCompletion completion;
 
-    DEFAULT_COMPLETION(String defaultMessage) {
+    DefaultPromptCompletion(String defaultMessage) {
         ChatCompletionChoice chatCompletionChoice = new ChatCompletionChoice();
         chatCompletionChoice.setMessage(new ChatMessage("default", defaultMessage));
         ChatCompletionResult defaultResult = new ChatCompletionResult();

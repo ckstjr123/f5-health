@@ -4,7 +4,7 @@ import f5.health.app.constant.member.BloodType;
 import f5.health.app.constant.member.Gender;
 import f5.health.app.constant.member.Role;
 import f5.health.app.entity.device.Device;
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.jwt.JwtProvider;
 import f5.health.app.repository.DeviceRepository;
 import f5.health.app.repository.MemberRepository;

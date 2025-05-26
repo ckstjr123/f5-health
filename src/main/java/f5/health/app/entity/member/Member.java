@@ -1,4 +1,4 @@
-package f5.health.app.entity;
+package f5.health.app.entity.member;
 
 import f5.health.app.constant.member.BloodType;
 import f5.health.app.constant.member.Gender;
@@ -6,7 +6,6 @@ import f5.health.app.constant.member.Role;
 import f5.health.app.constant.member.badge.Badge;
 import f5.health.app.entity.base.BaseTimeEntity;
 import f5.health.app.entity.healthreport.PromptCompletion;
-import f5.health.app.vo.member.request.UpdateMemberInfoRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -30,7 +29,8 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Table(name = "MEMBER")
 public class Member extends BaseTimeEntity {
 
-    private static final int DAYS_IN_WEEK = 7;
+    public static final int MAX_NICKNAME_LENGTH = 15;
+    public static final int DAYS_IN_WEEK = 7;
     private static final int ONE_CIGARETTE_PRICE = 225;
 
     @Id
@@ -171,13 +171,13 @@ public class Member extends BaseTimeEntity {
         this.healthItemsRecommend = healthItemsRecommend.getContent();
     }
 
-    public void updateMemberInfo(UpdateMemberInfoRequest request) {
-        this.nickname = request.getNickname();
-        this.height = request.getHeight();
-        this.weight = request.getWeight();
-        this.weekAlcoholDrinks = request.getWeekAlcoholDrinks();
-        this.daySmokeCigarettes = request.getDaySmokeCigarettes();
-        this.weekExerciseFrequency = request.getWeekExerciseFrequency();
+    public void updateProfile(MemberUpdateRequest updateParam) {
+        this.nickname = updateParam.getNickname();
+        this.height = updateParam.getHeight();
+        this.weight = updateParam.getWeight();
+        this.daySmokeCigarettes = updateParam.getDaySmokeCigarettes();
+        this.weekAlcoholDrinks = updateParam.getWeekAlcoholDrinks();
+        this.weekExerciseFrequency = updateParam.getWeekExerciseFrequency();
     }
 
 

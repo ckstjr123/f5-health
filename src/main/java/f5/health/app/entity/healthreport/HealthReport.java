@@ -1,6 +1,6 @@
 package f5.health.app.entity.healthreport;
 
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.entity.meal.Meal;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

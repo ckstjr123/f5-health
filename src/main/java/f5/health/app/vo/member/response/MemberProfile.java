@@ -3,7 +3,7 @@ package f5.health.app.vo.member.response;
 import f5.health.app.constant.EnumModel;
 import f5.health.app.constant.EnumModelMapper;
 import f5.health.app.constant.member.badge.Badge;
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

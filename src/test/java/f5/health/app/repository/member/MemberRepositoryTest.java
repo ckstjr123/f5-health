@@ -3,7 +3,7 @@ package f5.health.app.repository.member;
 import f5.health.app.constant.member.BloodType;
 import f5.health.app.constant.member.Gender;
 import f5.health.app.constant.member.Role;
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package f5.health.app.repository;
 
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.vo.member.response.MemberSavings;
 import org.springframework.data.jpa.repository.JpaRepository;
 

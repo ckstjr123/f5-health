@@ -1,7 +1,7 @@
 package f5.health.app.entity.device;
 
 import f5.health.app.constant.device.System;
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.jwt.JwtProvider;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

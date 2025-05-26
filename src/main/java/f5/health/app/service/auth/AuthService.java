@@ -1,7 +1,7 @@
 package f5.health.app.service.auth;
 
 import f5.health.app.constant.auth.OAuth2Provider;
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.entity.device.Device;
 import f5.health.app.exception.auth.AccessDeniedException;
 import f5.health.app.exception.auth.RefreshViolationException;

@@ -1,6 +1,6 @@
 package f5.health.app.controller;
 
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.service.healthreport.openai.GptService;
 import f5.health.app.service.healthreport.openai.prompt.HealthFeedbackPrompt;
 import f5.health.app.vo.healthreport.request.HealthFeedbackRequest;

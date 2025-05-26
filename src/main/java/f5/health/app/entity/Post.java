@@ -1,13 +1,12 @@
 package f5.health.app.entity;
 
 import f5.health.app.entity.base.BaseTimeEntity;
+import f5.health.app.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

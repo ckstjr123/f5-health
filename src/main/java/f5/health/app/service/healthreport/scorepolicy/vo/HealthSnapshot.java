@@ -1,7 +1,7 @@
 package f5.health.app.service.healthreport.scorepolicy.vo;
 
 import f5.health.app.constant.member.Gender;
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.service.healthreport.vo.MealsNutritionContents;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Activity;

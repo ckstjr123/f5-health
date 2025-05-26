@@ -3,7 +3,7 @@ package f5.health.app.service.healthreport.openai.prompt;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.service.healthreport.vo.MealsNutritionContents;
 import f5.health.app.service.healthreport.vo.request.healthkit.CustomHealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;

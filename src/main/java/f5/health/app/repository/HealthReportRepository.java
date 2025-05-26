@@ -1,7 +1,7 @@
 package f5.health.app.repository;
 
 import f5.health.app.entity.healthreport.HealthReport;
-import f5.health.app.vo.member.response.HealthLifeScore;
+import f5.health.app.vo.member.response.HealthLifestyleScore;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
@@ -15,5 +15,5 @@ public interface HealthReportRepository extends JpaRepository<HealthReport, Long
 
 //    List<HealthReport> findByMemberIdAndEndDateBetween(Long memberId, LocalDate start, LocalDate end);
 
-    List<HealthLifeScore> findScoresByMemberIdAndEndDateBetween(Long memberId, LocalDate start, LocalDate end);
+    List<HealthLifestyleScore> findScoresByMemberIdAndEndDateBetween(Long memberId, LocalDate start, LocalDate end);
 }

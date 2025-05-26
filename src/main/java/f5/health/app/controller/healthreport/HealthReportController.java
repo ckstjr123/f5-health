@@ -5,7 +5,7 @@ import f5.health.app.service.healthreport.HealthReportService;
 import f5.health.app.service.healthreport.vo.request.DateRangeQuery;
 import f5.health.app.service.healthreport.vo.request.HealthReportRequest;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
-import f5.health.app.vo.member.response.HealthLifeStyleScoreList;
+import f5.health.app.vo.member.response.HealthLifestyleScoreList;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class HealthReportController implements HealthReportApiDocs {
     }
 
     @GetMapping("/scores")
-    public HealthLifeStyleScoreList scores(@AuthenticationPrincipal JwtMember loginMember,
+    public HealthLifestyleScoreList scores(@AuthenticationPrincipal JwtMember loginMember,
                                            @RequestBody @Valid DateRangeQuery dateRangeQuery) {
         return reportService.findScores(loginMember, dateRangeQuery);
     }

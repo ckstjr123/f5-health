@@ -1,7 +1,7 @@
 package f5.health.app.controller.food;
 
 import f5.health.app.entity.Food;
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.jwt.JwtMember;
 import f5.health.app.repository.FoodRepository;

@@ -2,7 +2,7 @@ package f5.health.app.service.healthreport.openai.prompt;
 
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts;
 
 import java.util.List;

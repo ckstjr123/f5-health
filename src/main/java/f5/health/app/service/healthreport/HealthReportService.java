@@ -1,6 +1,6 @@
 package f5.health.app.service.healthreport;
 
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import f5.health.app.entity.healthreport.HealthReport;
 import f5.health.app.entity.healthreport.PromptCompletion;
 import f5.health.app.entity.meal.EatenFoodMap;
@@ -23,8 +23,8 @@ import f5.health.app.service.healthreport.vo.request.MealsRequest;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
-import f5.health.app.vo.member.response.HealthLifeScore;
-import f5.health.app.vo.member.response.HealthLifeStyleScoreList;
+import f5.health.app.vo.member.response.HealthLifestyleScore;
+import f5.health.app.vo.member.response.HealthLifestyleScoreList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,11 +62,11 @@ public class HealthReportService {
     }
 
     /** 날짜 범위로 점수 조회 */
-    public HealthLifeStyleScoreList findScores(JwtMember loginMember, DateRangeQuery dateRange) {
-        List<HealthLifeScore> scores = reportRepository.findScoresByMemberIdAndEndDateBetween(
+    public HealthLifestyleScoreList findScores(JwtMember loginMember, DateRangeQuery dateRange) {
+        List<HealthLifestyleScore> scores = reportRepository.findScoresByMemberIdAndEndDateBetween(
                 loginMember.getId(), dateRange.getStart(), dateRange.getEnd()
         );
-        return HealthLifeStyleScoreList.from(scores);
+        return HealthLifestyleScoreList.from(scores);
     }
 
     /** 리포트 등록 */

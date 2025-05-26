@@ -1,5 +1,6 @@
 package f5.health.app.entity;
 
+import f5.health.app.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

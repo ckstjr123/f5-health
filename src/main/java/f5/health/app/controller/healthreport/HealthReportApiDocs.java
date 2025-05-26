@@ -6,7 +6,7 @@ import f5.health.app.jwt.JwtMember;
 import f5.health.app.service.healthreport.vo.request.DateRangeQuery;
 import f5.health.app.service.healthreport.vo.request.HealthReportRequest;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
-import f5.health.app.vo.member.response.HealthLifeStyleScoreList;
+import f5.health.app.vo.member.response.HealthLifestyleScoreList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -54,7 +54,7 @@ public interface HealthReportApiDocs {
             @ApiResponse(
                     responseCode = "200",
                     description = "점수 리스트 응답",
-                    content = @Content(schema = @Schema(implementation = HealthLifeStyleScoreList.class))
+                    content = @Content(schema = @Schema(implementation = HealthLifestyleScoreList.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -67,7 +67,7 @@ public interface HealthReportApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    HealthLifeStyleScoreList scores(JwtMember loginMember, DateRangeQuery dateRangeQuery);
+    HealthLifestyleScoreList scores(JwtMember loginMember, DateRangeQuery dateRangeQuery);
 
 
 

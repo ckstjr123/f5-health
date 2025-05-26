@@ -2,7 +2,7 @@ package f5.health.app.controller.member;
 
 import f5.health.app.jwt.JwtMember;
 import f5.health.app.service.member.MemberService;
-import f5.health.app.vo.member.request.UpdateMemberInfoRequest;
+import f5.health.app.entity.member.MemberUpdateRequest;
 import f5.health.app.vo.member.response.MemberProfile;
 import f5.health.app.vo.member.response.MemberSavings;
 import jakarta.validation.Valid;
@@ -28,8 +28,8 @@ public class MemberController implements MemberApiDocs {
     }
 
     @PatchMapping("/me/edit")
-    public void editMemberInfo(@AuthenticationPrincipal JwtMember loginMember,
-                               @RequestBody @Valid UpdateMemberInfoRequest request) {
-        memberService.updateMemberInfo(loginMember.getId(), request);
+    public void edit(@AuthenticationPrincipal JwtMember loginMember,
+                     @RequestBody @Valid MemberUpdateRequest updateParam) {
+        memberService.updateMember(loginMember, updateParam);
     }
 }

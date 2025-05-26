@@ -1,6 +1,6 @@
 package f5.health.app.entity.device;
 
-import f5.health.app.entity.Member;
+import f5.health.app.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

@@ -99,27 +99,4 @@ public class Meal {
         }
     }
 
-/*
-    private void setTotalKcal() {
-        this.totalKcal = this.mealFoods.stream()
-                .mapToInt(MealFood::calculateKcal)
-                .sum();
-    }
-
-    public double getTotalCarbohydrate() {
-        return this.mealFoods.stream()
-                .mapToDouble(MealFood::calculateCarbohydrate)
-                .sum();
-    }
-    public double getTotalProtein() {
-        return this.mealFoods.stream()
-                .mapToDouble(MealFood::calculateProtein)
-                .sum();
-    }
-    public double getTotalFat() {
-        return this.mealFoods.stream()
-                .mapToDouble(MealFood::calculateFat)
-                .sum();
-    }*/
-
 }

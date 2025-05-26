@@ -244,6 +244,4 @@ public class Member extends BaseTimeEntity {
         if (request.getWeekExerciseFrequency() != null) this.weekExerciseFrequency = request.getWeekExerciseFrequency();
     }
 
-
-
 }

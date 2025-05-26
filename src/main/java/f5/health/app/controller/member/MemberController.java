@@ -2,7 +2,7 @@ package f5.health.app.controller.member;
 
 import f5.health.app.jwt.JwtMember;
 import f5.health.app.service.member.MemberService;
-import f5.health.app.vo.member.request.UpdatePhysicalRequest;
+import f5.health.app.vo.member.request.UpdateMemberInfoRequest;
 import f5.health.app.vo.member.response.MemberProfile;
 import f5.health.app.vo.member.response.MemberSavings;
 import jakarta.validation.Valid;
@@ -27,11 +27,9 @@ public class MemberController implements MemberApiDocs {
         return memberService.getMemberSavings(loginMember);
     }
 
-    @PatchMapping("/me/physical")
-    public void updatePhysicalInfo(
-            @AuthenticationPrincipal JwtMember loginMember,
-            @Valid @RequestBody UpdatePhysicalRequest request
-    ) {
-        memberService.updatePhysicalInfo(loginMember, request);
+    @PatchMapping("/me/edit")
+    public void editMemberInfo(@AuthenticationPrincipal JwtMember loginMember,
+                               @RequestBody @Valid UpdateMemberInfoRequest request) {
+        memberService.updateMemberInfo(loginMember, request);
     }
 }

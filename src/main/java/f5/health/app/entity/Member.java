@@ -234,9 +234,15 @@ public class Member extends BaseTimeEntity {
         }
     }
 
-    public void updateHeightAndWeight(int height, int weight) {
+    public void updateMemberInfo(String nickname, int height, int weight,
+                                 int weekAlcoholDrinks, int daySmokeCigarettes, int weekExerciseFrequency) {
+        this.nickname = nickname;
         this.height = height;
         this.weight = weight;
+        this.weekAlcoholDrinks = weekAlcoholDrinks;
+        this.daySmokeCigarettes = daySmokeCigarettes;
+        this.weekExerciseFrequency = weekExerciseFrequency;
     }
+
 
 }

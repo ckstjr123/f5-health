@@ -8,6 +8,7 @@ import f5.health.app.exception.member.MemberAlreadyJoinedException;
 import f5.health.app.jwt.JwtMember;
 import f5.health.app.repository.MemberRepository;
 import f5.health.app.service.auth.vo.oauth2userinfo.OAuth2UserInfo;
+import f5.health.app.vo.member.request.UpdateMemberInfoRequest;
 import f5.health.app.vo.member.request.UpdatePhysicalRequest;
 import f5.health.app.vo.member.response.MemberProfile;
 import f5.health.app.vo.member.response.MemberSavings;
@@ -58,9 +59,18 @@ public class MemberService {
     }
 
     @Transactional
-    public void updatePhysicalInfo(JwtMember loginMember, UpdatePhysicalRequest request) {
+    public void updateMemberInfo(JwtMember loginMember, UpdateMemberInfoRequest request) {
         Member member = memberRepository.findById(loginMember.getId())
-                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
-        member.updateHeightAndWeight(request.getHeight(), request.getWeight());
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+        member.updateMemberInfo(
+                request.getNickname(),
+                request.getHeight(),
+                request.getWeight(),
+                request.getWeekAlcoholDrinks(),
+                request.getDaySmokeCigarettes(),
+                request.getWeekExerciseFrequency()
+        );
     }
+
 }

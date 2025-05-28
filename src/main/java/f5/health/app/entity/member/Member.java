@@ -186,6 +186,8 @@ public class Member extends BaseTimeEntity {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class MemberCheckUp {
 
+        public static final int DAILY_MAX_CIGARETTES = 35;
+
         @Schema(description = "생년월일", example = "2000-04-18", requiredMode = REQUIRED)
         @NotNull(message = "생년월일을 입력해주세요.")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -207,8 +209,8 @@ public class Member extends BaseTimeEntity {
         @NotNull(message = "혈액형을 입력해주세요.")
         private BloodType bloodType;
 
-        @Schema(description = "일평균 흡연량(개비)", example = "8", requiredMode = REQUIRED)
-        @Range(min = 0, max = 30)
+        @Schema(description = "일일 흡연량(개비)", example = "8", requiredMode = REQUIRED)
+        @Range(min = 0, max = DAILY_MAX_CIGARETTES)
         private int daySmokeCigarettes;
 
         @Schema(description = "주평균 알코올 섭취량(잔)", example = "6", requiredMode = REQUIRED)

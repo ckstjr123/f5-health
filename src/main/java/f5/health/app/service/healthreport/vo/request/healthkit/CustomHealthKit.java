@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
+import static f5.health.app.entity.member.Member.MemberCheckUp.DAILY_MAX_CIGARETTES;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
@@ -17,7 +18,6 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 public class CustomHealthKit {
 
     private static final int DAILY_MAX_WATER_ML = 5000;
-    private static final int DAILY_MAX_CIGARETTES = 35;
     private static final int DAILY_MAX_ALCOHOL_DRINKS = 20;
 
     @Schema(description = "음수량(ml)", example = "650")

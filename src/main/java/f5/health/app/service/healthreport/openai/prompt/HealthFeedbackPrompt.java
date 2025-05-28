@@ -21,18 +21,17 @@ public class HealthFeedbackPrompt implements Prompt {
 
     private static final int MAX_TOKENS = 200;
 
+    private final String gender;
+    private final int height;
+    private final int weight;
+    private final int recommendedCalories;
+
     private final CustomHealthKit customKit;
     private final Activity activity;
     private final SleepAnalysis sleepAnalysis;
     private final Workouts workouts;
     private final VitalSigns vitalSigns;
     private final MealsNutritionContents nutritionContents;
-
-    //사용자 정보
-    private final String gender;
-    private final int height;
-    private final int weight;
-    private final int recommendedCalories;
 
     public HealthFeedbackPrompt(Member member, HealthKit healthKit, MealsNutritionContents nutritionContents) {
         this.gender = member.getGender().label();

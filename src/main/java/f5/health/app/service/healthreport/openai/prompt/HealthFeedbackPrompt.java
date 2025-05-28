@@ -19,7 +19,7 @@ import static f5.health.app.config.OpenAIConfig.*;
 
 public class HealthFeedbackPrompt implements Prompt {
 
-    private static final int MAX_TOKENS = 100;
+    private static final int MAX_TOKENS = 200;
 
     private final CustomHealthKit customKit;
     private final Activity activity;
@@ -83,6 +83,10 @@ public class HealthFeedbackPrompt implements Prompt {
                         
                         * 문장은 간결하고 명확하게 구성해 주세요.
                         * 진지하지만 너무 무겁지 않게 조언해 주세요.
+                        * 공백 포함 최대 250자 이내로 작성해 주세요.
+                        
+                        [답변 예시]
+                        "수면 시간이 부족해 피로가 누적될 수 있으니 하루 7시간 이상 수면을 권장합니다. 칼로리 섭취량이 권장량보다 많으므로 탄수화물과 지방 섭취를 줄이고 균형 잡힌 식단을 챙겨 드세요."
                         """
                 , gender, height, weight, recommendedCalories
                 , customKit.getWaterIntake(), customKit.getSmokedCigarettes(), customKit.getConsumedAlcoholDrinks()
@@ -105,7 +109,7 @@ public class HealthFeedbackPrompt implements Prompt {
                 .messages(List.of(systemMessage, userMessage))
                 .temperature(SAMPLING_TEMPERATURE)
                 .maxTokens(MAX_TOKENS)
-                .stop(STOP_DELIMITERS)
+//                .stop(STOP_DELIMITERS)
                 .build();
     }
 }

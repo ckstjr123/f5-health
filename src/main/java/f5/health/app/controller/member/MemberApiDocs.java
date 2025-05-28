@@ -59,7 +59,7 @@ public interface MemberApiDocs {
     MemberSavings savings(JwtMember loginMember);
 
 
-    @Operation(summary = "회원 정보 수정", description = "회원 수정 허용 필드 업데이트",
+    @Operation(summary = "회원 정보 수정", description = "회원 프로필 조회 후 수정(수정 허용 필드를 제외하고 블락 처리)",
             parameters = {
                     @Parameter(name = "updateParam", description = "회원 수정 파라미터",
                             content = @Content(schema = @Schema(implementation = MemberUpdateRequest.class)), required = true)

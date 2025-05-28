@@ -11,7 +11,7 @@ import static f5.health.app.config.OpenAIConfig.*;
 
 public class HealthItemsRecommendPrompt implements Prompt {
 
-    private static final int MAX_TOKENS = 50;
+    private static final int MAX_TOKENS = 150;
     private final int totalSavedMoney;
     private final String nickname;
     private final String gender;
@@ -52,7 +52,12 @@ public class HealthItemsRecommendPrompt implements Prompt {
                 (각 항목은 금액과 함께 제시해 주세요)
                 
                 추천은 실질적이고 현실적인 제품(예: 영양제, 운동기구, 건강식 등)을 중심으로 구성해 주세요.
-                문장은 짧고 명확하게 구성해 주세요.
+                문장은 간결하게 작성해 주세요.
+                
+                [답변 예시]
+                "현재 절약 금액으로 가능한 건강한 선택 💪
+                💊 센트룸 포맨 종합비타민"으로 하루 영양 보충! (약 33,000원)
+                🍱 닭가슴살 도시락 10팩 세트"로 간편한 고단백 식사! (약 49,000원)"
                 """
                 , nickname, gender, height, weight, totalSavedMoney, daySmokeCigarettes, weekAlcoholDrinks
                 , workouts.getWorkoutTypes().isEmpty() ? "기록 없음" : String.join(", ", workouts.getWorkoutTypes()));
@@ -63,7 +68,7 @@ public class HealthItemsRecommendPrompt implements Prompt {
                         , new com.theokanning.openai.completion.chat.ChatMessage(ChatMessageRole.USER.value(), prompt)))
                 .temperature(SAMPLING_TEMPERATURE)
                 .maxTokens(MAX_TOKENS)
-                .stop(STOP_DELIMITERS)
+//                .stop(STOP_DELIMITERS)
                 .build();
     }
 }

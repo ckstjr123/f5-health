@@ -11,9 +11,10 @@ public class PromptCompletion {
 
     public PromptCompletion(ChatCompletionResult result) {
         Assert.notNull(result);
-        String original = result.getChoices().get(0).getMessage().getContent();
-        int endIndex = original.lastIndexOf(".") + 1;
-        this.content = original.substring(0, endIndex);
+//        String original = result.getChoices().get(0).getMessage().getContent();
+//        int endIndex = original.lastIndexOf(".") + 1;
+//        this.content = original.substring(0, endIndex);
+        this.content = result.getChoices().get(0).getMessage().getContent();
     }
 
     @Override

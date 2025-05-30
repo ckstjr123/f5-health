@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import static f5.health.app.entity.member.Member.*;
+import static f5.health.app.entity.member.Member.MemberCheckUp.DAILY_MAX_CIGARETTES;
 import static f5.health.app.entity.member.Member.MemberCheckUp.WEEK_MAX_ALCOHOL_ML;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
@@ -31,7 +32,7 @@ public class MemberUpdateRequest {
     private int weight;
 
     @Schema(description = "일일 흡연량(개비)", example = "3", requiredMode = REQUIRED)
-    @Range(min = 0, max = 30)
+    @Range(min = 0, max = DAILY_MAX_CIGARETTES)
     private int daySmokeCigarettes;
 
     @Schema(description = "주 음주량(ml)", example = "1200", requiredMode = REQUIRED)

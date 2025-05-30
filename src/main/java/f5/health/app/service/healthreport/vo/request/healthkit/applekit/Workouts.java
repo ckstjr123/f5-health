@@ -12,6 +12,6 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Workouts {
 
-    @Schema(description = "사용자 운동 유형", example = "walking")
+    @Schema(description = "사용자 운동 유형")
     private Set<String> workoutTypes;
 }

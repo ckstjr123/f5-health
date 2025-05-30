@@ -1,6 +1,5 @@
 package f5.health.app.controller.healthreport;
 
-import f5.health.app.constant.EnumModel;
 import f5.health.app.exception.response.ExceptionResult;
 import f5.health.app.exception.response.FieldErrorsResult;
 import f5.health.app.jwt.JwtMember;
@@ -16,26 +15,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import java.util.List;
-
 @Tag(name = "건강 일지", description = "리포트 저장 및 조회 API")
 public interface HealthReportApiDocs {
-
-
-    @Operation(summary = "술 종류 Enum 리스트", description = "소주, 맥주")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "주류 응답",
-                    content = @Content(schema = @Schema(implementation = EnumModel.class))
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "인증되지 않은 사용자",
-                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
-            )
-    })
-    List<? extends EnumModel> alcoholTypes();
 
     @Operation(summary = "리포트 조회", description = "해당 일자에 저장된 리포트 조회",
             parameters = {
@@ -63,7 +44,7 @@ public interface HealthReportApiDocs {
     HealthReportResponse report(JwtMember loginMember, ReportEndDate date);
 
 
-    @Operation(summary = "날짜 범위 내 점수 리스트", description = "하루를 대상으로 점수 조회하려면 {\"start\":\"2025-05-21\", \"end\":\"2025-05-21\"}",
+    @Operation(summary = "날짜 범위 내 점수 리스트", description = "하루를 대상으로 점수 조회하려면 start, end 동일하게 설정",
             parameters = {
                     @Parameter(name = "dateRangeQuery", description = "요청 날짜 범위",
                             content = @Content(schema = @Schema(implementation = DateRangeQuery.class)))

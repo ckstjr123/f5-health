@@ -24,7 +24,6 @@ public class AuthController implements AuthApiDocs {
 
     private final AuthService authService;
 
-
     @PostMapping("/signin/oauth2/{provider}")
     public ResponseEntity<OAuth2LoginResult> signin(@PathVariable(name = "provider") OAuth2Provider provider,
                                                     @RequestBody @Valid OAuth2LoginRequest loginRequest) {

@@ -1,5 +1,6 @@
 package f5.health.app.service.healthreport.vo.request.healthkit;
 
+import f5.health.app.entity.member.AlcoholConsumptionResult;
 import f5.health.app.service.healthreport.vo.request.healthkit.applekit.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
@@ -63,13 +65,13 @@ public final class HealthKit {
     }
 
     @Schema(hidden = true)
-    public int getConsumedAlcoholDrinks() {
-        return customHealthKit.getConsumedAlcoholDrinks();
+    public Optional<AlcoholConsumptionResult> getAlcoholConsumptionResult() {
+        return customHealthKit.getAlcoholConsumptionResult();
     }
 
     @Schema(hidden = true)
-    public int getAlcoholCost() {
-        return customHealthKit.getAlcoholCost();
+    public int getConsumedAlcoholDrinks() {
+        return customHealthKit.getConsumedAlcoholDrinks();
     }
 
 

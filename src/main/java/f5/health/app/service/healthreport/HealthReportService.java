@@ -101,7 +101,7 @@ public class HealthReportService {
 
     private void accumulateSavedMoney(Member writer, HealthKit healthKit) {
         writer.accumulateSmokingSavedMoneyForDay(healthKit.getSmokedCigarettes());
-        writer.accumulateAlcoholSavedMoneyForDay(healthKit.getConsumedAlcoholDrinks(), healthKit.getAlcoholCost());
+        writer.accumulateAlcoholSavedMoneyForDay(healthKit.getAlcoholConsumptionResult().orElse(null));
         this.recommendHealthItems(writer, healthKit.getWorkouts());
     }
 

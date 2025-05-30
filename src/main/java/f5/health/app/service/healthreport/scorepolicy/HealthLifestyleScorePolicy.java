@@ -108,9 +108,9 @@ public class HealthLifestyleScorePolicy implements HealthScorePolicy {
             int diff = avgPerDay - consumedAlcoholDrinks;
 
             if (diff >= avgPerDay) return 10; // 완전 금주
-            if (diff >= avgPerDay * 0.75) return 8;
-            if (diff >= avgPerDay * 0.5) return 6;
-            if (diff >= avgPerDay * 0.25) return 4;
+            if (diff >= avgPerDay * 0.8) return 8;
+            if (diff >= avgPerDay * 0.6) return 6;
+            if (diff >= avgPerDay * 0.3) return 4;
             if (diff > 0) return 2;
 
             return 0; // 음주량 유지 or 증가

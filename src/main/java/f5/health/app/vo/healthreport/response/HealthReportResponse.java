@@ -25,7 +25,7 @@ public class HealthReportResponse {
     @Schema(description = "피운 담배", example = "6")
     private final int smokeCigarettes;
 
-    @Schema(description = "마신 술잔", example = "0")
+    @Schema(description = "음주량(ml)", example = "200")
     private final int alcoholDrinks;
 
     @Schema(description = "GPT 건강 피드백 결과")

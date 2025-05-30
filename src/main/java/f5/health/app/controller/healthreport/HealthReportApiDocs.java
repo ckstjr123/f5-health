@@ -1,5 +1,6 @@
 package f5.health.app.controller.healthreport;
 
+import f5.health.app.constant.EnumModel;
 import f5.health.app.exception.response.ExceptionResult;
 import f5.health.app.exception.response.FieldErrorsResult;
 import f5.health.app.jwt.JwtMember;
@@ -15,8 +16,26 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import java.util.List;
+
 @Tag(name = "건강 일지", description = "리포트 저장 및 조회 API")
 public interface HealthReportApiDocs {
+
+
+    @Operation(summary = "술 종류 Enum 리스트", description = "소주, 맥주")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "주류 응답",
+                    content = @Content(schema = @Schema(implementation = EnumModel.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증되지 않은 사용자",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            )
+    })
+    List<? extends EnumModel> alcoholTypes();
 
     @Operation(summary = "리포트 조회", description = "해당 일자에 저장된 리포트 조회",
             parameters = {
@@ -80,7 +99,7 @@ public interface HealthReportApiDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "리포트 등록 완료(실제로 식단은 각 식사 타입과 총 칼로리만 응답)",
+                    description = "리포트 등록 완료(실제로 식단은 각 식사 타입과 총 칼로리 및 탄수화물/단백질/지방만 응답)",
                     content = @Content(schema = @Schema(implementation = HealthReportResponse.class))
             ),
             @ApiResponse(

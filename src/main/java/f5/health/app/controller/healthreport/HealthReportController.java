@@ -1,5 +1,8 @@
 package f5.health.app.controller.healthreport;
 
+import f5.health.app.constant.AlcoholType;
+import f5.health.app.constant.EnumModel;
+import f5.health.app.constant.EnumModelMapper;
 import f5.health.app.jwt.JwtMember;
 import f5.health.app.service.healthreport.HealthReportService;
 import f5.health.app.service.healthreport.vo.request.DateRangeQuery;
@@ -12,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/health/report")
@@ -19,6 +24,12 @@ import org.springframework.web.bind.annotation.*;
 public class HealthReportController implements HealthReportApiDocs {
 
     private final HealthReportService reportService;
+    private final EnumModelMapper enumMapper;
+
+    @GetMapping("/alcohol-types")
+    public List<? extends EnumModel> alcoholTypes() {
+        return enumMapper.get(AlcoholType.class);
+    }
 
     @GetMapping
     public HealthReportResponse report(@AuthenticationPrincipal JwtMember loginMember,

@@ -42,7 +42,7 @@ public class HealthItemsRecommendPrompt implements Prompt {
                         - 몸무게: %d kg
                         - 절약한 금액: %,d 원
                         - 하루 평균 흡연량: %d 개비
-                        - 주간 음주량: %d 잔
+                        - 주간 음주량: %d ml
                         - 최근 운동 기록: %s
                         
                         위의 정보를 바탕으로 다음 내용을 한국어로 간결하게 작성해 주세요:

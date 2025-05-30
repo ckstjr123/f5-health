@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
-import static f5.health.app.entity.member.Member.DAYS_IN_WEEK;
-import static f5.health.app.entity.member.Member.MAX_NICKNAME_LENGTH;
+import static f5.health.app.entity.member.Member.*;
+import static f5.health.app.entity.member.Member.MemberCheckUp.WEEK_MAX_ALCOHOL_ML;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
@@ -34,8 +34,8 @@ public class MemberUpdateRequest {
     @Range(min = 0, max = 30)
     private int daySmokeCigarettes;
 
-    @Schema(description = "주 음주량(잔)", example = "5", requiredMode = REQUIRED)
-    @Range(min = 0, max = 50)
+    @Schema(description = "주 음주량(ml)", example = "1200", requiredMode = REQUIRED)
+    @Range(min = 0, max = WEEK_MAX_ALCOHOL_ML)
     private int weekAlcoholDrinks;
 
     @Schema(description = "주 운동 빈도", example = "3", requiredMode = REQUIRED)

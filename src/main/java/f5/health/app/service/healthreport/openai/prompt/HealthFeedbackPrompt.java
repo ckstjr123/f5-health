@@ -61,7 +61,7 @@ public class HealthFeedbackPrompt implements Prompt {
                         
                         음수량: %d ml
                         흡연량: %d 개비
-                        음주량: %d 잔
+                        음주량: %d ml
                         걸음 수: %d보"""
                         + (!workoutTypes.isEmpty() ? String.format("운동 종류: %s", workoutTypes) : "") + """
                         운동 시간: %.0f분

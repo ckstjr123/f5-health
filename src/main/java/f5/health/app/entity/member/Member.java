@@ -1,5 +1,6 @@
 package f5.health.app.entity.member;
 
+import f5.health.app.constant.AlcoholType;
 import f5.health.app.constant.member.BloodType;
 import f5.health.app.constant.member.Gender;
 import f5.health.app.constant.member.Role;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -81,7 +83,7 @@ public class Member extends BaseTimeEntity {
     private int smokingSavedMoney; // 흡연 절약 금액
 
     @Column(name = "WEEK_ALCOHOL_DRINKS")
-    private int weekAlcoholDrinks; // 주 알코올 섭취량(잔)
+    private int weekAlcoholDrinks; // 주평균 음주량(ml)
     @Column(name = "ALCOHOL_SAVED_MONEY")
     private int alcoholSavedMoney; // 음주 절약 금액
 
@@ -150,16 +152,18 @@ public class Member extends BaseTimeEntity {
 
 
     public boolean isAlcoholDrinker() {
-        return (weekAlcoholDrinks > 0); // 주 알코올 섭취량이 1잔 이상이면 음주자
+        return (weekAlcoholDrinks > 0); // 주 알코올 섭취량이 0ml 넘으면 음주자
     }
 
-    public void accumulateAlcoholSavedMoneyForDay(final int consumedAlcoholDrinks, final int alcoholCost) {
-        if (!isAlcoholDrinker() || consumedAlcoholDrinks <= 0) {
+    public void accumulateAlcoholSavedMoneyForDay(@Nullable AlcoholConsumptionResult alcoholConsumptionResult) {
+        if (!isAlcoholDrinker()) {
             return;
         }
-        double pricePerDrink = (double) alcoholCost / consumedAlcoholDrinks;
-        int dayAlcoholDrinks = (weekAlcoholDrinks / DAYS_IN_WEEK);
-        this.alcoholSavedMoney += (int) Math.round((dayAlcoholDrinks - consumedAlcoholDrinks) * pricePerDrink);
+
+        double expectedAlcoholCostPerDay = ((double) weekAlcoholDrinks / DAYS_IN_WEEK) * AlcoholType.AVERAGE_MAJOR_ALCOHOL_PRICE_PER_ML; // 실제 선호하는 주류로 대체 가능
+        double actualAlcoholCost = (alcoholConsumptionResult != null) ? alcoholConsumptionResult.getTotalAlcoholCost() : 0;
+
+        this.alcoholSavedMoney += (int) Math.round(expectedAlcoholCostPerDay - actualAlcoholCost);
     }
 
 
@@ -170,6 +174,7 @@ public class Member extends BaseTimeEntity {
     public void updateHealthItemsRecommend(PromptCompletion healthItemsRecommend) {
         this.healthItemsRecommend = healthItemsRecommend.getContent();
     }
+
 
     public void updateProfile(MemberUpdateRequest updateParam) {
         this.nickname = updateParam.getNickname();
@@ -187,6 +192,7 @@ public class Member extends BaseTimeEntity {
     public static class MemberCheckUp {
 
         public static final int DAILY_MAX_CIGARETTES = 40;
+        public static final int WEEK_MAX_ALCOHOL_ML = 5000;
 
         @Schema(description = "생년월일", example = "2000-04-18", requiredMode = REQUIRED)
         @NotNull(message = "생년월일을 입력해주세요.")
@@ -213,8 +219,8 @@ public class Member extends BaseTimeEntity {
         @Range(min = 0, max = DAILY_MAX_CIGARETTES)
         private int daySmokeCigarettes;
 
-        @Schema(description = "주평균 알코올 섭취량(잔)", example = "6", requiredMode = REQUIRED)
-        @Range(min = 0, max = 50)
+        @Schema(description = "주평균 알코올 섭취량(ml)", example = "1200", requiredMode = REQUIRED)
+        @Range(min = 0, max = WEEK_MAX_ALCOHOL_ML)
         private int weekAlcoholDrinks;
 
         @Schema(description = "주평균 운동 횟수", example = "3", requiredMode = REQUIRED)

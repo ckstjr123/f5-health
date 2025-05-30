@@ -41,7 +41,7 @@ public final class MemberProfile {
     @Schema(description = "하루에 피우는 담배(0이면 비흡연자)", example = "0")
     private final int daySmokeCigarettes;
 
-    @Schema(description = "주에 마시는 술잔", example = "0")
+    @Schema(description = "주 알코올 섭취량", example = "1200")
     private final int weekAlcoholDrinks;
 
     @Schema(description = "주 운동 빈도", example = "5")

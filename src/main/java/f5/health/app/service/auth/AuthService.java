@@ -1,14 +1,13 @@
 package f5.health.app.service.auth;
 
 import f5.health.app.constant.auth.OAuth2Provider;
-import f5.health.app.entity.member.Member;
 import f5.health.app.entity.device.Device;
+import f5.health.app.entity.member.Member;
 import f5.health.app.exception.auth.AccessDeniedException;
 import f5.health.app.exception.auth.RefreshViolationException;
 import f5.health.app.jwt.JwtProvider;
 import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.client.oauth2client.OAuth2ClientService;
-import f5.health.app.service.auth.vo.DeviceInfo;
 import f5.health.app.service.auth.vo.OAuth2LoginRequest;
 import f5.health.app.service.auth.vo.SignUpRequest;
 import f5.health.app.service.auth.vo.oauth2userinfo.OAuth2UserInfo;
@@ -40,7 +39,8 @@ public class AuthService {
 
         return memberService.findByEmail(oauth2UserInfo.getEmail())
                 .map(findMember -> {
-                    JwtResponse tokenResponse = this.issueTokensAndRegisterDevice(findMember, loginRequest.getDeviceInfo());
+                    JwtResponse tokenResponse = issueJwtokens(findMember);
+                    deviceService.registerDevice(findMember.getId(), loginRequest.getDeviceInfo(), tokenResponse.getRefreshToken());
                     return OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, tokenResponse);
                 })
                 .orElse(OAuth2LoginResult.of(SIGNUP_REQUIRED, null));
@@ -52,7 +52,9 @@ public class AuthService {
 
         Member joinMember = memberService.join(oauth2Userinfo, signUpRequest.getMemberCheckUp());
 
-        return this.issueTokensAndRegisterDevice(joinMember, signUpRequest.getDeviceInfo());
+        JwtResponse tokenResponse = issueJwtokens(joinMember);
+        deviceService.registerDevice(joinMember.getId(), signUpRequest.getDeviceInfo(), tokenResponse.getRefreshToken());
+        return tokenResponse;
     }
 
     public JwtResponse refresh(String refreshToken) {
@@ -72,13 +74,11 @@ public class AuthService {
         this.deviceService.deleteByMemberIdAndRefreshToken(logoutMemberId, refreshToken);
     }
 
-    private JwtResponse issueTokensAndRegisterDevice(Member member, DeviceInfo deviceInfo) {
+    private JwtResponse issueJwtokens(Member member) {
         Long memberId = member.getId();
         String accessToken = jwtProvider.issueAccessToken(memberId, member.getRole().name());
         JwtProvider.RefreshToken refreshToken = jwtProvider.issueRefreshToken(memberId);
-
-        this.deviceService.register(Device.of(member, deviceInfo.getUdid(), deviceInfo.getOs(), refreshToken)); // 갱신 토큰과 함께 해당 접속 유저 디바이스 등록
-        return new JwtResponse(accessToken, refreshToken.value());
+        return new JwtResponse(accessToken, refreshToken);
     }
 
     private JwtResponse refreshRotation(DeviceAndMemberRole deviceAndMemberRole) {
@@ -89,7 +89,7 @@ public class AuthService {
         JwtProvider.RefreshToken refreshToken = jwtProvider.issueRefreshToken(refreshMemberId);
         refreshDevice.rotateRefreshToken(refreshToken);
 
-        return new JwtResponse(accessToken, refreshToken.value());
+        return new JwtResponse(accessToken, refreshToken);
     }
 
 }

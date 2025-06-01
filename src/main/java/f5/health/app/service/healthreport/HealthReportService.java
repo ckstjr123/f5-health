@@ -1,10 +1,10 @@
 package f5.health.app.service.healthreport;
 
-import f5.health.app.entity.member.Member;
 import f5.health.app.entity.healthreport.HealthReport;
 import f5.health.app.entity.healthreport.PromptCompletion;
 import f5.health.app.entity.meal.EatenFoodMap;
 import f5.health.app.entity.meal.Meal;
+import f5.health.app.entity.member.Member;
 import f5.health.app.exception.global.DuplicateEntityException;
 import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.jwt.JwtMember;
@@ -21,7 +21,6 @@ import f5.health.app.service.healthreport.vo.request.DateRangeQuery;
 import f5.health.app.service.healthreport.vo.request.HealthReportRequest;
 import f5.health.app.service.healthreport.vo.request.MealsRequest;
 import f5.health.app.service.healthreport.vo.request.healthkit.HealthKit;
-import f5.health.app.service.healthreport.vo.request.healthkit.applekit.Workouts;
 import f5.health.app.vo.healthreport.response.HealthReportResponse;
 import f5.health.app.vo.member.response.HealthLifestyleScore;
 import f5.health.app.vo.member.response.HealthLifestyleScoreList;
@@ -46,7 +45,7 @@ import static f5.health.app.service.healthreport.openai.prompt.DefaultPromptComp
 @RequiredArgsConstructor
 public class HealthReportService {
 
-    public static final int MINIMUM_SAVED_MONEY_REQUIRED = 5000;
+    public static final int MIN_SAVED_MONEY_REQUIRED = 5000;
     private final MemberRepository memberRepository;
     private final FoodRepository foodRepository;
     private final GptService gptService;
@@ -78,7 +77,7 @@ public class HealthReportService {
         // 절약 금액 로직
         Member writer = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
         HealthKit healthKit = reportRequest.getHealthKit();
-        this.accumulateSavedMoney(writer, healthKit);
+        this.accumulateSavingsAndRecommend(writer, healthKit);
 
         // 식단
         List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
@@ -99,19 +98,19 @@ public class HealthReportService {
         return new HealthReportResponse(report, writer.getRecommendedCalories(), meals);
     }
 
-    private void accumulateSavedMoney(Member writer, HealthKit healthKit) {
+    /** 절약 금액 로직 */
+    private void accumulateSavingsAndRecommend(Member writer, HealthKit healthKit) {
+        int prevTotalSavedMoney = writer.getTotalSavedMoney();
         writer.accumulateSmokingSavedMoneyForDay(healthKit.getSmokedCigarettes());
         writer.accumulateAlcoholSavedMoneyForDay(healthKit.getAlcoholConsumptionResult().orElse(null));
-        this.recommendHealthItems(writer, healthKit.getWorkouts());
-    }
 
-    /** 절약 금액이 일정 금액 이상이면 gpt 건강 물품 피드백 요청 */
-    private void recommendHealthItems(Member writer, Workouts workouts) {
-        int totalSavedMoney = writer.getTotalSavedMoney();
-        PromptCompletion healthItemsRecommend = (MINIMUM_SAVED_MONEY_REQUIRED <= totalSavedMoney) ?
-                gptService.call(new HealthItemsRecommendPrompt(writer, workouts)) : SAVED_MONEY_DEFAULT_COMPLETION.get();
-
-        writer.updateHealthItemsRecommend(healthItemsRecommend); //
+        int curTotalSavedMoney = writer.getTotalSavedMoney();
+        if (curTotalSavedMoney < MIN_SAVED_MONEY_REQUIRED) {
+            writer.updateHealthItemsRecommend(SAVED_MONEY_DEFAULT_COMPLETION.get());
+        } else if (curTotalSavedMoney != prevTotalSavedMoney) {
+            PromptCompletion healthItemsRecommend = gptService.call(new HealthItemsRecommendPrompt(writer, healthKit.getWorkouts()));
+            writer.updateHealthItemsRecommend(healthItemsRecommend);
+        }
     }
 
     /** 식단 기록 요청 VO를 바탕으로 식단 리스트 생성 */

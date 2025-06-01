@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.Range;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AlcoholConsumption {
 
-    private static final int DAILY_MAX_ALCOHOL_ML = 1000;
+    private static final int DAILY_MAX_ALCOHOL_ML = 1500;
 
     @Schema(description = "마신 술 종류", example = "BEER")
     @NotNull

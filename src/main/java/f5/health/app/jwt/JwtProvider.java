@@ -1,5 +1,6 @@
 package f5.health.app.jwt;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import f5.health.app.exception.auth.AuthErrorCode;
 import f5.health.app.exception.auth.AuthenticationException;
 import io.jsonwebtoken.*;
@@ -83,6 +84,7 @@ public class JwtProvider {
                     .compact();
         }
 
+        @JsonValue
         public String value() {
             return this.value;
         }

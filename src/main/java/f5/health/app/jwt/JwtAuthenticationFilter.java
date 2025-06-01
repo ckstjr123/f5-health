@@ -59,7 +59,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(loginMember, null, List.of(new SimpleGrantedAuthority(loginMember.getRole())));
             SecurityContextHolder.getContext().setAuthentication(authentication); // 인증된 유저에 대해 현재 요청 동안에만 사용될 임시 세션
-            log.info("Access token authentication success, memberId={}", loginMember.getId());
         } catch (AuthenticationException ex) {
             request.setAttribute(JWT_EXCEPTION_ATTRIBUTE, ex.getErrorCode()); // AuthenticationEntryPoint에서 처리
             throw ex;

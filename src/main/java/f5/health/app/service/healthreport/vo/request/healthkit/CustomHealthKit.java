@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Range;
 import java.util.Optional;
 
 import static f5.health.app.entity.member.Member.MemberCheckUp.DAILY_MAX_CIGARETTES;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIRED;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
@@ -29,13 +30,13 @@ public class CustomHealthKit {
     @Range(min = 0, max = DAILY_MAX_CIGARETTES, message = "하루에 기록 가능한 흡연량 최대치는 " + DAILY_MAX_CIGARETTES + "개비입니다.")
     private int smokedCigarettes;
 
-    @Schema(description = "음주 관련 정보(nullable)", nullable = true)
+    @Schema(description = "음주 관련 정보(nullable)", requiredMode = NOT_REQUIRED)
     @Valid
     private AlcoholConsumptionResult alcoholConsumptionResult;
 
 
     public Optional<AlcoholConsumptionResult> getAlcoholConsumptionResult() {
-        return Optional.of(alcoholConsumptionResult);
+        return Optional.ofNullable(alcoholConsumptionResult);
     }
 
     @Schema(hidden = true)

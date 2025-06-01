@@ -192,7 +192,7 @@ public class Member extends BaseTimeEntity {
     public static class MemberCheckUp {
 
         public static final int DAILY_MAX_CIGARETTES = 40;
-        public static final int WEEK_MAX_ALCOHOL_ML = 5000;
+        public static final int WEEK_MAX_ALCOHOL_ML = 10000;
 
         @Schema(description = "생년월일", example = "2000-04-18", requiredMode = REQUIRED)
         @NotNull(message = "생년월일을 입력해주세요.")

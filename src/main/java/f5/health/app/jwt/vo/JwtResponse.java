@@ -15,9 +15,10 @@ public final class JwtResponse {
     private final String accessToken;
 
     @Schema(description = "갱신 토큰")
-    private final String refreshToken;
+    private final JwtProvider.RefreshToken refreshToken;
 
-    public JwtResponse(String accessToken, String refreshToken) {
+
+    public JwtResponse(String accessToken, JwtProvider.RefreshToken refreshToken) {
         this.accessTokenType = JwtProvider.ACCESS_TOKEN_TYPE;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;

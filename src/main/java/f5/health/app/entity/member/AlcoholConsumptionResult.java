@@ -14,7 +14,7 @@ import static f5.health.app.constant.AlcoholType.ALCOHOL_TYPE_SIZE;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
-@Schema(description = "음주 결과(nullable)", nullable = true)
+@Schema(description = "음주 결과")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AlcoholConsumptionResult {
 

@@ -1,6 +1,6 @@
 package f5.health.app.service.healthreport.vo.request;
 
-import f5.health.app.validation.healthreport.DateRange;
+import f5.health.app.validation.DateRange;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;

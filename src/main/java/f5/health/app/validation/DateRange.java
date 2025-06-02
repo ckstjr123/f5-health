@@ -1,4 +1,4 @@
-package f5.health.app.validation.healthreport;
+package f5.health.app.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

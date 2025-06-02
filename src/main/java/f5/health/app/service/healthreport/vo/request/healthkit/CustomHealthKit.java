@@ -30,7 +30,7 @@ public class CustomHealthKit {
     @Range(min = 0, max = DAILY_MAX_CIGARETTES, message = "하루에 기록 가능한 흡연량 최대치는 " + DAILY_MAX_CIGARETTES + "개비입니다.")
     private int smokedCigarettes;
 
-    @Schema(description = "음주 관련 정보(nullable)", requiredMode = NOT_REQUIRED)
+    @Schema(description = "음주 관련 정보", requiredMode = NOT_REQUIRED)
     @Valid
     private AlcoholConsumptionResult alcoholConsumptionResult;
 

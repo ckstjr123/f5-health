@@ -1,4 +1,4 @@
-package f5.health.app.validation.healthreport;
+package f5.health.app.validation;
 
 import f5.health.app.service.healthreport.vo.request.DateRangeQuery;
 import jakarta.validation.ConstraintValidator;

@@ -58,15 +58,15 @@ public class HealthItemsRecommendPrompt implements Prompt {
                         [답변 예시]
                         💊 센트룸 포맨 종합비타민
                         하루 영양을 간편하게 보충해요
-                        💰 33,000원
+                        💰 33,000
                         
                         🍱 닭가슴살 도시락 10팩 세트
                         간편한 고단백 식사!
-                        💰 49,000원
+                        💰 49,000
                         
                         🏋️‍♂️ 폼롤러 (스트레칭 & 근막 이완)
                         운동 후 회복을 돕고 유연성을 높여줘요
-                        💰 18,000원"""
+                        💰 18,000"""
                 , nickname, gender, height, weight, totalSavedMoney, daySmokeCigarettes, weekAlcoholDrinks
                 , workouts.getWorkoutTypes().isEmpty() ? "기록 없음" : String.join(", ", workouts.getWorkoutTypes()));
 

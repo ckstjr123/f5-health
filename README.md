@@ -12,4 +12,4 @@ https://github.com/user-attachments/assets/0bbd1894-e791-465a-a5c6-c03418b192e1
 
 https://github.com/user-attachments/assets/02ce2d42-1d46-4113-aecf-5884ff8f5513
 
-![캡처2](https://github.com/user-attachments/assets/adf0d935-ffd1-4f2a-853c-15ca683d7f02)
+![캡처2](https://github.com/user-attachments/assets/dbb3b1e6-56ac-4c06-83d0-c32b2f161f06)

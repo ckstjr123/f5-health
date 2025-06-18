@@ -5,5 +5,5 @@
 
 ## 시연
 https://github.com/user-attachments/assets/5428f283-7024-45d0-b125-aa250df8614c
-https://github.com/user-attachments/assets/1a59661f-2356-4f56-a8ee-51596ee6c499
+https://github.com/user-attachments/assets/e386aa84-b59e-4ab6-98ff-187ae1fe0bdc
 

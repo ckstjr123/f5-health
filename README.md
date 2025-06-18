@@ -1,7 +1,8 @@
 # f5-health
 
 ## **ERD**
-![f5_health](https://github.com/user-attachments/assets/232dae0a-e7e8-4662-90d2-5a4991f766c5)
+![erd](https://github.com/user-attachments/assets/8076e96e-1237-4a38-b06f-8a3ac0d38f67)
+
 
 ## 시연
 https://github.com/user-attachments/assets/fca69afd-113e-49e7-bb38-8764f1845662

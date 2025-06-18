@@ -1,10 +1,4 @@
-# f5-health
 
-## **ERD**
-![erd](https://github.com/user-attachments/assets/8076e96e-1237-4a38-b06f-8a3ac0d38f67)
-
-
-## 시연
 https://github.com/user-attachments/assets/fca69afd-113e-49e7-bb38-8764f1845662
 
 https://github.com/user-attachments/assets/ca256b6f-cbc4-4934-ab55-2ab90cc7269e

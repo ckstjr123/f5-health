@@ -1,4 +1,4 @@
 # f5-health
 
 #ERD
-![erd](https://github.com/user-attachments/assets/f9be912a-5355-4c37-999d-73805e0e2a4e)
+![erd](https://github.com/user-attachments/assets/6df51fcb-41f6-4695-a8d1-ef5cd3474f5a)

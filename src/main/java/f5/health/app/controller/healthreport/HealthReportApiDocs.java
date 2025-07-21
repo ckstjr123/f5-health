@@ -74,7 +74,7 @@ public interface HealthReportApiDocs {
     @Operation(summary = "리포트 등록", description = "HealthKit, 식단, 음주/흡연량 등 데이터 처리",
             parameters = {
                     @Parameter(name = "reportRequest", description = "리포트 등록 요청",
-                            content = @Content(schema = @Schema(implementation = HealthReportRequest.class)))
+                            content = @Content(schema = @Schema(implementation = HealthReportRequest.class)), required = true)
             }
     )
     @ApiResponses({

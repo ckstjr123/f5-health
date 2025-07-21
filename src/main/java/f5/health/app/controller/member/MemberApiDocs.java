@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "회원 API", description = "회원 조회")
+@Tag(name = "회원 API", description = "회원 조회/수정")
 public interface MemberApiDocs {
 
     @Operation(summary = "회원 프로필", description = "내 정보(MY)")

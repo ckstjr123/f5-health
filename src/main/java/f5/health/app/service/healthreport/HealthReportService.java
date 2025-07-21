@@ -14,8 +14,6 @@ import f5.health.app.repository.MemberRepository;
 import f5.health.app.service.healthreport.openai.GptService;
 import f5.health.app.service.healthreport.openai.prompt.HealthFeedbackPrompt;
 import f5.health.app.service.healthreport.openai.prompt.HealthItemsRecommendPrompt;
-import f5.health.app.service.healthreport.scorepolicy.HealthLifestyleScorePolicy;
-import f5.health.app.service.healthreport.scorepolicy.vo.HealthSnapshot;
 import f5.health.app.service.healthreport.vo.MealsNutritionContents;
 import f5.health.app.service.healthreport.vo.request.DateRangeQuery;
 import f5.health.app.service.healthreport.vo.request.HealthReportRequest;
@@ -49,6 +47,7 @@ public class HealthReportService {
     private final MemberRepository memberRepository;
     private final FoodRepository foodRepository;
     private final GptService gptService;
+    private final HealthLifeStyleScoreCalculator healthLifeStyleScoreCalculator = new HealthLifeStyleScoreCalculator();
     private final HealthReportRepository reportRepository;
 
     /** 일자별 조회 */
@@ -83,9 +82,8 @@ public class HealthReportService {
         List<Meal> meals = this.createMeals(reportRequest.getMealsRequest());
         MealsNutritionContents nutritionContents = MealsNutritionContents.from(meals);
 
-        HealthScoreCalculator healthScoreCalculator = new HealthScoreCalculator(HealthLifestyleScorePolicy.getInstance());
         HealthReport report = HealthReport.builder(writer, meals)
-                .healthLifeScore(healthScoreCalculator.calculateScore(HealthSnapshot.of(writer, healthKit, nutritionContents)))
+                .healthLifeScore(healthLifeStyleScoreCalculator.calculate(HealthSnapshot.of(writer, healthKit, nutritionContents)))
                 .waterIntake(healthKit.getWaterIntake())
                 .smokeCigarettes(healthKit.getSmokedCigarettes())
                 .alcoholDrinks(healthKit.getConsumedAlcoholDrinks())

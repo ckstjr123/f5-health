@@ -1,4 +1,4 @@
-package f5.health.app.service.healthreport.scorepolicy.vo;
+package f5.health.app.service.healthreport;
 
 import f5.health.app.constant.member.Gender;
 import f5.health.app.entity.member.Member;

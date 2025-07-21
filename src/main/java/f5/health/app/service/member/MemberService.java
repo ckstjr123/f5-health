@@ -29,8 +29,7 @@ public class MemberService {
 
     /** 내 정보 */
     public MemberProfile getMyProfile(JwtMember loginMember) {
-        Member member = memberRepository.findById(loginMember.getId())
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
+        Member member = this.findById(loginMember.getId());
         return new MemberProfile(member, enumMapper);
     }
 
@@ -47,15 +46,21 @@ public class MemberService {
         return memberRepository.getMemberSavingsById(loginMember.getId()).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
     }
 
+    public Member findById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER, memberId.toString()));
+    }
+
     public Optional<Member> findByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
 
     /** 회원 중복 체크 후 회원가입 처리 */
-    public Member join(OAuth2UserInfo userInfo, Member.MemberCheckUp memberCheckUp) {
+    public Long join(OAuth2UserInfo userInfo, Member.MemberCheckUp memberCheckUp) {
         this.validateDuplicateMember(userInfo.getEmail());
-        Member joinMember = Member.createMember(userInfo.getOAuthId(), userInfo.getEmail(), userInfo.getNickname(), Role.USER, memberCheckUp);
-        return memberRepository.save(joinMember);
+        Member member = Member.createMember(userInfo.getOAuthId(), userInfo.getEmail(), userInfo.getNickname(), Role.USER, memberCheckUp);
+        memberRepository.save(member);
+        return member.getId();
     }
 
     private void validateDuplicateMember(String email) {

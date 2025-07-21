@@ -5,6 +5,7 @@ import f5.health.app.entity.device.Device;
 import f5.health.app.entity.member.Member;
 import f5.health.app.exception.auth.AccessDeniedException;
 import f5.health.app.exception.auth.RefreshViolationException;
+import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.jwt.JwtProvider;
 import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.client.oauth2client.OAuth2ClientService;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static f5.health.app.constant.auth.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
 import static f5.health.app.constant.auth.OAuth2LoginStatus.SIGNUP_REQUIRED;
 import static f5.health.app.exception.auth.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
+import static f5.health.app.exception.member.MemberErrorCode.NOT_FOUND_MEMBER;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +52,8 @@ public class AuthService {
         // 액세스 토큰을 통해 유저 정보 조회
         OAuth2UserInfo oauth2Userinfo = oauth2ClientService.fetchOAuth2UserInfo(provider, signUpRequest.getAccessToken());
 
-        Member joinMember = memberService.join(oauth2Userinfo, signUpRequest.getMemberCheckUp());
+        Long memberId = memberService.join(oauth2Userinfo, signUpRequest.getMemberCheckUp());
+        Member joinMember = memberService.findById(memberId);
 
         JwtResponse tokenResponse = issueJwtokens(joinMember);
         deviceService.registerDevice(joinMember.getId(), signUpRequest.getDeviceInfo(), tokenResponse.getRefreshToken());

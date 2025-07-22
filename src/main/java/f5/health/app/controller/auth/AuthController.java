@@ -39,7 +39,7 @@ public class AuthController implements AuthApiDocs {
 
         JwtResponse tokenResponse = this.authService.join(provider, signUpRequest);
 
-        return new ResponseEntity<>(tokenResponse, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(tokenResponse);
     }
 
     @PatchMapping("/refresh")

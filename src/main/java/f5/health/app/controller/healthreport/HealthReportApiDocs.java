@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 
 @Tag(name = "건강 일지", description = "리포트 저장 및 조회 API")
 public interface HealthReportApiDocs {
@@ -79,9 +80,8 @@ public interface HealthReportApiDocs {
     )
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200",
-                    description = "리포트 등록 완료(실제로 식단은 각 식사 타입과 총 칼로리 및 탄수화물/단백질/지방만 응답)",
-                    content = @Content(schema = @Schema(implementation = HealthReportResponse.class))
+                    responseCode = "201",
+                    description = "리포트 등록 완료"
             ),
             @ApiResponse(
                     responseCode = "401",
@@ -99,5 +99,5 @@ public interface HealthReportApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    HealthReportResponse submit(JwtMember loginMember, HealthReportRequest reportRequest);
+    ResponseEntity<Void> submit(JwtMember loginMember, HealthReportRequest reportRequest);
 }

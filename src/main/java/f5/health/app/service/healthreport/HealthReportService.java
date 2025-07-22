@@ -69,7 +69,7 @@ public class HealthReportService {
 
     /** 리포트 등록 */
     @Transactional
-    public HealthReportResponse submit(Long memberId, HealthReportRequest reportRequest) {
+    public void submit(Long memberId, HealthReportRequest reportRequest) {
         LocalDateTime endDateTime = reportRequest.getEndDateTime();
         this.validateDuplicateReport(memberId, endDateTime.toLocalDate());
 
@@ -92,8 +92,7 @@ public class HealthReportService {
                 .endDateTime(endDateTime)
                 .build();
 
-        this.reportRepository.save(report); // 리포트 저장(계산된 점수 회원 총점에 누적되며 배지 세팅, 식단 저장됨)
-        return new HealthReportResponse(report, writer.getRecommendedCalories(), meals);
+        this.reportRepository.save(report); // 리포트 등록(계산된 점수 회원 총점에 누적되며 배지 세팅, 식단 저장됨)
     }
 
     /** 절약 금액 로직 */

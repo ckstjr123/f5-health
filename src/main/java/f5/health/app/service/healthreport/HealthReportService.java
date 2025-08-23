@@ -73,7 +73,7 @@ public class HealthReportService {
         LocalDateTime endDateTime = reportRequest.getEndDateTime();
         this.validateDuplicateReport(memberId, endDateTime.toLocalDate());
 
-        // 절약 금액 로직
+        // 절약 금액
         Member writer = memberRepository.findById(memberId).orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
         HealthKit healthKit = reportRequest.getHealthKit();
         this.accumulateSavingsAndRecommend(writer, healthKit);

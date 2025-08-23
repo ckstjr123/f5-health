@@ -5,7 +5,6 @@ import f5.health.app.entity.device.Device;
 import f5.health.app.entity.member.Member;
 import f5.health.app.exception.auth.AccessDeniedException;
 import f5.health.app.exception.auth.RefreshViolationException;
-import f5.health.app.exception.global.NotFoundException;
 import f5.health.app.jwt.JwtProvider;
 import f5.health.app.jwt.vo.JwtResponse;
 import f5.health.app.service.auth.client.oauth2client.OAuth2ClientService;
@@ -24,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static f5.health.app.constant.auth.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
 import static f5.health.app.constant.auth.OAuth2LoginStatus.SIGNUP_REQUIRED;
 import static f5.health.app.exception.auth.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
-import static f5.health.app.exception.member.MemberErrorCode.NOT_FOUND_MEMBER;
 
 @Service
 @RequiredArgsConstructor

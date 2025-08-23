@@ -28,7 +28,7 @@ public class AuthController implements AuthApiDocs {
     public ResponseEntity<OAuth2LoginResult> signin(@PathVariable(name = "provider") OAuth2Provider provider,
                                                     @RequestBody @Valid OAuth2LoginRequest loginRequest) {
 
-        OAuth2LoginResult oauth2loginResult = this.authService.login(provider, loginRequest);
+        OAuth2LoginResult oauth2loginResult = authService.login(provider, loginRequest);
 
         return new ResponseEntity<>(oauth2loginResult, oauth2loginResult.httpStatus());
     }
@@ -37,7 +37,7 @@ public class AuthController implements AuthApiDocs {
     public ResponseEntity<JwtResponse> signup(@PathVariable(name = "provider") OAuth2Provider provider,
                                               @RequestBody @Valid SignUpRequest signUpRequest) {
 
-        JwtResponse tokenResponse = this.authService.join(provider, signUpRequest);
+        JwtResponse tokenResponse = authService.join(provider, signUpRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(tokenResponse);
     }

@@ -17,6 +17,5 @@ public interface DeviceRepository extends JpaRepository<Device, DeviceId> {
             " WHERE d.refreshToken = :refreshToken")
     Optional<DeviceAndMemberRole> findDeviceAndMemberRoleByRefreshToken(@Param("refreshToken") String refreshToken);
 
-
     void deleteByDeviceIdMemberIdAndRefreshToken(Long memberId, String refreshToken);
 }

@@ -10,6 +10,7 @@ import f5.health.app.service.member.MemberService;
 import f5.health.app.vo.device.DeviceAndMemberRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ public class DeviceService {
     private final DeviceRepository deviceRepository;
 
     /** 갱신 토큰과 함께 접속 유저 기기 등록(동일한 식별자를 가진 기존 디바이스가 있으면 병합되고 없으면 새로 저장됨) */
+    @Transactional
     public void registerDevice(Long memberId, DeviceInfo deviceInfo, JwtProvider.RefreshToken refreshToken) {
         Member member = memberService.findById(memberId);
         // spring data jpa repository save(S entity): persist or merge

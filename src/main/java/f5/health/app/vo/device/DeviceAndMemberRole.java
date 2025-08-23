@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class DeviceAndMemberRole {
+
     @Getter
     private final Device device;
     private final Role memberRole;

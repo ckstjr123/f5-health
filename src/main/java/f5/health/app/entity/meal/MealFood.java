@@ -30,9 +30,7 @@ public class MealFood {
     @Column(name = "COUNT")
     private double count; // 해당 음식 섭취 수량(0.5, 1 , 1.5...)
 
-    /**
-     * 식사한 음식
-     */
+
     public static MealFood newInstance(EatenFoodMap eatenFoodMap, MealFoodRequest mealFoodRequest) {
         MealFood mealFood = new MealFood();
         mealFood.food = eatenFoodMap.get(mealFoodRequest.getFoodCode());

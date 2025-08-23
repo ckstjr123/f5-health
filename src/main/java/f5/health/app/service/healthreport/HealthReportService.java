@@ -92,7 +92,7 @@ public class HealthReportService {
                 .endDateTime(endDateTime)
                 .build();
 
-        this.reportRepository.save(report); // 리포트 등록(계산된 점수 회원 총점에 누적되며 배지 세팅, 식단 저장됨)
+        reportRepository.save(report); //
     }
 
     /** 절약 금액 로직 */

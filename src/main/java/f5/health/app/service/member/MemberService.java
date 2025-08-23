@@ -55,7 +55,7 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
-    /** 회원 중복 체크 후 회원가입 처리 */
+    /** 회원가입 */
     public Long join(OAuth2UserInfo userInfo, Member.MemberCheckUp memberCheckUp) {
         this.validateDuplicateMember(userInfo.getEmail());
         Member member = Member.createMember(userInfo.getOAuthId(), userInfo.getEmail(), userInfo.getNickname(), Role.USER, memberCheckUp);

@@ -227,18 +227,6 @@ public class Member extends BaseTimeEntity {
         @Range(min = 0, max = DAYS_IN_WEEK)
         private int weekExerciseFrequency;
 
-        /** 테스트용 생성자 */
-        public MemberCheckUp(LocalDate birthDate, Gender gender, int height, int weight, BloodType bloodType, int daySmokeCigarettes, int weekAlcoholDrinks, int weekExerciseFrequency) {
-            this.birthDate = birthDate;
-            this.gender = gender;
-            this.height = height;
-            this.weight = weight;
-            this.bloodType = bloodType;
-            this.daySmokeCigarettes = daySmokeCigarettes;
-            this.weekAlcoholDrinks = weekAlcoholDrinks;
-            this.weekExerciseFrequency = weekExerciseFrequency;
-        }
-
         /** 설문 정보 반영 */
         private void applyTo(Member member) {
             member.birthDate = this.birthDate;

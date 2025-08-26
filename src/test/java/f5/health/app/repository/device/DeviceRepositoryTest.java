@@ -1,7 +1,5 @@
 package f5.health.app.repository.device;
 
-import f5.health.app.constant.member.BloodType;
-import f5.health.app.constant.member.Gender;
 import f5.health.app.constant.member.Role;
 import f5.health.app.entity.device.Device;
 import f5.health.app.entity.member.Member;
@@ -14,21 +12,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.proxy.HibernateProxy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.time.LocalDate;
 
 import static f5.health.app.constant.device.System.iOS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 @Slf4j
+@ExtendWith(MockitoExtension.class)
 @DataJpaTest
 public class DeviceRepositoryTest {
 
     @Autowired
     private EntityManager em;
+
+    @Mock
+    Member.MemberCheckUp memberCheckUp;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -42,7 +45,7 @@ public class DeviceRepositoryTest {
     @DisplayName("해당 갱신 토큰이 저장된 Device와 Member Role을 조회한다.")
     @Test
     void findDeviceAndMemberRoleByRefreshToken() {
-        Member member = joinMember();
+        Member member = createMember();
         JwtProvider.RefreshToken refreshToken = tokenProvider.issueRefreshToken(member.getId());
         registerDevice(member, refreshToken);
 
@@ -65,7 +68,7 @@ public class DeviceRepositoryTest {
     @DisplayName("로그아웃된 기기를 삭제한다.")
     @Test
     void deleteByMemberIdAndRefreshToken() {
-        Member logoutMember = joinMember();
+        Member logoutMember = createMember();
         JwtProvider.RefreshToken refreshToken = tokenProvider.issueRefreshToken(logoutMember.getId());
         Device logoutDevice = registerDevice(logoutMember, refreshToken);
 
@@ -75,9 +78,9 @@ public class DeviceRepositoryTest {
         assertThat(this.deviceRepository.findById(logoutDevice.getDeviceId())).isEmpty();
     }
 
-    private Member joinMember() {
-        Member member = Member.createMember("OAuthId", "email", "nickname", Role.USER,
-                new Member.MemberCheckUp(LocalDate.now(), Gender.MALE, 173, 60, BloodType.B, 15, 22, 33));
+
+    private Member createMember() {
+        Member member = Member.createMember("OAuthId", "email", "nickname", Role.USER, memberCheckUp);
         memberRepository.save(member);
         return member;
     }

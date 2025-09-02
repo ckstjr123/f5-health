@@ -37,7 +37,7 @@ public class MealService {
     private final FoodRepository foodRepository;
 
     @Transactional
-    public Long save(MealRequest mealRequest, Long memberId) {
+    public Long save(Long memberId, MealRequest mealRequest) {
         Member member = memberService.findById(memberId);
         this.validateDuplicateMeal(memberId, mealRequest.getEatenAt(), mealRequest.getMealType());
 
@@ -56,17 +56,17 @@ public class MealService {
         return Meal.newInstance(member, mealRequest.getEatenAt(), mealRequest.getMealType(), mealFoods);
     }
 
+    private Map<String, Food> toEatenFoodMap(List<Food> eatenFoods) {
+        return eatenFoods.stream()
+                .collect(Collectors.toMap(Food::getFoodCode, Function.identity()));
+    }
+
     private List<MealFood> createMealFoods(Map<String, Food> eatenFoodMap, List<MealFoodRequest> mealFoodRequestList) {
         return mealFoodRequestList.stream()
                 .map(mealFoodRequest -> {
                     Food food = getFoodOrElseThrow(eatenFoodMap, mealFoodRequest.getFoodCode());
                     return MealFood.newInstance(food, mealFoodRequest.getCount());
                 }).toList();
-    }
-
-    private Map<String, Food> toEatenFoodMap(List<Food> eatenFoods) {
-        return eatenFoods.stream()
-                .collect(Collectors.toMap(Food::getFoodCode, Function.identity()));
     }
 
     private Food getFoodOrElseThrow(Map<String, Food> eatenFoodMap, String foodCode) {

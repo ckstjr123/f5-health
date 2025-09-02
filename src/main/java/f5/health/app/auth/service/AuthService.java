@@ -1,6 +1,7 @@
 package f5.health.app.auth.service;
 
 import f5.health.app.auth.constant.OAuth2Provider;
+import f5.health.app.auth.service.oauth2client.OAuth2Client;
 import f5.health.app.session.entity.Session;
 import f5.health.app.member.entity.Member;
 import f5.health.app.auth.exception.RefreshViolationException;
@@ -16,6 +17,8 @@ import f5.health.app.auth.vo.OAuth2LoginResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 import static f5.health.app.auth.constant.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
 import static f5.health.app.auth.constant.OAuth2LoginStatus.SIGNUP_REQUIRED;

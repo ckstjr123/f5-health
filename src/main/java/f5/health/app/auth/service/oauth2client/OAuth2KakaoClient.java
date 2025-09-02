@@ -6,17 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import static f5.health.app.auth.service.oauth2client.OAuth2KakaoClient.KAKA0_OAUTH2_CLIENT_NAME;
-
-@FeignClient(name = KAKA0_OAUTH2_CLIENT_NAME, url = "https://kapi.kakao.com")
+@FeignClient(name = "oauth2KakaoClient", url = "https://kapi.kakao.com")
 public interface OAuth2KakaoClient extends OAuth2Client {
-
-    String KAKA0_OAUTH2_CLIENT_NAME = "oauth2KakaoClient";
-
-    @Override
-    default String getOAuth2ClientName() {
-        return KAKA0_OAUTH2_CLIENT_NAME;
-    }
 
     @Override
     @PostMapping("/v2/user/me")

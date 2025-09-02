@@ -1,5 +1,6 @@
-package f5.health.app.member.entity;
+package f5.health.app.activity.service.request;
 
+import f5.health.app.member.entity.AlcoholConsumption;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

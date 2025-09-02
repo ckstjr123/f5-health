@@ -6,19 +6,18 @@ import static f5.health.app.jwt.JwtProvider.ACCESS_TOKEN_TYPE;
 
 public enum OAuth2Provider {
 
-    KAKAO(OAuth2KakaoClient.KAKA0_OAUTH2_CLIENT_NAME, ACCESS_TOKEN_TYPE + " ");
-//    , APPLE;
+    KAKAO(OAuth2KakaoClient.class.getName(), ACCESS_TOKEN_TYPE + " ");
 
-    private final String oauth2ClientName;
+    private final String oauth2ClientKey;
     private final String accessTokenPrefix;
 
-    OAuth2Provider(String oauth2ClientName, String accessTokenPrefix) {
-        this.oauth2ClientName = oauth2ClientName;
+    OAuth2Provider(String oauth2ClientKey, String accessTokenPrefix) {
+        this.oauth2ClientKey = oauth2ClientKey;
         this.accessTokenPrefix = accessTokenPrefix;
     }
 
-    public String getOAuth2ClientName() {
-        return this.oauth2ClientName;
+    public String oauth2ClientKey() {
+        return this.oauth2ClientKey;
     }
 
     public String accessTokenPrefix() {

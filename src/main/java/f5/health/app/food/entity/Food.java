@@ -36,7 +36,6 @@ public class Food {
     @Column(name = "SUGAR")
     private double sugar;
 
-
     @Column(name = "PROTEIN")
     private double protein;
 

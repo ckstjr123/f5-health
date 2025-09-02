@@ -1,6 +1,7 @@
 package f5.health.app.jwt;
 
-import f5.health.app.exception.auth.AuthenticationException;
+import f5.health.app.auth.exception.AuthenticationException;
+import f5.health.app.jwt.vo.JwtMember;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,9 +22,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static f5.health.app.config.SecurityConfig.AUTH_EXCLUDE_URIS;
-import static f5.health.app.jwt.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
-import static f5.health.app.jwt.JwtConst.ROLE;
+import static f5.health.app.common.config.SecurityConfig.AUTH_EXCLUDE_URIS;
+import static f5.health.app.jwt.constant.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
+import static f5.health.app.jwt.constant.JwtConst.ROLE;
 import static f5.health.app.jwt.JwtProvider.ACCESS_TOKEN_TYPE;
 
 /**
@@ -56,7 +57,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // 임시 세션 보관용 유저 객체 생성
             JwtMember loginMember = new JwtMember(Long.valueOf(atClaims.getSubject()), atClaims.get(ROLE, String.class));
-
             Authentication authentication = new UsernamePasswordAuthenticationToken(loginMember, null, List.of(new SimpleGrantedAuthority(loginMember.getRole())));
             SecurityContextHolder.getContext().setAuthentication(authentication); // 인증된 유저에 대해 현재 요청 동안에만 사용될 임시 세션
         } catch (AuthenticationException ex) {

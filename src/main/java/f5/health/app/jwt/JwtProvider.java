@@ -1,8 +1,8 @@
 package f5.health.app.jwt;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import f5.health.app.exception.auth.AuthErrorCode;
-import f5.health.app.exception.auth.AuthenticationException;
+import f5.health.app.auth.exception.AuthErrorCode;
+import f5.health.app.auth.exception.AuthenticationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-import static f5.health.app.jwt.JwtConst.ROLE;
+import static f5.health.app.jwt.constant.JwtConst.ROLE;
 
 @Slf4j
 @Component

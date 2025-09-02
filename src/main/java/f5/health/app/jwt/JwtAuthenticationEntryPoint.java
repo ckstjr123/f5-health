@@ -2,8 +2,8 @@ package f5.health.app.jwt;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import f5.health.app.exception.ErrorCode;
-import f5.health.app.exception.response.ExceptionResult;
+import f5.health.app.common.exception.ErrorCode;
+import f5.health.app.common.exhandler.response.ExceptionResult;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static f5.health.app.jwt.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
+import static f5.health.app.jwt.constant.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
 
 @Component
 @RequiredArgsConstructor

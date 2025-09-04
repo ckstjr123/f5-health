@@ -10,24 +10,24 @@ import java.util.List;
 @Schema(description = "음식 검색 결과 컬렉션")
 public class FoodSearchResponse {
 
-    private final List<FoodSearchResult> results;
+    private final List<FoodSearchResult> result;
 
-    public FoodSearchResponse(List<FoodSearchResult> results) {
-        this.results = results;
+    public FoodSearchResponse(List<FoodSearchResult> result) {
+        this.result = result;
     }
 
 
     @Getter
-    @Schema(description = "음식 검색 결과(로컬에서 활용할 음식 데이터)")
+    @Schema(description = "음식 검색 결과(자세한 음식 정보는 음식 상세 조회 필요)")
     public static class FoodSearchResult {
 
-        @Schema(description = "음식 PK(음식 상세 정보 조회 또는 리포트 기록 시 파라미터로 활용", example = "D303-148170000-0001")
+        @Schema(description = "음식 코드", example = "D303-148170000-0001")
         private final String foodCode;
 
-        @Schema(description = "음식명(검색 결과와 기록된 식단에서 음식명 출력 용도)", example = "라면")
+        @Schema(description = "음식명", example = "라면")
         private final String foodName;
 
-        @Schema(description = "영양성분 함량 기준량에 따라 1인분 환산된 칼로리(자세한 음식 정보 확인하려면 음식 상세 조회 필요)", example = "550")
+        @Schema(description = "칼로리(kcal)", example = "550")
         private final int kcal;
         
         @Schema(description = "탄수화물(g)", example = "50.15")
@@ -39,13 +39,21 @@ public class FoodSearchResponse {
         @Schema(description = "지방(g)", example = "6.2")
         private final double fat;
 
+        @Schema(description = "중량", example = "250")
+        private final double totalGram;
+
+        @Schema(description = "제공 단위", example = "컵", nullable = true)
+        private final String unit;
+
         public FoodSearchResult(Food food) {
             this.foodCode = food.getFoodCode();
             this.foodName = food.getFoodName();
-            this.kcal = food.calculateServingKcal();
-            this.carbohydrate = food.calculateServingCarbohydrate();
-            this.protein = food.calculateServingProtein();
-            this.fat = food.calculateServingFat();
+            this.kcal = food.getKcal();
+            this.carbohydrate = food.getCarbohydrate();
+            this.protein = food.getProtein();
+            this.fat = food.getFat();
+            this.totalGram = food.getTotalGram();
+            this.unit = food.getUnit();
         }
     }
 }

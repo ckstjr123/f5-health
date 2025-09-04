@@ -42,15 +42,14 @@ public class Food {
     @Column(name = "FAT")
     private double fat;
 
-    /** 영양성분 함량 기준량 */
-    @Column(name = "NUT_CON_STD_QUA")
-    private String nutritionContentStdQuantity;
+    @Column(name = "TOTAL_GRAM")
+    private double totalGram;
 
-    @Column(name = "FOOD_WEIGHT")
-    private String foodWeight;
+    @Column(name = "UNIT")
+    private String unit;
 
-    @Builder(builderMethodName = "createFood", toBuilder = true)
-    private Food(String foodCode, String foodName, String foodType, int kcal, int natrium, double carbohydrate, double sugar, double protein, double fat, String nutritionContentStdQuantity, String foodWeight) {
+    @Builder
+    private Food(String foodCode, String foodName, String foodType, int kcal, int natrium, double carbohydrate, double sugar, double protein, double fat, double totalGram, String unit) {
         this.foodCode = foodCode;
         this.foodName = foodName;
         this.foodType = foodType;
@@ -60,36 +59,7 @@ public class Food {
         this.sugar = sugar;
         this.protein = protein;
         this.fat = fat;
-        this.nutritionContentStdQuantity = nutritionContentStdQuantity;
-        this.foodWeight = foodWeight;
-    }
-
-    /** 해당 메뉴 칼로리 함량 */
-    public int calculateServingKcal() {
-        return (int) (calculateServingRatio() * this.kcal);
-    }
-
-    // ========= 탄수화물, 단백질, 지방 함량 ========= //
-    public double calculateServingCarbohydrate() {
-        return (calculateServingRatio() * this.carbohydrate);
-    }
-    public double calculateServingProtein() {
-        return (calculateServingRatio() * this.protein);
-    }
-    public double calculateServingFat() {
-        return (calculateServingRatio() * this.fat);
-    }
-
-
-    /** 식품 중량과 영양성분 함량 기준량에 따른 1인분 영양성분 함량 구하는 용도 */
-    private double calculateServingRatio() {
-        double foodWeight = Double.parseDouble(parseNumericString(this.foodWeight));
-        double nutritionContentStdQuantity = Double.parseDouble(parseNumericString(this.nutritionContentStdQuantity));
-        return (foodWeight / nutritionContentStdQuantity);
-    }
-
-    /** 단위(g, ml) 제거 */
-    private String parseNumericString(String unitStr) {
-        return unitStr.replaceAll("[^\\d.]", "");
+        this.totalGram = totalGram;
+        this.unit = unit;
     }
 }

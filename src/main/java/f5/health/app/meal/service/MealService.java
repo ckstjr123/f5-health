@@ -50,7 +50,6 @@ public class MealService {
     }
 
 
-
     private Meal createMeal(Member member, Map<String, Food> eatenFoodMap, MealRequest mealRequest) {
         List<MealFood> mealFoods = createMealFoods(eatenFoodMap, mealRequest.getMealFoodRequestList());
         return Meal.newInstance(member, mealRequest.getEatenAt(), mealRequest.getMealType(), mealFoods);
@@ -66,7 +65,8 @@ public class MealService {
                 .map(mealFoodRequest -> {
                     Food food = getFoodOrElseThrow(eatenFoodMap, mealFoodRequest.getFoodCode());
                     return MealFood.newInstance(food, mealFoodRequest.getCount());
-                }).toList();
+                })
+                .toList();
     }
 
     private Food getFoodOrElseThrow(Map<String, Food> eatenFoodMap, String foodCode) {

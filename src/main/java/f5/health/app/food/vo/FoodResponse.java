@@ -32,11 +32,11 @@ public class FoodResponse {
     @Schema(description = "나트륨(mg)", example = "415")
     private final int natrium;
 
-    @Schema(description = "영양성분 함량 기준량", example = "100g")
-    private final String nutritionContentStdQuantity;
+    @Schema(description = "1회 제공량", example = "550")
+    private final double totalGram;
 
-    @Schema(description = "식품 중량", example = "550g")
-    private final String foodWeight;
+    @Schema(description = "제공 단위", example = "그릇")
+    private final String unit;
 
     public static FoodResponse from(Food food) {
         return new FoodResponse(
@@ -47,7 +47,7 @@ public class FoodResponse {
                 food.getFat(),
                 food.getSugar(),
                 food.getNatrium(),
-                food.getNutritionContentStdQuantity(),
-                food.getFoodWeight());
+                food.getTotalGram(),
+                food.getUnit());
     }
 }

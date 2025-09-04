@@ -11,15 +11,10 @@ import java.util.List;
 @Schema(description = "식사 상세 정보 응답")
 public final class MealResponse {
 
-    /**
-     * 리포트 조회 시 식사한 음식 응답 X,
-     * 식단 상세 정보(ex. 아침 식사 상세 정보) 조회 시
-     * MealFoods(해당 식사에서 먹은 음식들 및 각 수량) 필요
-     */
     @Schema(description = "식사 id", example = "1")
     private final Long mealId;
 
-    @Schema(description = "식사한 음식들 정보 및 수량이 담긴 리스트. 리포트 조회 메인에선 null, 리포트에서 아침 식사 상세 정보와 같은 식단 정보 조회 시 응답", nullable = true)
+    @Schema(description = "식사한 음식들 정보 및 수량이 담긴 리스트. 메인에선 null, 아침 식사 상세 정보와 같은 식단 정보 조회 시 응답", nullable = true)
     private final List<MealFoodResponse> mealFoodResponseList;
 
     @Schema(description = "해당 식사 타입 label", example = "저녁")

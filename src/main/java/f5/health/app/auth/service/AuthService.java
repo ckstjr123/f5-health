@@ -1,7 +1,6 @@
 package f5.health.app.auth.service;
 
 import f5.health.app.auth.constant.OAuth2Provider;
-import f5.health.app.auth.service.oauth2client.OAuth2Client;
 import f5.health.app.session.entity.Session;
 import f5.health.app.member.entity.Member;
 import f5.health.app.auth.exception.RefreshViolationException;
@@ -18,10 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
-
 import static f5.health.app.auth.constant.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
-import static f5.health.app.auth.constant.OAuth2LoginStatus.SIGNUP_REQUIRED;
+import static f5.health.app.auth.constant.OAuth2LoginStatus.CHECKUP_REQUIRED;
 import static f5.health.app.auth.exception.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
 
 @Service
@@ -43,7 +40,7 @@ public class AuthService {
                     sessionService.save(findMember.getId(), loginRequest.getDeviceInfo(), tokenResponse.getRefreshToken());
                     return OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, tokenResponse);
                 })
-                .orElse(OAuth2LoginResult.of(SIGNUP_REQUIRED, null));
+                .orElse(OAuth2LoginResult.of(CHECKUP_REQUIRED, null));
     }
 
     public JwtResponse join(OAuth2Provider provider, SignUpRequest signUpRequest) {

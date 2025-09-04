@@ -44,22 +44,20 @@ public class MealFood {
         this.meal = meal;
     }
 
-    /**
-     * 해당 식사 메뉴 수량에 따른 칼로리 계산
-     */
     public int calculateKcal() {
-        return (int) (food.calculateServingKcal() * count);
+        return (int) (food.getKcal() * count);
     }
 
-    // ========= 섭취한 음식 수량에 따른 탄수화물, 단백질, 지방 함량 ========= //
     public double calculateCarbohydrate() {
-        return (food.calculateServingCarbohydrate() * count);
+        return (food.getCarbohydrate() * count);
     }
+
     public double calculateProtein() {
-        return (food.calculateServingProtein() * count);
+        return (food.getProtein() * count);
     }
+
     public double calculateFat() {
-        return (food.calculateServingFat() * count);
+        return (food.getFat() * count);
     }
 
 }

@@ -40,6 +40,12 @@ public class MealRequest {
     @PastOrPresent
     private LocalDateTime eatenAt;
 
+    public MealRequest(List<MealFoodRequest> mealFoodRequestList, MealType mealType, LocalDateTime eatenAt) {
+        this.mealFoodRequestList = mealFoodRequestList;
+        this.mealType = mealType;
+        this.eatenAt = eatenAt;
+    }
+
 
     /** 식단에 기록된 음식의 foodCode를 Set으로 모아서 반환 */
     @Schema(hidden = true)

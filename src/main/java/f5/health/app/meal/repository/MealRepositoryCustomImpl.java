@@ -32,6 +32,8 @@ public class MealRepositoryCustomImpl implements MealRepositoryCustom {
 
     @Override
     public List<Meal> findAll(Long memberId, LocalDate eatenDate) {
-        return List.of();
+        return query.selectFrom(meal)
+                        .where(meal.member.id.eq(memberId), meal.eatenDate.eq(eatenDate))
+                        .fetch();
     }
 }

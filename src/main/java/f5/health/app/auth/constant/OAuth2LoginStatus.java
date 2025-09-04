@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatusCode;
 
 public enum OAuth2LoginStatus {
 
-    SIGNUP_REQUIRED(HttpStatus.FOUND),
+    CHECKUP_REQUIRED(HttpStatus.FOUND),
     OAUTH2_LOGIN_SUCCESS(HttpStatus.OK);
 
     private final HttpStatusCode httpStatus;

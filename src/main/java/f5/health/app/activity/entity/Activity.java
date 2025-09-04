@@ -34,6 +34,7 @@ public class Activity {
 
     @Column(name = "ALCOHOL_INTAKE")
     private int alcoholIntake; // 총 음주량(비정규화 컬럼)
+
 //    @OneToMany(mappedBy = "", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<AlcoholConsumption> alcoholConsumptionList = new ArrayList<>();
 

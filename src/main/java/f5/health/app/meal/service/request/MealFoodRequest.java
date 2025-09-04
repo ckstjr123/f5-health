@@ -22,4 +22,9 @@ public class MealFoodRequest {
     @Schema(description = "먹은 수량", example = "1")
     @DecimalMin(value = "0.25")
     private double count;
+
+    public MealFoodRequest(String foodCode, double count) {
+        this.foodCode = foodCode;
+        this.count = count;
+    }
 }

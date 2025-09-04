@@ -1,8 +1,8 @@
 package f5.health.app.session.entity;
 
-import f5.health.app.session.constant.System;
-import f5.health.app.member.entity.Member;
 import f5.health.app.jwt.JwtProvider;
+import f5.health.app.member.entity.Member;
+import f5.health.app.session.constant.System;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "SESSION_ID")
-    private Long sessionId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")

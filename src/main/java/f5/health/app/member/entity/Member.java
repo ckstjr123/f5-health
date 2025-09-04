@@ -1,10 +1,10 @@
 package f5.health.app.member.entity;
 
+import f5.health.app.common.BaseEntity;
+import f5.health.app.member.constant.Badge;
 import f5.health.app.member.constant.BloodType;
 import f5.health.app.member.constant.Gender;
 import f5.health.app.member.constant.Role;
-import f5.health.app.member.constant.Badge;
-import f5.health.app.common.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -122,7 +122,6 @@ public class Member extends BaseEntity {
         public static final int DAILY_MAX_WATER_ML = 5000;
         public static final int DAILY_MAX_CIGARETTES = 40;
         public static final int DAILY_MAX_ALCOHOL_ML = 1500;
-        public static final int WEEK_MAX_ALCOHOL_ML = 10000;
 
         @Schema(description = "생년월일", example = "2000-04-18", requiredMode = REQUIRED)
         @NotNull(message = "생년월일을 입력해주세요.")

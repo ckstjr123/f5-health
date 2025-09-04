@@ -8,6 +8,5 @@ import java.util.Optional;
 
 public interface ActivityRepository extends JpaRepository<Activity, Long> {
 
-    /** 해당 일자에 기록된 특정 회원의 리포트 조회 */
     Optional<Activity> findByMemberIdAndRecordDate(Long memberId, LocalDate recordDate);
 }

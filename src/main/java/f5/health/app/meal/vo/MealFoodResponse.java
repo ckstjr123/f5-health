@@ -12,7 +12,7 @@ public class MealFoodResponse {
     @Schema(description = "식사한 음식 상세 정보")
     private final FoodResponse foodResponse;
 
-    @Schema(description = "먹은 수량", example = "3")
+    @Schema(description = "먹은 수량", example = "1.0")
     private final double count;
 
     public MealFoodResponse(MealFood mealFood) {

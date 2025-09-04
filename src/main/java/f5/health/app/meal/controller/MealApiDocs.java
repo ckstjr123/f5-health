@@ -34,7 +34,7 @@ public interface MealApiDocs {
     List<? extends EnumModel> mealTypes();
 
     @Operation(summary = "식사 상세 정보",
-            description = "아침 or 점심 or 저녁 or 간식 상세 정보",
+            description = "아침 or 점심 or 저녁 or 간식 상세 정보 조회",
             parameters = {
                     @Parameter(in = ParameterIn.PATH, name = "mealId", description = "식단 id", required = true)
             }

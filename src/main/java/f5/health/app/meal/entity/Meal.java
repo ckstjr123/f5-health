@@ -72,12 +72,11 @@ public class Meal {
         for (MealFood mealFood : mealFoods) {
             mealFood.setMeal(this);
         }
-        this.updateNutritionContents(); //
+        this.calculateNutritionFacts(); //
     }
 
 
-    /** 식사 총 섭취 칼로리 및 3대 영양소 계산해서 세팅 */
-    private void updateNutritionContents() {
+    private void calculateNutritionFacts() {
         this.totalKcal = 0;
         this.totalCarbohydrate = 0.0; this.totalProtein = 0.0; this.totalFat = 0.0;
         for (MealFood mealFood : this.mealFoods) {

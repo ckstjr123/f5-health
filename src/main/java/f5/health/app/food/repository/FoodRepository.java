@@ -13,6 +13,6 @@ public interface FoodRepository extends JpaRepository<Food, String> {
     /** WHERE IN ("foodCode", ...) */
     List<Food> findByFoodCodeIn(@Param("foodCodeSet") Set<String> foodCodeSet);
 
-    /** 음식 검색용 */
+    /** 음식 검색 */
     List<Food> findByFoodNameLike(@Param("foodName") String foodName, Pageable pageable);
 }

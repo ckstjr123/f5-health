@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,11 +32,13 @@ public class MockitoTest {
         when(memberCheckUp.getWeight()).thenReturn(weight);
         when(memberCheckUp.getBloodType()).thenReturn(bloodType);
 
-        assertEquals(now, memberCheckUp.getBirthDate());
-        assertEquals(male, memberCheckUp.getGender());
-        assertEquals(height, memberCheckUp.getHeight());
-        assertEquals(weight, memberCheckUp.getWeight());
-        assertEquals(bloodType, memberCheckUp.getBloodType());
+        assertAll(
+                () -> assertEquals(now, memberCheckUp.getBirthDate()),
+                () -> assertEquals(male, memberCheckUp.getGender()),
+                () -> assertEquals(height, memberCheckUp.getHeight()),
+                () -> assertEquals(weight, memberCheckUp.getWeight()),
+                () -> assertEquals(bloodType, memberCheckUp.getBloodType())
+        );
     }
 
 }

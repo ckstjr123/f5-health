@@ -1,17 +1,17 @@
 package f5.health.app.meal.service;
 
-import f5.health.app.meal.constant.MealType;
-import f5.health.app.food.entity.Food;
-import f5.health.app.meal.entity.Meal;
-import f5.health.app.meal.entity.MealFood;
-import f5.health.app.member.entity.Member;
 import f5.health.app.common.exception.DuplicateEntityException;
 import f5.health.app.common.exception.NotFoundException;
+import f5.health.app.food.entity.Food;
 import f5.health.app.food.repository.FoodRepository;
+import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.entity.Meal;
+import f5.health.app.meal.entity.MealFood;
 import f5.health.app.meal.repository.MealFoodRepository;
 import f5.health.app.meal.repository.MealRepository;
 import f5.health.app.meal.service.request.MealFoodRequest;
 import f5.health.app.meal.service.request.MealRequest;
+import f5.health.app.member.entity.Member;
 import f5.health.app.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,10 @@ import java.util.stream.Collectors;
 
 import static f5.health.app.food.FoodErrorCode.NOT_FOUND_FOOD;
 import static f5.health.app.meal.MealErrorCode.DUPLICATED_MEAL;
+import static f5.health.app.meal.MealErrorCode.NOT_FOUND_MEAL;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MealService {
 
@@ -36,7 +38,15 @@ public class MealService {
     private final MealFoodRepository mealFoodRepository;
     private final FoodRepository foodRepository;
 
-    @Transactional
+
+    public Meal findById(Long mealId) {
+        return mealRepository.findById(mealId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEAL, mealId.toString()));
+    }
+
+
+    // --------------------------------------------------------------------------------------------------- //
+
     public Long save(Long memberId, MealRequest mealRequest) {
         Member member = memberService.findById(memberId);
         this.validateDuplicateMeal(memberId, mealRequest.getEatenAt(), mealRequest.getMealType());
@@ -79,7 +89,7 @@ public class MealService {
 
     private void validateDuplicateMeal(Long memberId, LocalDateTime eatenAt, MealType mealType) {
         Optional<Meal> findMeal = mealRepository.findOne(memberId, eatenAt.toLocalDate(), mealType);
-        if (!findMeal.isEmpty()){
+        if (!findMeal.isEmpty()) {
             throw new DuplicateEntityException(DUPLICATED_MEAL);
         }
     }

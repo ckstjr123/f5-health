@@ -8,7 +8,6 @@ import f5.health.app.meal.constant.MealType;
 import f5.health.app.meal.entity.Meal;
 import f5.health.app.meal.entity.MealFood;
 import f5.health.app.meal.fixture.MealFixture;
-import f5.health.app.meal.fixture.MealRequestFixture;
 import f5.health.app.meal.repository.MealFoodRepository;
 import f5.health.app.meal.repository.MealRepository;
 import f5.health.app.meal.service.request.MealRequest;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static f5.health.app.meal.fixture.MealRequestFixture.createMealRequest;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 

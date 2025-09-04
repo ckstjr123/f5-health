@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static f5.health.app.meal.fixture.MealRequestFixture.createMealRequest;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Transactional
 @SpringBootTest
@@ -56,15 +58,15 @@ public class MealServiceCommandTest {
 
         Meal meal = mealRepository.findById(mealId).orElseThrow();
         List<MealFoodRequest> mealFoodRequestList = mealRequest.getMealFoodRequestList();
-        assertSoftly(s -> {
-            s.assertThat(meal.getId()).isEqualTo(mealId);
-            s.assertThat(meal.getEatenDate()).isEqualTo(eatenAt.toLocalDate());
-            s.assertThat(meal.getMealFoods().size()).isEqualTo(foods.size());
-            s.assertThat(meal.getTotalKcal()).isEqualTo(getTotalKcal(foods, mealFoodRequestList));
-            s.assertThat(meal.getTotalCarbohydrate()).isEqualTo(getTotalCarbohydrate(foods, mealFoodRequestList));
-            s.assertThat(meal.getTotalProtein()).isEqualTo(getTotalProtein(foods, mealFoodRequestList));
-            s.assertThat(meal.getTotalFat()).isEqualTo(getTotalFat(foods, mealFoodRequestList));
-        });
+        assertAll(
+                () -> assertThat(meal.getId()).isEqualTo(mealId),
+                () -> assertThat(meal.getEatenDate()).isEqualTo(eatenAt.toLocalDate()),
+                () -> assertThat(meal.getMealFoods().size()).isEqualTo(foods.size()),
+                () -> assertThat(meal.getTotalKcal()).isEqualTo(getTotalKcal(foods, mealFoodRequestList)),
+                () -> assertThat(meal.getTotalCarbohydrate()).isEqualTo(getTotalCarbohydrate(foods, mealFoodRequestList)),
+                () -> assertThat(meal.getTotalProtein()).isEqualTo(getTotalProtein(foods, mealFoodRequestList)),
+                () -> assertThat(meal.getTotalFat()).isEqualTo(getTotalFat(foods, mealFoodRequestList))
+        );
     }
 
 

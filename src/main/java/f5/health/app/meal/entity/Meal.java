@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/** 식단(식사) 엔티티 */
+/**
+ * 식단 엔티티
+ */
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,7 +32,7 @@ public class Meal {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @OneToMany(mappedBy = "meal", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "meal", cascade = CascadeType.REMOVE)
     private List<MealFood> mealFoods = new ArrayList<>();
 
     @Column(name = "MEAL_TYPE")
@@ -55,7 +57,9 @@ public class Meal {
     @Column(name = "TOTAL_FAT")
     private double totalFat;
 
-    /** 식단 생성 메서드 */
+    /**
+     * 식단 생성 메서드
+     */
     public static Meal newInstance(Member member, LocalDateTime eatenAt, MealType mealType, List<MealFood> mealFoods) {
         Meal meal = new Meal();
         meal.member = member;
@@ -66,25 +70,30 @@ public class Meal {
         return meal;
     }
 
-    /** Meal ↔ MealFood 양방향 매핑 */
+    /**
+     * Meal ↔ MealFood 양방향 매핑
+     */
     public void addAllMealFoods(List<MealFood> mealFoods) {
-        this.mealFoods.addAll(mealFoods);
-        for (MealFood mealFood : mealFoods) {
+        mealFoods.forEach(mealFood -> {
+            this.mealFoods.add(mealFood);
             mealFood.setMeal(this);
-        }
-        this.calculateNutritionFacts(); //
+        });
+
+        calculateNutritionFacts(); //
     }
 
 
     private void calculateNutritionFacts() {
         this.totalKcal = 0;
-        this.totalCarbohydrate = 0.0; this.totalProtein = 0.0; this.totalFat = 0.0;
-        for (MealFood mealFood : this.mealFoods) {
+        this.totalCarbohydrate = 0.0;
+        this.totalProtein = 0.0;
+        this.totalFat = 0.0;
+        mealFoods.forEach(mealFood -> {
             this.totalKcal += mealFood.calculateKcal();
             this.totalCarbohydrate += mealFood.calculateCarbohydrate();
             this.totalProtein += mealFood.calculateProtein();
             this.totalFat += mealFood.calculateFat();
-        }
+        });
     }
 
 }

@@ -2,6 +2,8 @@ package f5.health.app.meal.controller;
 
 import f5.health.app.common.EnumModel;
 import f5.health.app.common.exhandler.response.ExceptionResult;
+import f5.health.app.jwt.vo.JwtMember;
+import f5.health.app.meal.service.request.MealRequest;
 import f5.health.app.meal.vo.MealResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -52,4 +54,25 @@ public interface MealApiDocs {
             )
     })
     MealResponse meal(@PathVariable Long mealId);
+
+    @Operation(summary = "식단 등록",
+            description = "아침 or 점심 or 저녁 or 간식 식사 기록",
+            parameters = {
+                    @Parameter(name = "mealRequest", description = "식단 기록 요청 VO", required = true,
+                            content = @Content(schema = @Schema(implementation = MealRequest.class)))
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "중복된 식단 저장",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "음식을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            )
+    })
+    Long save(JwtMember loginMember, MealRequest mealRequest);
 }

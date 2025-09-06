@@ -84,7 +84,7 @@ public class MealFoodRepositoryTest {
 
     private Meal saveMealWithMealFoods() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        Meal meal = createMealWithMealFoods(member, LocalDateTime.now(), MealType.LUNCH);
+        Meal meal = MealFixture.createMealWithMealFoods(member, LocalDateTime.now(), MealType.LUNCH);
         mealRepository.save(meal);
 
         meal.getMealFoods().forEach(mealFood -> {

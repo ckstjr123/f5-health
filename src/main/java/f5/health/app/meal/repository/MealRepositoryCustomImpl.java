@@ -9,7 +9,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static f5.health.app.food.entity.QFood.food;
 import static f5.health.app.meal.entity.QMeal.meal;
+import static f5.health.app.meal.entity.QMealFood.mealFood;
 
 public class MealRepositoryCustomImpl implements MealRepositoryCustom {
 
@@ -25,15 +27,25 @@ public class MealRepositoryCustomImpl implements MealRepositoryCustom {
         return Optional.ofNullable(
                 query.selectFrom(meal)
                         .where(meal.member.id.eq(memberId),
-                                meal.eatenDate.eq(eatenDate),
-                                meal.mealType.eq(mealType))
+                               meal.eatenDate.eq(eatenDate),
+                               meal.mealType.eq(mealType))
+                        .fetchOne());
+    }
+
+    @Override
+    public Optional<Meal> findMealJoinFetch(Long mealId) {
+        return Optional.ofNullable(
+                query.selectFrom(meal)
+                        .join(meal.mealFoods, mealFood).fetchJoin()
+                        .join(mealFood.food, food).fetchJoin()
+                        .where(meal.id.eq(mealId))
                         .fetchOne());
     }
 
     @Override
     public List<Meal> findAll(Long memberId, LocalDate eatenDate) {
         return query.selectFrom(meal)
-                        .where(meal.member.id.eq(memberId), meal.eatenDate.eq(eatenDate))
-                        .fetch();
+                .where(meal.member.id.eq(memberId), meal.eatenDate.eq(eatenDate))
+                .fetch();
     }
 }

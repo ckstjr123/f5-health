@@ -13,10 +13,8 @@ import java.util.List;
 public class MealFixture {
 
     public static Meal createMealWithMealFoods(Member member, LocalDateTime eatenAt, MealType mealType) {
-        Food food1 = FoodFixture.createBasicFood("D320-716042200-0001", "된장찌개");
-        Food food2 = FoodFixture.createHighProteinFood("D315-676000000-0001", "달걀");
-        Food food3 = FoodFixture.createLowCalorieFood("D312-550020000-0001", "현미밥");
-        Food food4 = FoodFixture.createBasicFood("D305-257430000-0001", "두부조림");
+        Food food1 = FoodFixture.createBasicFood("D320-716042200-0000", "된장찌개");
+        Food food2 = FoodFixture.createLowCalorieFood("D312-550020000-0001", "현미밥");
 
         return Meal.newInstance(
                 member,
@@ -24,9 +22,7 @@ public class MealFixture {
                 mealType,
                 List.of(
                         MealFood.newInstance(food1, 0.5),
-                        MealFood.newInstance(food2, 1.5),
-                        MealFood.newInstance(food3, 1.0),
-                        MealFood.newInstance(food4, 2.0)
+                        MealFood.newInstance(food2, 1.0)
                 )
         );
     }

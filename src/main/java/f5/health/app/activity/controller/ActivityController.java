@@ -1,6 +1,6 @@
 package f5.health.app.activity.controller;
 
-import f5.health.app.jwt.vo.JwtMember;
+import f5.health.app.auth.jwt.vo.JwtMember;
 import f5.health.app.activity.service.ActivityService;
 import f5.health.app.activity.service.request.ActivityRequest;
 import f5.health.app.activity.vo.ActivityResponse;

@@ -37,8 +37,7 @@ public final class MealResponse {
 
     private MealResponse(Meal meal, boolean isNeedMealFoods) {
         this.mealId = meal.getId();
-        this.mealFoodResponseList = isNeedMealFoods ?
-                meal.getMealFoods().stream()
+        this.mealFoodResponseList = isNeedMealFoods ? meal.getMealFoods().stream()
                         .map(MealFoodResponse::new)
                         .toList() : null;
         this.mealTypeLabel = meal.getMealType().getLabel();
@@ -49,7 +48,7 @@ public final class MealResponse {
         this.totalFat = meal.getTotalFat();
     }
 
-    public static MealResponse only(Meal meal) {
+    public static MealResponse withoutMealFoods(Meal meal) {
         return new MealResponse(meal, false);
     }
 

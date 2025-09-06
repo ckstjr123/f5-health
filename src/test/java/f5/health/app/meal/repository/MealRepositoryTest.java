@@ -1,5 +1,6 @@
 package f5.health.app.meal.repository;
 
+import f5.health.app.food.repository.FoodRepository;
 import f5.health.app.meal.constant.MealType;
 import f5.health.app.meal.entity.Meal;
 import f5.health.app.meal.fixture.MealFixture;
@@ -25,10 +26,17 @@ public class MealRepositoryTest {
     @Autowired
     private MealRepository mealRepository;
 
+    @Autowired
+    private MealFoodRepository mealFoodRepository;
 
+    @Autowired
+    private FoodRepository foodRepository;
+
+
+    @DisplayName("식단 저장")
     @Test
     void save() {
-        Member member = memberRepository.save(MemberFixture.createMember());
+        Member member = createMember();
         LocalDateTime eatenAt = LocalDateTime.now();
         MealType mealType = MealType.DINNER;
         Meal savedMeal = mealRepository.save(MealFixture.createMealWithMealFoods(member, eatenAt, mealType));
@@ -38,16 +46,41 @@ public class MealRepositoryTest {
         assertThat(findMeal).isEqualTo(savedMeal);
     }
 
+    @DisplayName("식단 상세 조회")
+    @Test
+    void findMealJoinFetch() {
+        Member member = createMember();
+        Meal meal = mealRepository.save(MealFixture.createMealWithMealFoods(member, LocalDateTime.now(), MealType.LUNCH));
+        saveMealFoodsOf(meal);
+
+        Meal findMeal = mealRepository.findMealJoinFetch(meal.getId()).orElseThrow();
+
+        assertThat(findMeal).isEqualTo(meal);
+    }
+
     @DisplayName("특정 회원이 해당 일자에 등록한 모든 식단 조회")
     @Test
     void findAll() {
-        Member member = memberRepository.save(MemberFixture.createMember());
+        Member member = createMember();
         LocalDateTime eatenAt = LocalDateTime.now();
         List<Meal> meals = mealRepository.saveAll(MealFixture.createMealsWithMealFoods(member, eatenAt));
 
         List<Meal> result = mealRepository.findAll(member.getId(), eatenAt.toLocalDate());
 
         assertThat(result).containsExactlyInAnyOrderElementsOf(meals);
+    }
+
+
+    private Member createMember() {
+        return memberRepository.save(MemberFixture.createMember());
+    }
+
+    private void saveMealFoodsOf(Meal meal) {
+        meal.getMealFoods().forEach(mealFood -> {
+            foodRepository.save(mealFood.getFood());
+            mealFood.setMeal(meal);
+        });
+        mealFoodRepository.saveAll(meal.getMealFoods());
     }
 
 }

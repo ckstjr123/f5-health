@@ -45,7 +45,7 @@ public class MealServiceCommandTest {
     private MealService mealService;
 
 
-    @DisplayName("식사한 음식이 담긴 식단 저장")
+    @DisplayName("식사한 음식이 기록된 식단 저장")
     @Test
     void save() {
         Member member = createMember();

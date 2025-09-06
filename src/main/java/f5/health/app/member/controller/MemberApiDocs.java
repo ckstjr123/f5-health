@@ -3,7 +3,7 @@ package f5.health.app.member.controller;
 import f5.health.app.member.service.MemberUpdateRequest;
 import f5.health.app.common.exhandler.response.ExceptionResult;
 import f5.health.app.common.exhandler.response.FieldErrorsResult;
-import f5.health.app.jwt.vo.JwtMember;
+import f5.health.app.auth.jwt.vo.JwtMember;
 import f5.health.app.member.vo.MemberProfile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

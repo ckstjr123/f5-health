@@ -9,7 +9,6 @@ import f5.health.app.member.entity.Member;
 import f5.health.app.member.fixture.MemberFixture;
 import f5.health.app.member.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,7 +16,10 @@ import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static f5.health.app.meal.fixture.MealFixture.createMealWithMealFoods;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -42,32 +44,36 @@ public class MealFoodRepositoryTest {
 
     @Test
     void saveAllMealFoods() {
-        Member member = createMember();
-        Meal meal = createMealWithMealFoods(member);
-        List<MealFood> mealFoods = meal.getMealFoods();
-        mealFoods.forEach(mealFood -> {
+        Member member = memberRepository.save(MemberFixture.createMember());
+        Meal meal = createMealWithMealFoods(member, LocalDateTime.now(), MealType.BREAKFAST);
+        meal.getMealFoods().forEach(mealFood -> {
             foodRepository.save(mealFood.getFood());
             mealFood.setMeal(meal);
         });
         mealRepository.save(meal);
 
-        int[] rows = mealFoodRepository.saveAllMealFoods(mealFoods);
+        int[] rows = mealFoodRepository.saveAllMealFoods(meal.getMealFoods());
 
-        assertThat(rows.length).isEqualTo(mealFoods.size());
+        List<MealFood> savedMealFoods = mealFoodRepository.findAll();
+        assertThat(rows.length).isEqualTo(savedMealFoods.size());
     }
 
+    @Test
+    void deleteByIdIn() {
+        Meal meal = saveMealWithMealFoods();
+        Set<Long> mealFoodIdSet = meal.getMealFoods().stream()
+                .map(MealFood::getId)
+                .collect(Collectors.toSet());
+
+        mealFoodRepository.deleteByIdIn(mealFoodIdSet); // clearAutomatically
+
+        Meal findMeal = mealRepository.findById(meal.getId()).orElseThrow();
+        assertThat(findMeal.getMealFoods()).isEmpty();
+    }
 
     @Test
     void deleteByMealId() {
-        Member member = createMember();
-        Meal meal = createMealWithMealFoods(member);
-        List<MealFood> mealFoods = meal.getMealFoods();
-        mealFoods.forEach(mealFood -> {
-            foodRepository.save(mealFood.getFood());
-            mealFood.setMeal(meal);
-        });
-        mealRepository.save(meal);
-        mealFoodRepository.saveAllMealFoods(mealFoods);
+        Meal meal = saveMealWithMealFoods();
 
         mealFoodRepository.deleteByMealId(meal.getId());
 
@@ -76,12 +82,17 @@ public class MealFoodRepositoryTest {
     }
 
 
-    private Member createMember() {
-        return memberRepository.save(MemberFixture.createMember());
-    }
+    private Meal saveMealWithMealFoods() {
+        Member member = memberRepository.save(MemberFixture.createMember());
+        Meal meal = createMealWithMealFoods(member, LocalDateTime.now(), MealType.LUNCH);
+        mealRepository.save(meal);
 
-    private Meal createMealWithMealFoods(Member member) {
-        return MealFixture.createMealWithMealFoods(member, LocalDateTime.now(), MealType.DESSERT);
+        meal.getMealFoods().forEach(mealFood -> {
+            foodRepository.save(mealFood.getFood());
+            mealFood.setMeal(meal);
+        });
+        mealFoodRepository.saveAll(meal.getMealFoods());
+        return meal;
     }
 
 }

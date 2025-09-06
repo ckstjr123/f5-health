@@ -1,4 +1,4 @@
-package f5.health.app.jwt;
+package f5.health.app.auth.jwt;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static f5.health.app.jwt.constant.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
+import static f5.health.app.auth.jwt.constant.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
 
 @Component
 @RequiredArgsConstructor

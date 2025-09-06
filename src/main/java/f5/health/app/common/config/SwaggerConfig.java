@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
-import static f5.health.app.jwt.JwtProvider.ACCESS_TOKEN_TYPE;
+import static f5.health.app.auth.jwt.JwtProvider.ACCESS_TOKEN_TYPE;
 
 @Configuration
 public class SwaggerConfig {

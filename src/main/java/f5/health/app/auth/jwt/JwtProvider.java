@@ -1,4 +1,4 @@
-package f5.health.app.jwt;
+package f5.health.app.auth.jwt;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import f5.health.app.auth.exception.AuthErrorCode;
@@ -16,7 +16,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-import static f5.health.app.jwt.constant.JwtConst.ROLE;
+import static f5.health.app.auth.jwt.constant.JwtConst.ROLE;
 
 @Slf4j
 @Component

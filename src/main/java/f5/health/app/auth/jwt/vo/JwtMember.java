@@ -1,4 +1,4 @@
-package f5.health.app.jwt.vo;
+package f5.health.app.auth.jwt.vo;
 
 import lombok.AccessLevel;
 import lombok.Getter;

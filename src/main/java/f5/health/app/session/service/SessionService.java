@@ -2,7 +2,7 @@ package f5.health.app.session.service;
 
 import f5.health.app.session.entity.Session;
 import f5.health.app.member.entity.Member;
-import f5.health.app.jwt.JwtProvider;
+import f5.health.app.auth.jwt.JwtProvider;
 import f5.health.app.session.repository.SessionRepository;
 import f5.health.app.member.service.MemberService;
 import lombok.RequiredArgsConstructor;

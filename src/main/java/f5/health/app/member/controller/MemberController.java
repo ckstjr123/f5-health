@@ -1,7 +1,7 @@
 package f5.health.app.member.controller;
 
 import f5.health.app.member.service.MemberUpdateRequest;
-import f5.health.app.jwt.vo.JwtMember;
+import f5.health.app.auth.jwt.vo.JwtMember;
 import f5.health.app.member.service.MemberService;
 import f5.health.app.member.vo.MemberProfile;
 import jakarta.validation.Valid;

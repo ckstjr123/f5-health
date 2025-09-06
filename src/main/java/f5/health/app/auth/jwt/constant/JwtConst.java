@@ -1,4 +1,4 @@
-package f5.health.app.jwt.constant;
+package f5.health.app.auth.jwt.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

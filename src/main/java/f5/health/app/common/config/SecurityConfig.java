@@ -1,7 +1,7 @@
 package f5.health.app.common.config;
 
-import f5.health.app.jwt.JwtAuthenticationFilter;
-import f5.health.app.jwt.JwtProvider;
+import f5.health.app.auth.jwt.JwtAuthenticationFilter;
+import f5.health.app.auth.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

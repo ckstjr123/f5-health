@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +40,13 @@ public class MealService {
     private final FoodRepository foodRepository;
 
 
-    public Meal findById(Long mealId) {
-        return mealRepository.findById(mealId)
+    public Meal findWithMealFoods(Long mealId) {
+        return mealRepository.findMealJoinFetch(mealId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEAL, mealId.toString()));
+    }
+
+    public List<Meal> findAll(Long memberId, LocalDate eatenDate) {
+        return mealRepository.findAll(memberId, eatenDate);
     }
 
 
@@ -52,22 +57,26 @@ public class MealService {
         this.validateDuplicateMeal(memberId, mealRequest.getEatenAt(), mealRequest.getMealType());
 
         List<Food> eatenFoods = foodRepository.findByFoodCodeIn(mealRequest.getEatenFoodCodeSet());
-        Meal meal = createMeal(member, toEatenFoodMap(eatenFoods), mealRequest);
+        Meal meal = createMealWithMealFoods(member, toEatenFoodMap(eatenFoods), mealRequest);
 
         mealRepository.save(meal);
         mealFoodRepository.saveAllMealFoods(meal.getMealFoods());
         return meal.getId();
     }
 
+    public void update() {
 
-    private Meal createMeal(Member member, Map<String, Food> eatenFoodMap, MealRequest mealRequest) {
-        List<MealFood> mealFoods = createMealFoods(eatenFoodMap, mealRequest.getMealFoodRequestList());
-        return Meal.newInstance(member, mealRequest.getEatenAt(), mealRequest.getMealType(), mealFoods);
     }
+
 
     private Map<String, Food> toEatenFoodMap(List<Food> eatenFoods) {
         return eatenFoods.stream()
                 .collect(Collectors.toMap(Food::getFoodCode, Function.identity()));
+    }
+
+    private Meal createMealWithMealFoods(Member member, Map<String, Food> eatenFoodMap, MealRequest mealRequest) {
+        List<MealFood> mealFoods = createMealFoods(eatenFoodMap, mealRequest.getMealFoodRequestList());
+        return Meal.newInstance(member, mealRequest.getEatenAt(), mealRequest.getMealType(), mealFoods);
     }
 
     private List<MealFood> createMealFoods(Map<String, Food> eatenFoodMap, List<MealFoodRequest> mealFoodRequestList) {
@@ -88,8 +97,8 @@ public class MealService {
     }
 
     private void validateDuplicateMeal(Long memberId, LocalDateTime eatenAt, MealType mealType) {
-        Optional<Meal> findMeal = mealRepository.findOne(memberId, eatenAt.toLocalDate(), mealType);
-        if (!findMeal.isEmpty()) {
+        Optional<Meal> meal = mealRepository.findOne(memberId, eatenAt.toLocalDate(), mealType);
+        if (!meal.isEmpty()) {
             throw new DuplicateEntityException(DUPLICATED_MEAL);
         }
     }

@@ -1,7 +1,7 @@
 package f5.health.app.auth.controller;
 
 import f5.health.app.auth.constant.OAuth2Provider;
-import f5.health.app.jwt.vo.JwtResponse;
+import f5.health.app.auth.jwt.vo.JwtResponse;
 import f5.health.app.auth.service.AuthService;
 import f5.health.app.auth.service.vo.request.OAuth2LoginRequest;
 import f5.health.app.auth.service.vo.request.SignUpRequest;
@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static f5.health.app.jwt.constant.JwtConst.REFRESH_TOKEN_HEADER;
+import static f5.health.app.auth.jwt.constant.JwtConst.REFRESH_TOKEN_HEADER;
 
 @Slf4j
 @RestController

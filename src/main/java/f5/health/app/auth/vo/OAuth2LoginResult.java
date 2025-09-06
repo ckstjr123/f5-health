@@ -1,7 +1,7 @@
 package f5.health.app.auth.vo;
 
 import f5.health.app.auth.constant.OAuth2LoginStatus;
-import f5.health.app.jwt.vo.JwtResponse;
+import f5.health.app.auth.jwt.vo.JwtResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import org.springframework.http.HttpStatusCode;

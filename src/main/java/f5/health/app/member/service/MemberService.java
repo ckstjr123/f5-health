@@ -5,7 +5,7 @@ import f5.health.app.member.constant.Role;
 import f5.health.app.member.entity.Member;
 import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.member.exception.MemberAlreadyJoinedException;
-import f5.health.app.jwt.vo.JwtMember;
+import f5.health.app.auth.jwt.vo.JwtMember;
 import f5.health.app.member.repository.MemberRepository;
 import f5.health.app.member.service.oauth2userinfo.OAuth2UserInfo;
 import f5.health.app.member.vo.MemberProfile;

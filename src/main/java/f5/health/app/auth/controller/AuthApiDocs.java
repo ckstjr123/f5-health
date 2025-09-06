@@ -2,7 +2,7 @@ package f5.health.app.auth.controller;
 
 import f5.health.app.auth.constant.OAuth2Provider;
 import f5.health.app.common.exhandler.response.ExceptionResult;
-import f5.health.app.jwt.vo.JwtResponse;
+import f5.health.app.auth.jwt.vo.JwtResponse;
 import f5.health.app.auth.service.vo.request.OAuth2LoginRequest;
 import f5.health.app.auth.service.vo.request.SignUpRequest;
 import f5.health.app.auth.vo.OAuth2LoginResult;
@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
-import static f5.health.app.jwt.constant.JwtConst.REFRESH_TOKEN_HEADER;
+import static f5.health.app.auth.jwt.constant.JwtConst.REFRESH_TOKEN_HEADER;
 
 @Tag(name = "인증 관련 API", description = "인증(로그인, 회원가입, 토큰 갱신 등) 처리")
 public interface AuthApiDocs {

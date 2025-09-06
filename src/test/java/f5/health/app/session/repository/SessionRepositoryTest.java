@@ -1,6 +1,6 @@
 package f5.health.app.session.repository;
 
-import f5.health.app.jwt.JwtProvider;
+import f5.health.app.auth.jwt.JwtProvider;
 import f5.health.app.member.entity.Member;
 import f5.health.app.member.fixture.MemberFixture;
 import f5.health.app.member.repository.MemberRepository;

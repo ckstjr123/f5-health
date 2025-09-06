@@ -1,7 +1,7 @@
-package f5.health.app.jwt;
+package f5.health.app.auth.jwt;
 
 import f5.health.app.auth.exception.AuthenticationException;
-import f5.health.app.jwt.vo.JwtMember;
+import f5.health.app.auth.jwt.vo.JwtMember;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,9 +23,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static f5.health.app.common.config.SecurityConfig.AUTH_EXCLUDE_URIS;
-import static f5.health.app.jwt.constant.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
-import static f5.health.app.jwt.constant.JwtConst.ROLE;
-import static f5.health.app.jwt.JwtProvider.ACCESS_TOKEN_TYPE;
+import static f5.health.app.auth.jwt.constant.JwtConst.JWT_EXCEPTION_ATTRIBUTE;
+import static f5.health.app.auth.jwt.constant.JwtConst.ROLE;
+import static f5.health.app.auth.jwt.JwtProvider.ACCESS_TOKEN_TYPE;
 
 /**
  * JWT 인증 필터(요청에 대해서 단 한번만 호출되는 OncePerRequestFilter 상속)

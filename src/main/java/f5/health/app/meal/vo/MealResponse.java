@@ -40,7 +40,7 @@ public final class MealResponse {
         this.mealFoodResponseList = isNeedMealFoods ? meal.getMealFoods().stream()
                         .map(MealFoodResponse::new)
                         .toList() : null;
-        this.mealTypeLabel = meal.getMealType().getLabel();
+        this.mealTypeLabel = meal.getMealType().label();
         this.eatenAt = meal.getEatenAt();
         this.totalKcal = meal.getTotalKcal();
         this.totalCarbohydrate = meal.getTotalCarbohydrate();

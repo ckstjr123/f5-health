@@ -16,7 +16,7 @@ public class MealFoodRepositoryCustomImpl implements MealFoodRepositoryCustom {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public int[] saveAllMealFoods(final List<MealFood> mealFoods) {
+    public int[] saveAllBatch(final List<MealFood> mealFoods) {
 
         return jdbcTemplate.batchUpdate(
                 "INSERT INTO MEAL_FOOD " +

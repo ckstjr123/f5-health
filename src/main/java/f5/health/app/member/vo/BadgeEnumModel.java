@@ -12,7 +12,7 @@ public final class BadgeEnumModel extends EnumModel {
 
     public BadgeEnumModel(Badge badge) {
         super(badge);
-        this.cutOffPoint = badge.getCutOffPoint();
+        this.cutOffPoint = badge.cutOffPoint();
     }
 
     public long getCutOffPoint() {

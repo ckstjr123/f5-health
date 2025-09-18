@@ -4,6 +4,7 @@ import f5.health.app.common.EnumModel;
 import f5.health.app.common.exhandler.response.ExceptionResult;
 import f5.health.app.auth.jwt.vo.JwtMember;
 import f5.health.app.meal.service.request.MealRequest;
+import f5.health.app.meal.service.request.MealSyncRequest;
 import f5.health.app.meal.vo.MealResponse;
 import f5.health.app.meal.vo.MealsResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,9 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,6 +37,20 @@ public interface MealApiDocs {
     })
     List<? extends EnumModel> mealTypes();
 
+    @Operation(summary = "식단 요약 목록",
+            description = "해당 일자에 기록된 식사 조회",
+            parameters = {
+                    @Parameter(in = ParameterIn.QUERY, name = "date", description = "일자", required = true)
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "식단 리스트 응답",
+                    content = @Content(schema = @Schema(implementation = MealsResponse.class))
+            )
+    })
+    MealsResponse meals(JwtMember loginMember, LocalDate date);
 
     @Operation(summary = "식단 상세 정보",
             description = "섭취한 음식 및 영양정보 등 상세 조회",
@@ -58,25 +70,7 @@ public interface MealApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    MealResponse meal(Long mealId);
-
-
-    @Operation(summary = "식단 요약 목록",
-            description = "해당 일자에 기록된 식사 조회",
-            parameters = {
-                    @Parameter(in = ParameterIn.QUERY, name = "date", description = "일자", required = true)
-            }
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "식단 리스트 응답",
-                    content = @Content(schema = @Schema(implementation = MealsResponse.class))
-            )
-    })
-    MealsResponse meals(JwtMember loginMember, LocalDate date);
-
-
+    MealResponse meal(JwtMember loginMember, Long mealId);
 
 
     @Operation(summary = "식단 등록",
@@ -89,7 +83,7 @@ public interface MealApiDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "400",
-                    description = "중복된 식단 저장",
+                    description = "식단 중복 등록",
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             ),
             @ApiResponse(
@@ -99,4 +93,26 @@ public interface MealApiDocs {
             )
     })
     Long save(JwtMember loginMember, MealRequest mealRequest);
+
+
+    @Operation(summary = "식단 일괄 업데이트",
+            description = "식사 시간대/메뉴 갱신",
+            parameters = {
+                    @Parameter(name = "mealUpdateRequest", description = "식단 갱신 요청 VO", required = true,
+                            content = @Content(schema = @Schema(implementation = MealSyncRequest.class)))
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "해당 식단에 대한 수정 권한 없음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "식단/음식을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            )
+    })
+    void sync(JwtMember loginMember, MealSyncRequest mealSyncRequest);
 }

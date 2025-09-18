@@ -20,7 +20,7 @@ public enum AlcoholType implements MappingEnum {
     }
 
     @Override
-    public String getLabel() {
+    public String label() {
         return this.label;
     }
 }

@@ -36,12 +36,17 @@ public class MealFood {
         return mealFood;
     }
 
-
     /**
      * MEAL ↔ MEAL_FOOD 양방향 연관관계 매핑
      */
     public void setMeal(Meal meal) {
         this.meal = meal;
+    }
+
+
+    public void update(Food food, double count) {
+        this.food = food;
+        this.count = count;
     }
 
     public int calculateKcal() {

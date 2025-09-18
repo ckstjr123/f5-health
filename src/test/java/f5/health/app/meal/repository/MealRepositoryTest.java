@@ -36,20 +36,20 @@ public class MealRepositoryTest {
     @DisplayName("식단 저장")
     @Test
     void save() {
-        Member member = createMember();
+        Member member = saveMember();
         LocalDateTime eatenAt = LocalDateTime.now();
         MealType mealType = MealType.DINNER;
+
         Meal savedMeal = mealRepository.save(MealFixture.createMealWithMealFoods(member, eatenAt, mealType));
 
-        Meal findMeal = mealRepository.findOne(member.getId(), eatenAt.toLocalDate(), mealType).orElseThrow();
-
-        assertThat(findMeal).isEqualTo(savedMeal);
+        Meal findMeal = mealRepository.findById(savedMeal.getId()).orElseThrow();
+        assertThat(findMeal.getId()).isEqualTo(savedMeal.getId());
     }
 
     @DisplayName("식단 상세 조회")
     @Test
     void findMealJoinFetch() {
-        Member member = createMember();
+        Member member = saveMember();
         Meal meal = mealRepository.save(MealFixture.createMealWithMealFoods(member, LocalDateTime.now(), MealType.LUNCH));
         saveMealFoodsOf(meal);
 
@@ -61,17 +61,17 @@ public class MealRepositoryTest {
     @DisplayName("특정 회원이 해당 일자에 등록한 모든 식단 조회")
     @Test
     void findAll() {
-        Member member = createMember();
+        Member member = saveMember();
         LocalDateTime eatenAt = LocalDateTime.now();
         List<Meal> meals = mealRepository.saveAll(MealFixture.createMealsWithMealFoods(member, eatenAt));
 
-        List<Meal> result = mealRepository.findAll(member.getId(), eatenAt.toLocalDate());
+        List<Meal> result = mealRepository.findMeals(member.getId(), eatenAt.toLocalDate());
 
         assertThat(result).containsExactlyInAnyOrderElementsOf(meals);
     }
 
 
-    private Member createMember() {
+    private Member saveMember() {
         return memberRepository.save(MemberFixture.createMember());
     }
 

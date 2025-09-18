@@ -10,10 +10,6 @@ public class BadRequestException extends ApiException {
         super(errorCode);
     }
 
-    public BadRequestException(ErrorCode errorCode, String message) {
-        super(errorCode, message);
-    }
-
     public BadRequestException(ErrorCode errorCode, Throwable cause) {
         super(errorCode, cause);
     }

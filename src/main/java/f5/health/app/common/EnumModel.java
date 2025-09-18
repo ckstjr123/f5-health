@@ -19,7 +19,7 @@ public class EnumModel {
     private final String value;
 
     public EnumModel(MappingEnum mappingEnum) {
-        this.label = mappingEnum.getLabel();
+        this.label = mappingEnum.label();
         this.value = mappingEnum.name();
     }
 }

@@ -1,12 +1,12 @@
 package f5.health.app.meal.service;
 
-import f5.health.app.common.exception.DuplicateEntityException;
 import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.food.entity.Food;
 import f5.health.app.food.repository.FoodRepository;
 import f5.health.app.meal.constant.MealType;
 import f5.health.app.meal.entity.Meal;
 import f5.health.app.meal.entity.MealFood;
+import f5.health.app.meal.exception.MealLimitExceededException;
 import f5.health.app.meal.fixture.MealFixture;
 import f5.health.app.meal.repository.MealFoodRepository;
 import f5.health.app.meal.repository.MealRepository;
@@ -26,10 +26,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static f5.health.app.meal.fixture.MealRequestFixture.createMealRequest;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @Transactional
@@ -50,29 +52,29 @@ public class MealServiceTest {
 
     @InjectMocks
     private MealService mealService;
-    
+
+
     @Nested
     @DisplayName("식단 등록")
-    class Save {
+    class SaveMeal {
 
-        @DisplayName("이미 등록된 식단이 있으면 예외")
+        @DisplayName("아침/점심/저녁에 대해 이미 등록된 식단이 있으면 예외")
         @Test
-        void validateDuplicateMeal() {
+        void validateRegularMealLimit() {
             final Long memberId = 1L;
             Member member = MemberFixture.createMember();
-            MealType mealType = MealType.LUNCH;
+            MealType regularMealType = MealType.LUNCH;
             LocalDateTime eatenAt = LocalDateTime.now();
-            Meal meal = MealFixture.createMealWithMealFoods(member, eatenAt, mealType);
+            Meal meal = MealFixture.createMealWithMealFoods(member, eatenAt, regularMealType);
             List<Food> foods = meal.getMealFoods().stream()
                     .map(MealFood::getFood)
                     .toList();
 
-            when(mealRepository.findOne(memberId, eatenAt.toLocalDate(), mealType)).thenReturn(Optional.of(meal));
+            when(mealRepository.countBy(memberId, eatenAt.toLocalDate(), regularMealType)).thenReturn((long) regularMealType.maxCountPerDay());
 
-            assertThrows(DuplicateEntityException.class,
-                    () -> mealService.save(memberId, createMealRequest(mealType, eatenAt, foods)));
+            assertThrows(MealLimitExceededException.class,
+                    () -> mealService.saveMeal(memberId, createMealRequest(regularMealType, eatenAt, foods)));
         }
-
 
         @DisplayName("음식 코드에 해당하는 음식을 찾지 못하면 예외")
         @Test
@@ -87,10 +89,10 @@ public class MealServiceTest {
                     .toList();
 
             MealRequest mealRequest = createMealRequest(mealType, eatenAt, foods);
-            when(foodRepository.findByFoodCodeIn(mealRequest.getEatenFoodCodeSet())).thenReturn(new ArrayList<>());
+            when(foodRepository.findByFoodCodeIn(mealRequest.getFoodCodes())).thenReturn(new ArrayList<>());
 
             assertThrows(NotFoundException.class,
-                    () -> mealService.save(memberId, createMealRequest(mealType, eatenAt, foods)));
+                    () -> mealService.saveMeal(memberId, createMealRequest(mealType, eatenAt, foods)));
         }
     }
 

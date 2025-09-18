@@ -2,7 +2,18 @@ package f5.health.app.food.fixture;
 
 import f5.health.app.food.entity.Food;
 
+import java.util.List;
+
 public class FoodFixture {
+
+    public static List<Food> createFoods() {
+        return List.of(
+                FoodFixture.createBasicFood("G123-226020200-1391", "김밥"),
+                FoodFixture.createHighProteinFood("G123-226020200-1392", "요거트"),
+                FoodFixture.createHighCalorieFood("G123-226020200-1393", "떡볶이"),
+                FoodFixture.createLowSugarFood("G123-226020200-1394", "제로 콜라")
+        );
+    }
 
     public static Food createBasicFood(String foodCode, String foodName) {
         return Food.builder()

@@ -11,7 +11,7 @@ import java.util.Set;
 public interface FoodRepository extends JpaRepository<Food, String> {
 
     /** WHERE IN ("foodCode", ...) */
-    List<Food> findByFoodCodeIn(Set<String> foodCodeSet);
+    List<Food> findByFoodCodeIn(Set<String> foodCodes);
 
     /** 음식 검색 */
     List<Food> findByFoodNameLike(String foodName, Pageable pageable);

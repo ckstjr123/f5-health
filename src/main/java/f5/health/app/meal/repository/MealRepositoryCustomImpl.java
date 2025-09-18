@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.querydsl.jpa.JPAExpressions.selectOne;
 import static f5.health.app.food.entity.QFood.food;
 import static f5.health.app.meal.entity.QMeal.meal;
 import static f5.health.app.meal.entity.QMealFood.mealFood;
@@ -23,13 +24,14 @@ public class MealRepositoryCustomImpl implements MealRepositoryCustom {
 
 
     @Override
-    public Optional<Meal> findOne(Long memberId, LocalDate eatenDate, MealType mealType) {
-        return Optional.ofNullable(
-                query.selectFrom(meal)
-                        .where(meal.member.id.eq(memberId),
-                               meal.eatenDate.eq(eatenDate),
-                               meal.mealType.eq(mealType))
-                        .fetchOne());
+    public long countBy(Long memberId, LocalDate eatenDate, MealType mealType) {
+        return query
+                .select(meal.count())
+                .from(meal)
+                .where(meal.member.id.eq(memberId),
+                        meal.eatenDate.eq(eatenDate),
+                        meal.mealType.eq(mealType))
+                .fetchOne();
     }
 
     @Override
@@ -43,7 +45,7 @@ public class MealRepositoryCustomImpl implements MealRepositoryCustom {
     }
 
     @Override
-    public List<Meal> findAll(Long memberId, LocalDate eatenDate) {
+    public List<Meal> findMeals(Long memberId, LocalDate eatenDate) {
         return query.selectFrom(meal)
                 .where(meal.member.id.eq(memberId), meal.eatenDate.eq(eatenDate))
                 .fetch();

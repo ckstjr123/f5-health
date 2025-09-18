@@ -15,7 +15,7 @@ public enum AuthErrorCode implements ErrorCode {
     NOT_MATCH_REFRESH_JWT("갱신 토큰이 일치하지 않습니다."),
 
     //인가 관련 에러 코드
-    FORBIDDEN_REQUEST("허용되지 않은 요청입니다.");
+    FORBIDDEN_REQUEST("권한이 없습니다.");
 
     private final String code;
     private final String message;

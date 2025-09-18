@@ -9,12 +9,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.Set;
 
 public interface MealFoodRepository extends JpaRepository<MealFood, Long>, MealFoodRepositoryCustom {
-    /** 식단 수정 시 사용 */
-    @Modifying(clearAutomatically = true)
+
+    /** 식단 수정 시 호출 */
+    @Modifying // (clearAutomatically = true)
     @Query("DELETE FROM MealFood mf WHERE mf.id IN :ids")
     void deleteByIdIn(@Param("ids") Set<Long> ids);
 
-    /** 식단 삭제 시 사용 */
+    /** 식단 삭제 시 호출 */
     @Modifying
     @Query("DELETE FROM MealFood mf WHERE mf.meal.id = :mealId")
     void deleteByMealId(@Param("mealId") Long mealId);

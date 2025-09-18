@@ -66,7 +66,7 @@ public class MealFixture {
                 Meal.newInstance(
                         member,
                         eatenAt,
-                        MealType.DESSERT,
+                        MealType.SNACK,
                         List.of(
                                 MealFood.newInstance(food5, 0.2),
                                 MealFood.newInstance(food6, 0.7)

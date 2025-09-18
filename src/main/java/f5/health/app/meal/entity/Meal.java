@@ -18,10 +18,11 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEAL", uniqueConstraints = {@UniqueConstraint(columnNames = {"MEMBER_ID", "EATEN_DATE", "MEAL_TYPE"})})
+@Table(name = "MEAL", indexes = {@Index(columnList = "MEMBER_ID, EATEN_DATE, MEAL_TYPE")})
 public class Meal {
 
-    public static final int MENU_LIMIT_SIZE_PER_MEAL = 15; // 식사당 등록 가능한 메뉴 최대 개수
+    public static final int MENU_MIN_SIZE_PER_MEAL = 1;
+    public static final int MENU_LIMIT_SIZE_PER_MEAL = 15;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,23 +68,22 @@ public class Meal {
         meal.eatenDate = eatenAt.toLocalDate();
         meal.mealType = mealType;
         meal.addAllMealFoods(mealFoods);
+        meal.calculateNutritionFacts(); //
         return meal;
     }
 
     /**
-     * Meal ↔ MealFood 양방향 매핑
+     * Meal ↔ MealFood
      */
     public void addAllMealFoods(List<MealFood> mealFoods) {
         mealFoods.forEach(mealFood -> {
             this.mealFoods.add(mealFood);
             mealFood.setMeal(this);
         });
-
-        calculateNutritionFacts(); //
     }
 
-
-    private void calculateNutritionFacts() {
+    
+    public void calculateNutritionFacts() {
         this.totalKcal = 0;
         this.totalCarbohydrate = 0.0;
         this.totalProtein = 0.0;
@@ -94,6 +94,24 @@ public class Meal {
             this.totalProtein += mealFood.calculateProtein();
             this.totalFat += mealFood.calculateFat();
         });
+    }
+
+    public boolean isOwnedBy(Long memberId) {
+        return member.getId().equals(memberId);
+    }
+
+    public boolean hasSameEatenDate(LocalDate eatenDate) {
+        return this.eatenDate.isEqual(eatenDate);
+    }
+
+    public boolean isDifferentTypeFrom(MealType mealType) {
+        return this.mealType != mealType;
+    }
+
+    public void updateMealTime(LocalDateTime eatenAt, MealType mealType) {
+        this.eatenAt = eatenAt;
+        this.eatenDate = eatenAt.toLocalDate();
+        this.mealType = mealType;
     }
 
 }

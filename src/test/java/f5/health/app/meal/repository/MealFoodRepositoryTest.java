@@ -52,7 +52,7 @@ public class MealFoodRepositoryTest {
         });
         mealRepository.save(meal);
 
-        int[] rows = mealFoodRepository.saveAllMealFoods(meal.getMealFoods());
+        int[] rows = mealFoodRepository.saveAllBatch(meal.getMealFoods());
 
         List<MealFood> savedMealFoods = mealFoodRepository.findAll();
         assertThat(rows.length).isEqualTo(savedMealFoods.size());
@@ -61,11 +61,12 @@ public class MealFoodRepositoryTest {
     @Test
     void deleteByIdIn() {
         Meal meal = saveMealWithMealFoods();
-        Set<Long> mealFoodIdSet = meal.getMealFoods().stream()
+        Set<Long> mealFoodIds = meal.getMealFoods().stream()
                 .map(MealFood::getId)
                 .collect(Collectors.toSet());
 
-        mealFoodRepository.deleteByIdIn(mealFoodIdSet); // clearAutomatically
+        mealFoodRepository.deleteByIdIn(mealFoodIds);
+        em.clear();
 
         Meal findMeal = mealRepository.findById(meal.getId()).orElseThrow();
         assertThat(findMeal.getMealFoods()).isEmpty();

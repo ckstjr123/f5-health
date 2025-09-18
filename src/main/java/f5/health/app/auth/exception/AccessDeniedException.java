@@ -9,11 +9,12 @@ import static f5.health.app.auth.exception.AuthErrorCode.FORBIDDEN_REQUEST;
 @ResponseStatus(HttpStatus.FORBIDDEN)
 public class AccessDeniedException extends ApiException {
 
+    public AccessDeniedException() {
+        super(FORBIDDEN_REQUEST);
+    }
+
     public AccessDeniedException(String message) {
         super(FORBIDDEN_REQUEST, message);
     }
-
-    public AccessDeniedException(Throwable cause) {
-        super(FORBIDDEN_REQUEST, FORBIDDEN_REQUEST.getMessage(), cause);
-    }
+    
 }

@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 
 class HealthCareApplicationTests {
 
-//	@Test
+	@Test
 	void contextLoads() {
 
-	}
+    }
 
 }

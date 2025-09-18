@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface MealFoodRepositoryCustom {
 
-    int[] saveAllMealFoods(List<MealFood> mealFoods);
+    int[] saveAllBatch(List<MealFood> mealFoods);
 }

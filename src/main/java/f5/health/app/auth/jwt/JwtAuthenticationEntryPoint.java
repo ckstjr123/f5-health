@@ -3,7 +3,7 @@ package f5.health.app.auth.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import f5.health.app.common.exception.ErrorCode;
-import f5.health.app.common.exhandler.response.ExceptionResult;
+import f5.health.app.common.exception.exhandler.response.ExceptionResult;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

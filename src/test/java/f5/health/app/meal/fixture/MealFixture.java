@@ -8,9 +8,14 @@ import f5.health.app.meal.entity.MealFood;
 import f5.health.app.member.entity.Member;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MealFixture {
+
+    public static Meal createMealOnly(Member member, LocalDateTime eatenAt, MealType mealType) {
+        return Meal.newInstance(member, eatenAt, mealType, new ArrayList<>());
+    }
 
     public static Meal createMealWithMealFoods(Member member, LocalDateTime eatenAt, MealType mealType) {
         Food food1 = FoodFixture.createBasicFood("D320-716042200-0000", "된장찌개");

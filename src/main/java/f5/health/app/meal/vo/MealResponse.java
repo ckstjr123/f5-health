@@ -20,7 +20,7 @@ public final class MealResponse {
     @Schema(description = "해당 식사 타입 label", example = "저녁")
     private final String mealTypeLabel;
 
-    @Schema(description = "식사 시간", example = "2025-05-14T18:30:45.123")
+    @Schema(description = "식사 시각", example = "2025-05-14T18:30:45.123")
     private final LocalDateTime eatenAt;
 
     @Schema(description = "식사 총 섭취 칼로리", example = "1800")

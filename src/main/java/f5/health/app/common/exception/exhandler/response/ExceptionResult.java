@@ -1,4 +1,4 @@
-package f5.health.app.common.exhandler.response;
+package f5.health.app.common.exception.exhandler.response;
 
 import f5.health.app.common.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;

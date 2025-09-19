@@ -15,7 +15,7 @@ import static f5.health.app.meal.entity.Meal.MENU_MIN_SIZE_PER_MEAL;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {
         MealMenuSizeValidator.class,
-        MealUpdateMenuSizeValidator.class
+        MealSyncMenuSizeValidator.class
 })
 public @interface MenuSize {
 

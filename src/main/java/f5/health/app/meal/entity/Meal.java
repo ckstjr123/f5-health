@@ -88,12 +88,12 @@ public class Meal {
         this.totalCarbohydrate = 0.0;
         this.totalProtein = 0.0;
         this.totalFat = 0.0;
-        mealFoods.forEach(mealFood -> {
+        for (MealFood mealFood : mealFoods) {
             this.totalKcal += mealFood.calculateKcal();
             this.totalCarbohydrate += mealFood.calculateCarbohydrate();
             this.totalProtein += mealFood.calculateProtein();
             this.totalFat += mealFood.calculateFat();
-        });
+        }
     }
 
     public boolean isOwnedBy(Long memberId) {

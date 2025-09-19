@@ -1,7 +1,7 @@
 package f5.health.app.food.repository;
 
-import f5.health.app.food.fixture.FoodFixture;
 import f5.health.app.food.entity.Food;
+import f5.health.app.food.fixture.FoodFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,7 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FoodRepositoryTest {
 
     @Autowired
-    FoodRepository foodRepository;
+    private FoodRepository foodRepository;
+
 
     @Test
     void findByFoodCodeIn() {
@@ -27,10 +28,6 @@ public class FoodRepositoryTest {
         );
 
         List<Food> findFoods = foodRepository.findByFoodCodeIn(foods.stream().map(Food::getFoodCode).collect(Collectors.toSet()));
-
-        for (Food findFood : findFoods) {
-            System.out.println(findFood.getFoodCode());
-        }
 
         assertThat(findFoods).containsExactlyInAnyOrderElementsOf(foods);
     }

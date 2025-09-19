@@ -1,7 +1,7 @@
 package f5.health.app.auth.controller;
 
 import f5.health.app.auth.constant.OAuth2Provider;
-import f5.health.app.common.exhandler.response.ExceptionResult;
+import f5.health.app.common.exception.exhandler.response.ExceptionResult;
 import f5.health.app.auth.jwt.vo.JwtResponse;
 import f5.health.app.auth.service.vo.request.OAuth2LoginRequest;
 import f5.health.app.auth.service.vo.request.SignUpRequest;

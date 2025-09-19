@@ -5,7 +5,6 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.List;
-import java.util.Objects;
 
 import static f5.health.app.meal.entity.Meal.MENU_LIMIT_SIZE_PER_MEAL;
 
@@ -13,10 +12,6 @@ public class MealMenuSizeValidator implements ConstraintValidator<MenuSize, List
 
     @Override
     public boolean isValid(List<MealFoodParam> menuList, ConstraintValidatorContext context) {
-        if (Objects.isNull(menuList)) {
-            return false;
-        }
-
         return (!menuList.isEmpty()) && (menuList.size() <= MENU_LIMIT_SIZE_PER_MEAL);
     }
 }

@@ -1,12 +1,13 @@
-package f5.health.app.common.exhandler;
+package f5.health.app.common.exception.exhandler;
 
 import f5.health.app.auth.exception.AccessDeniedException;
 import f5.health.app.auth.exception.AuthenticationException;
 import f5.health.app.common.exception.BadRequestException;
+import f5.health.app.common.exception.ConflictException;
 import f5.health.app.common.exception.NotFoundException;
-import f5.health.app.common.exhandler.response.CustomFieldError;
-import f5.health.app.common.exhandler.response.ExceptionResult;
-import f5.health.app.common.exhandler.response.FieldErrorsResult;
+import f5.health.app.common.exception.exhandler.response.CustomFieldError;
+import f5.health.app.common.exception.exhandler.response.ExceptionResult;
+import f5.health.app.common.exception.exhandler.response.FieldErrorsResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -52,6 +53,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ExceptionResult authenticationExHandler(AuthenticationException ex) {
         log.warn("AuthenticationExHandler", ex);
+        return ExceptionResult.from(ex.getErrorCode());
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ConflictException.class)
+    public ExceptionResult conflictExHandler(ConflictException ex) {
+        log.warn("ConflictExHandler", ex);
         return ExceptionResult.from(ex.getErrorCode());
     }
 

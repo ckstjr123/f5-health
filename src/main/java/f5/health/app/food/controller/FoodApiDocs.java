@@ -2,8 +2,8 @@ package f5.health.app.food.controller;
 
 import f5.health.app.food.vo.FoodResponse;
 import f5.health.app.food.vo.FoodSearchResponse;
-import f5.health.app.common.exhandler.response.ExceptionResult;
-import f5.health.app.common.exhandler.response.FieldErrorsResult;
+import f5.health.app.common.exception.exhandler.response.ExceptionResult;
+import f5.health.app.common.exception.exhandler.response.FieldErrorsResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

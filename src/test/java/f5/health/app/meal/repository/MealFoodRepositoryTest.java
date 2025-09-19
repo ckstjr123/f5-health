@@ -59,14 +59,22 @@ public class MealFoodRepositoryTest {
     }
 
     @Test
+    void findByMealId() {
+        Meal meal = saveMealWithMealFoods();
+
+        List<MealFood> mealFoods = mealFoodRepository.findByMealId(meal.getId());
+
+        assertThat(mealFoods).containsExactlyElementsOf(meal.getMealFoods());
+    }
+
+    @Test
     void deleteByIdIn() {
         Meal meal = saveMealWithMealFoods();
         Set<Long> mealFoodIds = meal.getMealFoods().stream()
                 .map(MealFood::getId)
                 .collect(Collectors.toSet());
 
-        mealFoodRepository.deleteByIdIn(mealFoodIds);
-        em.clear();
+        mealFoodRepository.deleteByIdIn(mealFoodIds); // clearAutomatically
 
         Meal findMeal = mealRepository.findById(meal.getId()).orElseThrow();
         assertThat(findMeal.getMealFoods()).isEmpty();

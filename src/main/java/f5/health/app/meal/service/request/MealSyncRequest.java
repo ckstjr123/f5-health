@@ -1,5 +1,7 @@
 package f5.health.app.meal.service.request;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import f5.health.app.meal.constant.MealType;
 import f5.health.app.meal.validation.MenuSize;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +15,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,14 +35,13 @@ public class MealSyncRequest {
 
     @Schema(description = "새로 추가된 식사 음식 항목")
     @Valid
-    @NotNull
-    private List<MealFoodParam> newMealFoodParams;
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
+    private List<MealFoodParam> newMealFoodParams = new ArrayList<>();
 
     @Schema(description = "기존 식사 음식에 대한 수정 사항(삭제 대상 제외)")
     @Valid
-    @NotNull // TODO: null로 요청
-//    @Size(min = MENU_MIN_SIZE_PER_MEAL, message = "수정할 식사 음식을 전달해 주세요.")
-    private List<MealFoodUpdateParam> mealFoodUpdateParams;
+    @JsonSetter(nulls = Nulls.AS_EMPTY) // TODO: null로 요청
+    private List<MealFoodUpdateParam> mealFoodUpdateParams = new ArrayList<>();
 
     @Schema(description = "식사 분류", example = "BREAKFAST")
     @NotNull(message = "식사 유형을 선택해 주세요.")

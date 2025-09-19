@@ -12,8 +12,8 @@ public class NotFoundException extends ApiException {
         super(errorCode);
     }
 
-    public NotFoundException(ErrorCode errorCode, String targetId) {
-        super(errorCode, errorCode.getMessage() + " (targetId: {" + targetId + "})");
+    public NotFoundException(ErrorCode errorCode, String resourceId) {
+        super(errorCode, errorCode.getMessage() + " (resourceId: {" + resourceId + "})");
     }
 
     public NotFoundException(ErrorCode errorCode, Throwable cause) {

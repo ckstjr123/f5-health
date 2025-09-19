@@ -1,7 +1,7 @@
 package f5.health.app.meal.controller;
 
 import f5.health.app.common.EnumModel;
-import f5.health.app.common.exhandler.response.ExceptionResult;
+import f5.health.app.common.exception.exhandler.response.ExceptionResult;
 import f5.health.app.auth.jwt.vo.JwtMember;
 import f5.health.app.meal.service.request.MealRequest;
 import f5.health.app.meal.service.request.MealSyncRequest;
@@ -95,10 +95,10 @@ public interface MealApiDocs {
     Long save(JwtMember loginMember, MealRequest mealRequest);
 
 
-    @Operation(summary = "식단 일괄 업데이트",
+    @Operation(summary = "식단 일괄 수정",
             description = "식사 시간대/메뉴 갱신",
             parameters = {
-                    @Parameter(name = "mealUpdateRequest", description = "식단 갱신 요청 VO", required = true,
+                    @Parameter(name = "mealSyncRequest", description = "식단 갱신 요청 VO", required = true,
                             content = @Content(schema = @Schema(implementation = MealSyncRequest.class)))
             }
     )

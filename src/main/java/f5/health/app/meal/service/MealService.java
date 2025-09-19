@@ -22,15 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static f5.health.app.food.FoodErrorCode.NOT_FOUND_FOOD;
 import static f5.health.app.meal.exception.MealErrorCode.NOT_FOUND_MEAL;
-import static java.util.function.Function.identity;
 
 @Service
 @Transactional
@@ -55,14 +51,15 @@ public class MealService {
     }
 
 
-    // ------------------------------------------------------------------------------------------------------------ //
+    // ----------------------------------------------------------------------------------------------------------------- //
 
 
     public Long saveMeal(Long memberId, MealRequest request) {
         Member member = memberService.findById(memberId);
         validateMealLimit(memberId, request.getEatenAt().toLocalDate(), request.getMealType());
+        validateFoodCodes(request.getFoodCodes());
 
-        Meal meal = createMealWithMealFoods(member, getEatenFoodMapBy(request.getFoodCodes()), request);
+        Meal meal = createMealWithMealFoods(request, member);
 
         mealRepository.save(meal);
         mealFoodRepository.saveAllBatch(meal.getMealFoods());
@@ -71,38 +68,44 @@ public class MealService {
 
     public void synchronizeMeal(Long memberId, MealSyncRequest request) {
         Long mealId = request.getMealId();
-        Meal meal = mealRepository.findById(mealId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEAL, mealId.toString()));
+        Meal meal = findMealById(request.getMealId());
         validateMealOwner(meal, memberId);
+        validateFoodCodes(request.getFoodCodes());
 
-        changeMealTime(meal, memberId, request.getEatenAt(), request.getMealType());
-        syncMealFoods(request.getFoodCodes(), request.getNewMealFoodParams(), request.getMealFoodUpdateParams(), meal);
+        syncMealFoods(request.getNewMealFoodParams(), request.getMealFoodUpdateParams(), meal);
 
-        meal.calculateNutritionFacts();
+        Meal refreshMeal = findMealById(mealId);
+        changeMealTime(refreshMeal, memberId, request.getEatenAt(), request.getMealType());
+        refreshMeal.calculateNutritionFacts();
     }
 
 
-    private Map<String, Food> getEatenFoodMapBy(Set<String> foodCodes) {
-        Map<String, Food> eatenFoodMap = foodRepository.findByFoodCodeIn(foodCodes).stream()
-                .collect(Collectors.toUnmodifiableMap(Food::getFoodCode, identity()));
+    private Meal findMealById(Long mealId) {
+        return mealRepository.findById(mealId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEAL, mealId.toString()));
+    }
 
-        if (eatenFoodMap.size() != foodCodes.size()) {
-            Set<String> invalidFoodCodes = new HashSet<>(foodCodes);
-            invalidFoodCodes.removeAll(eatenFoodMap.keySet());
+    private void validateFoodCodes(Set<String> foodCodes) {
+        List<Food> foods = foodRepository.findByFoodCodeIn(foodCodes);
+        if (foods.size() != foodCodes.size()) {
+            Set<String> invalidFoodCodes = difference(
+                    foodCodes,
+                    foods.stream()
+                         .map(Food::getFoodCode)
+                         .collect(Collectors.toSet()));
             throw new NotFoundException(NOT_FOUND_FOOD, String.join(", ", invalidFoodCodes));
         }
-        return eatenFoodMap;
     }
 
-    private Meal createMealWithMealFoods(Member member, Map<String, Food> eatenFoodMap, MealRequest mealRequest) {
-        List<MealFood> mealFoods = createMealFoods(mealRequest.getMealFoodParams(), eatenFoodMap);
+    private Meal createMealWithMealFoods(MealRequest mealRequest, Member member) {
+        List<MealFood> mealFoods = createMealFoods(mealRequest.getMealFoodParams());
         return Meal.newInstance(member, mealRequest.getEatenAt(), mealRequest.getMealType(), mealFoods);
     }
 
-    private List<MealFood> createMealFoods(List<MealFoodParam> mealFoodParams, Map<String, Food> eatenFoodMap) {
+    private List<MealFood> createMealFoods(List<MealFoodParam> mealFoodParams) {
         return mealFoodParams.stream()
                 .map(mealFoodParam -> {
-                    Food food = eatenFoodMap.get(mealFoodParam.getFoodCode());
+                    Food food = foodRepository.findById(mealFoodParam.getFoodCode()).orElseThrow();
                     return MealFood.newInstance(food, mealFoodParam.getCount());
                 })
                 .toList();
@@ -116,54 +119,50 @@ public class MealService {
         meal.updateMealTime(eatenAt, mealType);
     }
 
-    private void saveNewMealFoods(List<MealFoodParam> newParams, Map<String, Food> eatenFoodMap, Meal meal) {
-        List<MealFood> newMealFoods = createMealFoods(newParams, eatenFoodMap);
-        meal.addAllMealFoods(newMealFoods);
+    // TODO: 삽입
+    private void saveNewMealFoods(List<MealFoodParam> newParams, Meal meal) {
+        List<MealFood> newMealFoods = createMealFoods(newParams);
+        newMealFoods.forEach(mf -> mf.setMeal(meal));
         mealFoodRepository.saveAllBatch(newMealFoods);
     }
 
-    private void updateMealFoods(List<MealFoodUpdateParam> updateParams, Map<String, Food> eatenFoodMap, Map<Long, MealFood> mealFoodById) {
+    private void updateMealFoods(List<MealFoodUpdateParam> updateParams) {
         for (MealFoodUpdateParam updateParam : updateParams) {
-            MealFood mealFood = mealFoodById.get(updateParam.getMealFoodId());
-            if (mealFood == null) {
-                throw new IllegalArgumentException();
-            }
-
-            Food food = eatenFoodMap.get(updateParam.getFoodCode());
-            mealFood.update(food, updateParam.getCount()); //
+            MealFood mealFood = mealFoodRepository.findById(updateParam.getMealFoodId())
+                    .orElseThrow(IllegalArgumentException::new);
+            Food food = foodRepository.findById(updateParam.getFoodCode()).orElseThrow();
+            mealFood.update(food, updateParam.getCount());
         }
     }
 
-    private void deleteMissingMealFoods(Set<Long> deleteIds, List<MealFood> mealFoods) {
-        if (!deleteIds.isEmpty()) {
-            mealFoodRepository.deleteByIdIn(deleteIds);
-            mealFoods.removeIf(mealFood -> deleteIds.contains(mealFood.getId()));
+    private void deleteMissingMealFoods(Set<Long> existingIds, Set<Long> updateIds) {
+        Set<Long> idsToDelete = difference(existingIds, updateIds);
+        if (!idsToDelete.isEmpty()) {
+            mealFoodRepository.deleteByIdIn(idsToDelete);
         }
     }
 
-    private void syncMealFoods(Set<String> foodCodes, List<MealFoodParam> newParams, List<MealFoodUpdateParam> updateParams, Meal meal) {
-        Map<String, Food> eatenFoodMap = getEatenFoodMapBy(foodCodes);
+    // TODO: update, delete, insert
+    private void syncMealFoods(List<MealFoodParam> newParams, List<MealFoodUpdateParam> updateParams, Meal meal) {
+        List<MealFood> mealFoods = mealFoodRepository.findByMealId(meal.getId());
 
-        saveNewMealFoods(newParams, eatenFoodMap, meal);
+        Set<Long> existingIds = mealFoods.stream()
+                .map(MealFood::getId)
+                .collect(Collectors.toUnmodifiableSet());
 
         Set<Long> updateIds = updateParams.stream()
                 .map(MealFoodUpdateParam::getMealFoodId)
                 .collect(Collectors.toUnmodifiableSet());
 
-        Map<Long, MealFood> mealFoodById = meal.getMealFoods().stream()
-                .collect(Collectors.toMap(MealFood::getId, identity()));
-
-        HashSet<Long> existingIds = new HashSet<>(mealFoodById.keySet());
         if (!existingIds.containsAll(updateIds)) {
             throw new AccessDeniedException();
         }
 
-        existingIds.removeAll(updateIds);
-        Set<Long> deleteIds = existingIds;
-        deleteIds.forEach(deleteId -> mealFoodById.remove(deleteId));
+        updateMealFoods(updateParams);
 
-        updateMealFoods(updateParams, eatenFoodMap, mealFoodById);
-        deleteMissingMealFoods(deleteIds, meal.getMealFoods());
+        // flush update/delete and clear
+        deleteMissingMealFoods(existingIds, updateIds);
+        saveNewMealFoods(newParams, meal);
     }
 
     private void validateMealLimit(Long memberId, LocalDate eatenDate, MealType mealType) {
@@ -178,6 +177,13 @@ public class MealService {
         if (!meal.isOwnedBy(memberId)) {
             throw new AccessDeniedException();
         }
+    }
+
+    /** @return s1 - s2 */
+    public <T> Set<T> difference(Set<T> s1, Set<T> s2) {
+        Set<T> difference = new HashSet<>(s1);
+        difference.removeAll(s2);
+        return difference;
     }
 
 }

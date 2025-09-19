@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Commit;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,14 +34,20 @@ public class MealRepositoryTest {
     private FoodRepository foodRepository;
 
 
+    @Test
+    void countBy() {
+        Member member = saveMember();
+        Meal meal = mealRepository.save(MealFixture.createMealOnly(member, LocalDateTime.now(), MealType.SNACK));
+
+        long count = mealRepository.countBy(member.getId(), meal.getEatenDate(), meal.getMealType());
+
+        assertThat(count).isOne();
+    }
+
     @DisplayName("식단 저장")
     @Test
     void save() {
-        Member member = saveMember();
-        LocalDateTime eatenAt = LocalDateTime.now();
-        MealType mealType = MealType.DINNER;
-
-        Meal savedMeal = mealRepository.save(MealFixture.createMealWithMealFoods(member, eatenAt, mealType));
+        Meal savedMeal = mealRepository.save(MealFixture.createMealOnly(saveMember(), LocalDateTime.now(), MealType.DINNER));
 
         Meal findMeal = mealRepository.findById(savedMeal.getId()).orElseThrow();
         assertThat(findMeal.getId()).isEqualTo(savedMeal.getId());
@@ -48,6 +55,7 @@ public class MealRepositoryTest {
 
     @DisplayName("식단 상세 조회")
     @Test
+    @Commit
     void findMealJoinFetch() {
         Member member = saveMember();
         Meal meal = mealRepository.save(MealFixture.createMealWithMealFoods(member, LocalDateTime.now(), MealType.LUNCH));

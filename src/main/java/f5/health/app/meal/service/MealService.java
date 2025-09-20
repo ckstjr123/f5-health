@@ -132,6 +132,7 @@ public class MealService {
             MealFood mealFood = mealFoodRepository.findById(updateParam.getMealFoodId())
                     .orElseThrow(IllegalArgumentException::new);
             Food food = foodRepository.findById(updateParam.getFoodCode()).orElseThrow();
+
             mealFood.update(food, updateParam.getCount());
         }
     }

@@ -34,13 +34,13 @@ public class MealSyncRequest {
     private long mealId;
 
     @Schema(description = "새로 추가된 식사 음식 항목")
-    @Valid
     @JsonSetter(nulls = Nulls.AS_EMPTY)
+    @Valid
     private List<MealFoodParam> newMealFoodParams = new ArrayList<>();
 
     @Schema(description = "기존 식사 음식에 대한 수정 사항(삭제 대상 제외)")
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
     @Valid
-    @JsonSetter(nulls = Nulls.AS_EMPTY) // TODO: null로 요청
     private List<MealFoodUpdateParam> mealFoodUpdateParams = new ArrayList<>();
 
     @Schema(description = "식사 분류", example = "BREAKFAST")

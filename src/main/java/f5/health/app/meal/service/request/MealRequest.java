@@ -29,9 +29,9 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 public class MealRequest {
 
     @Schema(description = "해당 식사로 섭취한 각 음식 코드(PK) 및 수량 리스트")
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
     @Valid
     @MenuSize
-    @JsonSetter(nulls = Nulls.AS_EMPTY)
     private List<MealFoodParam> mealFoodParams = new ArrayList<>();
 
     @Schema(description = "식사 분류", example = "BREAKFAST")

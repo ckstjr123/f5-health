@@ -57,7 +57,7 @@ public class MealService {
     public Long saveMeal(Long memberId, MealRequest request) {
         Member member = memberService.findById(memberId);
         validateMealLimit(memberId, request.getEatenAt().toLocalDate(), request.getMealType());
-        validateFoodCodes(request.getFoodCodes());
+        validateAllFoodBy(request.getFoodCodes());
 
         Meal meal = createMealWithMealFoods(request, member);
 
@@ -70,7 +70,7 @@ public class MealService {
         Long mealId = request.getMealId();
         Meal meal = findMealById(request.getMealId());
         validateMealOwner(meal, memberId);
-        validateFoodCodes(request.getFoodCodes());
+        validateAllFoodBy(request.getFoodCodes());
 
         syncMealFoods(request.getNewMealFoodParams(), request.getMealFoodUpdateParams(), meal);
 
@@ -85,14 +85,15 @@ public class MealService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEAL, mealId.toString()));
     }
 
-    private void validateFoodCodes(Set<String> foodCodes) {
+    private void validateAllFoodBy(Set<String> foodCodes) {
         List<Food> foods = foodRepository.findByFoodCodeIn(foodCodes);
         if (foods.size() != foodCodes.size()) {
             Set<String> invalidFoodCodes = difference(
                     foodCodes,
                     foods.stream()
                          .map(Food::getFoodCode)
-                         .collect(Collectors.toSet()));
+                         .collect(Collectors.toSet())
+            );
             throw new NotFoundException(NOT_FOUND_FOOD, String.join(", ", invalidFoodCodes));
         }
     }
@@ -104,9 +105,9 @@ public class MealService {
 
     private List<MealFood> createMealFoods(List<MealFoodParam> mealFoodParams) {
         return mealFoodParams.stream()
-                .map(mealFoodParam -> {
-                    Food food = foodRepository.findById(mealFoodParam.getFoodCode()).orElseThrow();
-                    return MealFood.newInstance(food, mealFoodParam.getCount());
+                .map(param -> {
+                    Food food = foodRepository.findById(param.getFoodCode()).orElseThrow();
+                    return MealFood.newInstance(food, param.getCount());
                 })
                 .toList();
     }
@@ -179,7 +180,12 @@ public class MealService {
         }
     }
 
-    /** @return s1 - s2 */
+    /**
+     * @param s1
+     * @param s2
+     * @return s1 - s2
+     * @param <T>
+     */
     public <T> Set<T> difference(Set<T> s1, Set<T> s2) {
         Set<T> difference = new HashSet<>(s1);
         difference.removeAll(s2);

@@ -23,10 +23,10 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AlcoholConsumptionInfo {
 
-    @Valid
     @Schema(description = "음주 목록", requiredMode = REQUIRED)
-    @Size(max = ALCOHOL_TYPE_SIZE, message = "주류는 " + ALCOHOL_TYPE_SIZE + "개입니다.")
     @JsonSetter(nulls = Nulls.AS_EMPTY)
+    @Valid
+    @Size(max = ALCOHOL_TYPE_SIZE, message = "주류는 " + ALCOHOL_TYPE_SIZE + "개입니다.")
     private List<AlcoholConsumption> result = new ArrayList<>();
 
 

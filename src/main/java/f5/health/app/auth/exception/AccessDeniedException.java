@@ -1,6 +1,7 @@
 package f5.health.app.auth.exception;
 
 import f5.health.app.common.exception.ApiException;
+import f5.health.app.common.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -13,8 +14,7 @@ public class AccessDeniedException extends ApiException {
         super(FORBIDDEN_REQUEST);
     }
 
-    public AccessDeniedException(String message) {
-        super(FORBIDDEN_REQUEST, message);
+    public AccessDeniedException(ErrorCode errorCode) {
+        super(errorCode);
     }
-    
 }

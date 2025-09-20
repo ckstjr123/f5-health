@@ -25,8 +25,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static f5.health.app.common.util.SetUtils.difference;
 import static f5.health.app.food.FoodErrorCode.NOT_FOUND_FOOD;
-import static f5.health.app.meal.exception.MealErrorCode.NOT_FOUND_MEAL;
+import static f5.health.app.meal.exception.MealErrorCode.*;
 
 @Service
 @Transactional
@@ -158,7 +159,7 @@ public class MealService {
                 .collect(Collectors.toUnmodifiableSet());
 
         if (!existingIds.containsAll(updateIds)) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedException(NOT_FOUND_MEAL_FOOD_OWNERSHIP);
         }
 
         updateMealFoods(updateParams);
@@ -179,20 +180,8 @@ public class MealService {
 
     private void validateMealOwner(Meal meal, Long memberId) {
         if (!meal.isOwnedBy(memberId)) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedException(NOT_FOUND_MEAL_OWNERSHIP);
         }
-    }
-
-    /**
-     * @param s1
-     * @param s2
-     * @return s1 - s2
-     * @param <T>
-     */
-    public <T> Set<T> difference(Set<T> s1, Set<T> s2) {
-        Set<T> difference = new HashSet<>(s1);
-        difference.removeAll(s2);
-        return difference;
     }
 
 }

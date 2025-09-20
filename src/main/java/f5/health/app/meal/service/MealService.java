@@ -54,6 +54,7 @@ public class MealService {
     // ----------------------------------------------------------------------------------------------------------------- //
 
 
+    /** 식단 등록 */
     public Long saveMeal(Long memberId, MealRequest request) {
         Member member = memberService.findById(memberId);
         validateMealLimit(memberId, request.getEatenAt().toLocalDate(), request.getMealType());
@@ -66,6 +67,7 @@ public class MealService {
         return meal.getId();
     }
 
+    /** 식단 일괄 수정 */
     public void synchronizeMeal(Long memberId, MealSyncRequest request) {
         Long mealId = request.getMealId();
         Meal meal = findMealById(request.getMealId());
@@ -137,10 +139,9 @@ public class MealService {
         }
     }
 
-    private void deleteMissingMealFoods(Set<Long> existingIds, Set<Long> updateIds) {
-        Set<Long> idsToDelete = difference(existingIds, updateIds);
-        if (!idsToDelete.isEmpty()) {
-            mealFoodRepository.deleteByIdIn(idsToDelete);
+    private void deleteMealFoodByIdIn(Set<Long> ids) {
+        if (!ids.isEmpty()) {
+            mealFoodRepository.deleteByIdIn(ids);
         }
     }
 
@@ -162,8 +163,9 @@ public class MealService {
 
         updateMealFoods(updateParams);
 
-        // flush update/delete and clear
-        deleteMissingMealFoods(existingIds, updateIds);
+        // flush update
+        // save/delete mealFoods and clear
+        deleteMealFoodByIdIn(difference(existingIds, updateIds));
         saveNewMealFoods(newParams, meal);
     }
 

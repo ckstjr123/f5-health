@@ -11,8 +11,8 @@ import java.util.Set;
 
 public interface MealFoodRepository extends JpaRepository<MealFood, Long>, MealFoodRepositoryCustom {
 
-    @Query("SELECT mf FROM MealFood mf WHERE mf.meal.id = :mealId")
-    List<MealFood> findByMealId(@Param("mealId") Long mealId);
+    @Query("SELECT mf FROM MealFood mf WHERE mf.meal.id = :id")
+    List<MealFood> findByMealId(@Param("id") Long id);
 
     /** 식단 수정 시 호출 */
     @Modifying(clearAutomatically = true)
@@ -21,6 +21,6 @@ public interface MealFoodRepository extends JpaRepository<MealFood, Long>, MealF
 
     /** 식단 삭제 시 호출 */
     @Modifying
-    @Query("DELETE FROM MealFood mf WHERE mf.meal.id = :mealId")
-    void deleteByMealId(@Param("mealId") Long mealId);
+    @Query("DELETE FROM MealFood mf WHERE mf.meal.id = :id")
+    void deleteByMealId(@Param("id") Long id);
 }

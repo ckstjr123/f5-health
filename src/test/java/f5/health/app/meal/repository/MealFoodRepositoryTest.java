@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class MealFoodRepositoryTest {
 
 
     @Test
-    void saveAllMealFoods() {
+    void saveAllBatch() {
         Member member = memberRepository.save(MemberFixture.createMember());
         Meal meal = createMealWithMealFoods(member, LocalDateTime.now(), MealType.BREAKFAST);
         meal.getMealFoods().forEach(mealFood -> {
@@ -56,6 +57,9 @@ public class MealFoodRepositoryTest {
 
         List<MealFood> savedMealFoods = mealFoodRepository.findAll();
         assertThat(rows.length).isEqualTo(savedMealFoods.size());
+        assertThat(savedMealFoods)
+                .extracting(MealFood::getId)
+                .doesNotContainNull();
     }
 
     @Test

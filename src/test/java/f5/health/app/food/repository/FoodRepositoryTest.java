@@ -19,19 +19,6 @@ public class FoodRepositoryTest {
     @Autowired
     private FoodRepository foodRepository;
 
-
-    @Test
-    void findByFoodCodeIn() {
-        List<Food> foods = foodRepository.saveAll(Set.of(
-                FoodFixture.createBasicFood("R211-927054101-1201", "음식1"),
-                FoodFixture.createHighProteinFood("R211-927054101-1202", "음식2"))
-        );
-
-        List<Food> findFoods = foodRepository.findByFoodCodeIn(foods.stream().map(Food::getFoodCode).collect(Collectors.toSet()));
-
-        assertThat(findFoods).containsExactlyInAnyOrderElementsOf(foods);
-    }
-
     @Test
     void findByFoodNameLike() {
         Food food = foodRepository.save(FoodFixture.createBasicFood("R211-927054101-1205", "음식"));
@@ -40,5 +27,4 @@ public class FoodRepositoryTest {
 
         assertThat(foods).containsExactly(food);
     }
-
 }

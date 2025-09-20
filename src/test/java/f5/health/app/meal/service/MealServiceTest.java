@@ -89,7 +89,7 @@ public class MealServiceTest {
                     .toList();
 
             MealRequest mealRequest = createMealRequest(mealType, eatenAt, foods);
-            when(foodRepository.findByFoodCodeIn(mealRequest.getFoodCodes())).thenReturn(new ArrayList<>());
+            when(foodRepository.findAllById(mealRequest.getFoodCodes())).thenReturn(new ArrayList<>());
 
             assertThrows(NotFoundException.class,
                     () -> mealService.saveMeal(memberId, createMealRequest(mealType, eatenAt, foods)));

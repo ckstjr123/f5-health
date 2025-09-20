@@ -86,7 +86,7 @@ public class MealService {
     }
 
     private void validateAllFoodBy(Set<String> foodCodes) {
-        List<Food> foods = foodRepository.findByFoodCodeIn(foodCodes);
+        List<Food> foods = foodRepository.findAllById(foodCodes);
         if (foods.size() != foodCodes.size()) {
             Set<String> invalidFoodCodes = difference(
                     foodCodes,

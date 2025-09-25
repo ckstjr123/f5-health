@@ -36,9 +36,6 @@ public class MealFood {
         return mealFood;
     }
 
-    /**
-     * MEAL ↔ MEAL_FOOD 양방향 연관관계 매핑
-     */
     public void setMeal(Meal meal) {
         this.meal = meal;
     }

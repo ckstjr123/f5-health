@@ -16,6 +16,7 @@ import f5.health.app.meal.service.request.MealRequest;
 import f5.health.app.meal.service.request.MealSyncRequest;
 import f5.health.app.member.entity.Member;
 import f5.health.app.member.service.MemberService;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,7 @@ import static f5.health.app.meal.exception.MealErrorCode.*;
 @RequiredArgsConstructor
 public class MealService {
 
+    private final EntityManager em;
     private final MemberService memberService;
     private final MealRepository mealRepository;
     private final MealFoodRepository mealFoodRepository;
@@ -123,7 +125,6 @@ public class MealService {
         meal.updateMealTime(eatenAt, mealType);
     }
 
-    // TODO: 삽입
     private void saveNewMealFoods(List<MealFoodParam> newParams, Meal meal) {
         List<MealFood> newMealFoods = createMealFoods(newParams);
         newMealFoods.forEach(mf -> mf.setMeal(meal));
@@ -146,11 +147,10 @@ public class MealService {
         }
     }
 
-    // TODO: update, delete, insert
     private void syncMealFoods(List<MealFoodParam> newParams, List<MealFoodUpdateParam> updateParams, Meal meal) {
         List<MealFood> mealFoods = mealFoodRepository.findByMealId(meal.getId());
 
-        Set<Long> existingIds = mealFoods.stream()
+        Set<Long> originalIds = mealFoods.stream()
                 .map(MealFood::getId)
                 .collect(Collectors.toUnmodifiableSet());
 
@@ -158,16 +158,14 @@ public class MealService {
                 .map(MealFoodUpdateParam::getMealFoodId)
                 .collect(Collectors.toUnmodifiableSet());
 
-        if (!existingIds.containsAll(updateIds)) {
+        if (!originalIds.containsAll(updateIds)) {
             throw new AccessDeniedException(NOT_FOUND_MEAL_FOOD_OWNERSHIP);
         }
 
-        updateMealFoods(updateParams); //TODO: add batch
-
-        // flush update
-        // save/delete mealFoods and clear
-        deleteMealFoodByIdIn(difference(existingIds, updateIds));
+        updateMealFoods(updateParams);
+        deleteMealFoodByIdIn(difference(originalIds, updateIds));
         saveNewMealFoods(newParams, meal);
+        em.clear();
     }
 
     private void validateMealLimit(Long memberId, LocalDate eatenDate, MealType mealType) {

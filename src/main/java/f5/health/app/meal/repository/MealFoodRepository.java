@@ -15,7 +15,7 @@ public interface MealFoodRepository extends JpaRepository<MealFood, Long>, MealF
     List<MealFood> findByMealId(@Param("id") Long id);
 
     /** 식단 수정 시 호출 */
-    @Modifying(clearAutomatically = true)
+    @Modifying //(clearAutomatically = true)
     @Query("DELETE FROM MealFood mf WHERE mf.id IN :ids")
     void deleteByIdIn(@Param("ids") Set<Long> ids);
 

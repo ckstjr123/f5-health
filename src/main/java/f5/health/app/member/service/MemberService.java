@@ -19,7 +19,6 @@ import static f5.health.app.member.exception.MemberErrorCode.NOT_FOUND_MEMBER;
 
 @Service
 @RequiredArgsConstructor
-//@Transactional
 public class MemberService {
 
     private final EnumModelMapper enumMapper;

@@ -77,7 +77,8 @@ public class MealFoodRepositoryTest {
                 .map(MealFood::getId)
                 .collect(Collectors.toSet());
 
-        mealFoodRepository.deleteByIdIn(mealFoodIds); // clearAutomatically
+        mealFoodRepository.deleteByIdIn(mealFoodIds);
+        em.clear();
 
         Meal findMeal = mealRepository.findById(meal.getId()).orElseThrow();
         assertThat(findMeal.getMealFoods()).isEmpty();

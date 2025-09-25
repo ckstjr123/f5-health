@@ -16,10 +16,9 @@ import java.util.List;
 public class MealFoodRepositoryCustomImpl implements MealFoodRepositoryCustom {
 
     private final JdbcTemplate jdbcTemplate;
-    private final EntityManager em;
 
     public int[] saveAllBatch(final List<MealFood> mealFoods) {
-        int[] ints = jdbcTemplate.batchUpdate(
+        return jdbcTemplate.batchUpdate(
                 "INSERT INTO MEAL_FOOD " +
                         "(MEAL_ID, FOOD_CODE, COUNT) " +
                         "VALUES (?, ?, ?)",
@@ -36,9 +35,7 @@ public class MealFoodRepositoryCustomImpl implements MealFoodRepositoryCustom {
                     public int getBatchSize() {
                         return mealFoods.size();
                     }
-                });
-        em.clear();
-        return ints;
+                }
+        );
     }
-
 }

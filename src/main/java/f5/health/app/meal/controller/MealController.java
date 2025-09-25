@@ -56,8 +56,8 @@ public class MealController implements MealApiDocs {
     }
 
     @PostMapping("/meal/edit")
-    public void sync(@AuthenticationPrincipal JwtMember loginMember,
-                     @RequestBody @Valid MealSyncRequest mealSyncRequest) {
+    public void synchronize(@AuthenticationPrincipal JwtMember loginMember,
+                            @RequestBody @Valid MealSyncRequest mealSyncRequest) {
         mealService.synchronizeMeal(loginMember.getId(), mealSyncRequest);
     }
 

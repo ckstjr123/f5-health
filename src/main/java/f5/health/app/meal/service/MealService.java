@@ -162,7 +162,7 @@ public class MealService {
             throw new AccessDeniedException(NOT_FOUND_MEAL_FOOD_OWNERSHIP);
         }
 
-        updateMealFoods(updateParams);
+        updateMealFoods(updateParams); //TODO: add batch
 
         // flush update
         // save/delete mealFoods and clear

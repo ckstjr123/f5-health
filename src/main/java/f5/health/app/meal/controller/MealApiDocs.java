@@ -114,5 +114,5 @@ public interface MealApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    void sync(JwtMember loginMember, MealSyncRequest mealSyncRequest);
+    void synchronize(JwtMember loginMember, MealSyncRequest mealSyncRequest);
 }

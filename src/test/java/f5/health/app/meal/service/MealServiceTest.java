@@ -58,22 +58,22 @@ public class MealServiceTest {
     @DisplayName("식단 등록")
     class SaveMeal {
 
-        @DisplayName("아침/점심/저녁에 대해 이미 등록된 식단이 있으면 예외")
+        @DisplayName("각 식사 타입에 대해 당일 식사 기록 제한 초과 시 예외")
         @Test
         void validateRegularMealLimit() {
             final Long memberId = 1L;
             Member member = MemberFixture.createMember();
-            MealType regularMealType = MealType.LUNCH;
+            MealType mealType = MealType.LUNCH;
             LocalDateTime eatenAt = LocalDateTime.now();
-            Meal meal = MealFixture.createMealWithMealFoods(member, eatenAt, regularMealType);
+            Meal meal = MealFixture.createMealWithMealFoods(member, eatenAt, mealType);
             List<Food> foods = meal.getMealFoods().stream()
                     .map(MealFood::getFood)
                     .toList();
 
-            when(mealRepository.countBy(memberId, eatenAt.toLocalDate(), regularMealType)).thenReturn((long) regularMealType.maxCountPerDay());
+            when(mealRepository.countBy(memberId, eatenAt.toLocalDate(), mealType)).thenReturn((long) mealType.maxCountPerDay());
 
             assertThrows(MealLimitExceededException.class,
-                    () -> mealService.saveMeal(memberId, createMealRequest(regularMealType, eatenAt, foods)));
+                    () -> mealService.saveMeal(memberId, createMealRequest(mealType, eatenAt, foods)));
         }
 
         @DisplayName("음식 코드에 해당하는 음식을 찾지 못하면 예외")

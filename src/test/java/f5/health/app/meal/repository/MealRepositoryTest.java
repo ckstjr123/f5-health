@@ -55,7 +55,6 @@ public class MealRepositoryTest {
 
     @DisplayName("식단 상세 조회")
     @Test
-    @Commit
     void findMealJoinFetch() {
         Member member = saveMember();
         Meal meal = mealRepository.save(MealFixture.createMealWithMealFoods(member, LocalDateTime.now(), MealType.LUNCH));

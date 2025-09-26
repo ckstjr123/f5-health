@@ -166,6 +166,7 @@ public class MealService {
         deleteMealFoodByIdIn(difference(originalIds, updateIds));
         saveAllNewMealFoods(newParams, meal);
         updateMealFoods(updateParams);
+
         flushAndClear(em);
     }
 

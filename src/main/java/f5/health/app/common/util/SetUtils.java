@@ -3,7 +3,7 @@ package f5.health.app.common.util;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SetUtils {
+public final class SetUtils {
 
     /**
      * @param s1

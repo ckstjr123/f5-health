@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static f5.health.app.common.util.EntityManagerHelper.flushAndClear;
 import static f5.health.app.common.util.SetUtils.difference;
 import static f5.health.app.food.FoodErrorCode.NOT_FOUND_FOOD;
 import static f5.health.app.meal.exception.MealErrorCode.*;
@@ -125,7 +126,7 @@ public class MealService {
         meal.updateMealTime(eatenAt, mealType);
     }
 
-    private void saveNewMealFoods(List<MealFoodParam> newParams, Meal meal) {
+    private void saveAllNewMealFoods(List<MealFoodParam> newParams, Meal meal) {
         List<MealFood> newMealFoods = createMealFoods(newParams);
         newMealFoods.forEach(mf -> mf.setMeal(meal));
         mealFoodRepository.saveAllBatch(newMealFoods);
@@ -143,7 +144,7 @@ public class MealService {
 
     private void deleteMealFoodByIdIn(Set<Long> ids) {
         if (!ids.isEmpty()) {
-            mealFoodRepository.deleteByIdIn(ids);
+            mealFoodRepository.deleteAllByIdInBatch(ids);
         }
     }
 
@@ -162,10 +163,10 @@ public class MealService {
             throw new AccessDeniedException(NOT_FOUND_MEAL_FOOD_OWNERSHIP);
         }
 
-        updateMealFoods(updateParams);
         deleteMealFoodByIdIn(difference(originalIds, updateIds));
-        saveNewMealFoods(newParams, meal);
-        em.clear();
+        saveAllNewMealFoods(newParams, meal);
+        updateMealFoods(updateParams);
+        flushAndClear(em);
     }
 
     private void validateMealLimit(Long memberId, LocalDate eatenDate, MealType mealType) {

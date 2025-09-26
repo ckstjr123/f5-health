@@ -71,27 +71,13 @@ public class MealFoodRepositoryTest {
     }
 
     @Test
-    void deleteByIdIn() {
-        Meal meal = saveMealWithMealFoods();
-        Set<Long> mealFoodIds = meal.getMealFoods().stream()
-                .map(MealFood::getId)
-                .collect(Collectors.toSet());
-
-        mealFoodRepository.deleteByIdIn(mealFoodIds);
-        em.clear();
-
-        Meal findMeal = mealRepository.findById(meal.getId()).orElseThrow();
-        assertThat(findMeal.getMealFoods()).isEmpty();
-    }
-
-    @Test
     void deleteByMealId() {
         Meal meal = saveMealWithMealFoods();
 
         mealFoodRepository.deleteByMealId(meal.getId());
 
-        em.refresh(meal);
-        assertThat(meal.getMealFoods()).isEmpty();
+        Set<Long> ids = collectIds(meal.getMealFoods());
+        assertThat(mealFoodRepository.findAllById(ids)).isEmpty();
     }
 
 
@@ -106,6 +92,12 @@ public class MealFoodRepositoryTest {
         });
         mealFoodRepository.saveAll(meal.getMealFoods());
         return meal;
+    }
+
+    private Set<Long> collectIds(List<MealFood> mealFoods) {
+        return mealFoods.stream()
+                .map(MealFood::getId)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
 }

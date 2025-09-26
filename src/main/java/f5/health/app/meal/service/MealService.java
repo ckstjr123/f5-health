@@ -23,7 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static f5.health.app.common.util.EntityManagerHelper.flushAndClear;
@@ -62,7 +63,7 @@ public class MealService {
     public Long saveMeal(Long memberId, MealRequest request) {
         Member member = memberService.findById(memberId);
         validateMealLimit(memberId, request.getEatenAt().toLocalDate(), request.getMealType());
-        validateAllFoodBy(request.getFoodCodes());
+        validateRequiredFoods(request.getFoodCodes());
 
         Meal meal = createMealWithMealFoods(request, member);
 
@@ -76,7 +77,7 @@ public class MealService {
         Long mealId = request.getMealId();
         Meal meal = findMealById(request.getMealId());
         validateMealOwner(meal, memberId);
-        validateAllFoodBy(request.getFoodCodes());
+        validateRequiredFoods(request.getFoodCodes());
 
         syncMealFoods(request.getNewMealFoodParams(), request.getMealFoodUpdateParams(), meal);
 
@@ -91,7 +92,7 @@ public class MealService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEAL, mealId.toString()));
     }
 
-    private void validateAllFoodBy(Set<String> foodCodes) {
+    private void validateRequiredFoods(Set<String> foodCodes) {
         List<Food> foods = foodRepository.findAllById(foodCodes);
         if (foods.size() != foodCodes.size()) {
             Set<String> invalidFoodCodes = difference(

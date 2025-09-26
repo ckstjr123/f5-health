@@ -1,7 +1,6 @@
 package f5.health.app.meal.repository;
 
 import f5.health.app.meal.entity.MealFood;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;

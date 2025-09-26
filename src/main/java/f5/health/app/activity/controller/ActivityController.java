@@ -23,13 +23,13 @@ public class ActivityController implements ActivityApiDocs {
     @GetMapping
     public ActivityResponse findActivity(@AuthenticationPrincipal JwtMember loginMember,
                                          @ModelAttribute("date") @Valid RecordDate recordDate) {
-        return activityService.find(loginMember.getId(), recordDate.get());
+        return activityService.find(loginMember.id(), recordDate.get());
     }
 
     @PostMapping
     public ResponseEntity<Void> save(@AuthenticationPrincipal JwtMember loginMember,
                                      @RequestBody @Valid ActivityRequest activityRequest) {
-        activityService.save(loginMember.getId(), activityRequest);
+        activityService.save(loginMember.id(), activityRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

@@ -85,9 +85,7 @@ public class Meal {
     
     public void calculateNutritionFacts() {
         this.totalKcal = 0;
-        this.totalCarbohydrate = 0.0;
-        this.totalProtein = 0.0;
-        this.totalFat = 0.0;
+        this.totalCarbohydrate = this.totalProtein = this.totalFat = 0.0;
         for (MealFood mealFood : mealFoods) {
             this.totalKcal += mealFood.calculateKcal();
             this.totalCarbohydrate += mealFood.calculateCarbohydrate();

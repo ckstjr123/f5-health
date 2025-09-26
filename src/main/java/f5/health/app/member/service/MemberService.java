@@ -26,13 +26,13 @@ public class MemberService {
 
     /** 내 정보 */
     public MemberProfile getMyProfile(JwtMember loginMember) {
-        Member member = this.findById(loginMember.getId());
+        Member member = this.findById(loginMember.id());
         return new MemberProfile(member, enumMapper);
     }
 
     @Transactional
     public void updateMember(JwtMember loginMember, MemberUpdateRequest updateParam) {
-        Member member = memberRepository.findById(loginMember.getId())
+        Member member = memberRepository.findById(loginMember.id())
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 
         member.updateProfile(updateParam.getNickname(), updateParam.getHeight(), updateParam.getWeight());

@@ -15,6 +15,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -55,7 +58,7 @@ public interface MealApiDocs {
     @Operation(summary = "식단 상세 정보",
             description = "섭취한 음식 및 영양정보 등 상세 조회",
             parameters = {
-                    @Parameter(in = ParameterIn.PATH, name = "mealId", description = "식단 아이디", required = true)
+                    @Parameter(in = ParameterIn.PATH, name = "mealId", description = "식단 식별자", required = true)
             }
     )
     @ApiResponses({
@@ -115,4 +118,30 @@ public interface MealApiDocs {
             )
     })
     void synchronize(JwtMember loginMember, MealSyncRequest mealSyncRequest);
+
+
+    @Operation(summary = "식단 삭제",
+            description = "식사 기록 완전 삭제",
+            parameters = {
+                    @Parameter(in = ParameterIn.PATH, name = "mealId", description = "삭제할 식단 식별자", required = true)
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "식사 기록 삭제 완료",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "삭제 대상 식단을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "삭제 권한 없음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            )
+    })
+    ResponseEntity<Void> delete(JwtMember loginMember, Long mealId);
 }

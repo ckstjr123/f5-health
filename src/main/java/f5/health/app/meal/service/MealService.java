@@ -1,6 +1,7 @@
 package f5.health.app.meal.service;
 
 import f5.health.app.auth.exception.AccessDeniedException;
+import f5.health.app.auth.jwt.vo.JwtMember;
 import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.food.entity.Food;
 import f5.health.app.food.repository.FoodRepository;
@@ -48,10 +49,10 @@ public class MealService {
         return mealRepository.findMeals(memberId, eatenDate);
     }
 
-    public Meal findWithMealFoods(Long memberId, Long mealId) {
+    public Meal findWithMealFoods(Long mealId, JwtMember loginMember) {
         Meal meal = mealRepository.findMealJoinFetch(mealId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEAL, mealId.toString()));
-        validateMealOwner(meal, memberId);
+        validateMealOwner(meal, loginMember.id());
         return meal;
     }
 
@@ -84,6 +85,15 @@ public class MealService {
         Meal refreshMeal = findMealById(mealId);
         changeMealTime(refreshMeal, memberId, request.getEatenAt(), request.getMealType());
         refreshMeal.calculateNutritionFacts();
+    }
+
+    /** 식단 삭제 */
+    public void deleteMeal(Long mealId, JwtMember loginMember) {
+        Meal meal = findMealById(mealId);
+        validateMealOwner(meal, loginMember.id());
+
+        mealFoodRepository.deleteByMealId(mealId);
+        mealRepository.delete(meal);
     }
 
 

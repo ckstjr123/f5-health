@@ -12,6 +12,7 @@ import f5.health.app.meal.vo.MealResponse;
 import f5.health.app.meal.vo.MealsResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class MealController implements MealApiDocs {
     private final EnumModelMapper enumMapper;
     private final MealService mealService;
 
+
     @GetMapping("/meal/types")
     public List<? extends EnumModel> mealTypes() {
         return enumMapper.get(MealType.class);
@@ -33,7 +35,7 @@ public class MealController implements MealApiDocs {
 
     @GetMapping("/meals")
     public MealsResponse meals(@AuthenticationPrincipal JwtMember loginMember, @RequestParam("date") LocalDate date) {
-        List<Meal> meals = mealService.findMeals(loginMember.getId(), date);
+        List<Meal> meals = mealService.findMeals(loginMember.id(), date);
         return MealsResponse.from(meals.stream()
                 .map(MealResponse::withoutMealFoods)
                 .toList());
@@ -41,7 +43,7 @@ public class MealController implements MealApiDocs {
 
     @GetMapping("/meal/{mealId}")
     public MealResponse meal(@AuthenticationPrincipal JwtMember loginMember, @PathVariable("mealId") Long mealId) {
-        Meal meal = mealService.findWithMealFoods(loginMember.getId(), mealId);
+        Meal meal = mealService.findWithMealFoods(mealId, loginMember);
         return MealResponse.withMealFoods(meal);
     }
 
@@ -52,13 +54,19 @@ public class MealController implements MealApiDocs {
     @PostMapping("/meal")
     public Long save(@AuthenticationPrincipal JwtMember loginMember,
                      @RequestBody @Valid MealRequest mealRequest) {
-        return mealService.saveMeal(loginMember.getId(), mealRequest);
+        return mealService.saveMeal(loginMember.id(), mealRequest);
     }
 
     @PostMapping("/meal/edit")
     public void synchronize(@AuthenticationPrincipal JwtMember loginMember,
                             @RequestBody @Valid MealSyncRequest mealSyncRequest) {
-        mealService.synchronizeMeal(loginMember.getId(), mealSyncRequest);
+        mealService.synchronizeMeal(loginMember.id(), mealSyncRequest);
+    }
+
+    @DeleteMapping("/meal/{mealId}")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal JwtMember loginMember, @PathVariable("mealId") Long mealId) {
+        mealService.deleteMeal(mealId, loginMember);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -25,14 +26,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public FieldErrorsResult methodArgumentNotValidExHandler(MethodArgumentNotValidException ex) {
         log.warn("MethodArgumentNotValidExHandler", ex);
-
-        List<CustomFieldError> customFieldErrors = ex.getBindingResult()
+        List<CustomFieldError> fieldErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(fieldError -> new CustomFieldError(fieldError.getField(), fieldError.getDefaultMessage()))
                 .toList();
 
-        return new FieldErrorsResult(customFieldErrors);
+        return new FieldErrorsResult(fieldErrors);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)

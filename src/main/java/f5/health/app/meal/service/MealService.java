@@ -63,7 +63,7 @@ public class MealService {
     /** 식단 등록 */
     public Long saveMeal(Long memberId, MealRequest request) {
         Member member = memberService.findById(memberId);
-        validateMealLimit(memberId, request.getEatenAt().toLocalDate(), request.getMealType());
+        validateMealLimit(memberId, request.eatenAt().toLocalDate(), request.mealType());
         validateRequiredFoods(request.getFoodCodes());
 
         Meal meal = createMealWithMealFoods(request, member);
@@ -75,15 +75,15 @@ public class MealService {
 
     /** 식단 일괄 수정 */
     public void synchronizeMeal(Long memberId, MealSyncRequest request) {
-        Long mealId = request.getMealId();
-        Meal meal = findMealById(request.getMealId());
+        Long mealId = request.mealId();
+        Meal meal = findMealById(request.mealId());
         validateMealOwner(meal, memberId);
         validateRequiredFoods(request.getFoodCodes());
 
-        syncMealFoods(request.getNewMealFoodParams(), request.getMealFoodUpdateParams(), meal);
+        syncMealFoods(request.newMealFoodParams(), request.mealFoodUpdateParams(), meal);
 
         Meal refreshMeal = findMealById(mealId);
-        changeMealTime(refreshMeal, memberId, request.getEatenAt(), request.getMealType());
+        changeMealTime(refreshMeal, memberId, request.eatenAt(), request.mealType());
         refreshMeal.calculateNutritionFacts();
     }
 
@@ -114,15 +114,15 @@ public class MealService {
     }
 
     private Meal createMealWithMealFoods(MealRequest mealRequest, Member member) {
-        List<MealFood> mealFoods = createMealFoods(mealRequest.getMealFoodParams());
-        return Meal.newInstance(member, mealRequest.getEatenAt(), mealRequest.getMealType(), mealFoods);
+        List<MealFood> mealFoods = createMealFoods(mealRequest.mealFoodParams());
+        return Meal.newInstance(member, mealRequest.eatenAt(), mealRequest.mealType(), mealFoods);
     }
 
     private List<MealFood> createMealFoods(List<MealFoodParam> mealFoodParams) {
         return mealFoodParams.stream()
                 .map(param -> {
-                    Food food = foodRepository.findById(param.getFoodCode()).orElseThrow();
-                    return MealFood.newInstance(food, param.getCount());
+                    Food food = foodRepository.findById(param.foodCode()).orElseThrow();
+                    return MealFood.newInstance(food, param.count());
                 })
                 .toList();
     }
@@ -143,11 +143,11 @@ public class MealService {
 
     private void updateMealFoods(List<MealFoodUpdateParam> updateParams) {
         for (MealFoodUpdateParam updateParam : updateParams) {
-            MealFood mealFood = mealFoodRepository.findById(updateParam.getMealFoodId())
+            MealFood mealFood = mealFoodRepository.findById(updateParam.mealFoodId())
                     .orElseThrow(IllegalArgumentException::new);
-            Food food = foodRepository.findById(updateParam.getFoodCode()).orElseThrow();
+            Food food = foodRepository.findById(updateParam.foodCode()).orElseThrow();
 
-            mealFood.update(food, updateParam.getCount());
+            mealFood.update(food, updateParam.count());
         }
     }
 
@@ -165,7 +165,7 @@ public class MealService {
                 .collect(Collectors.toUnmodifiableSet());
 
         Set<Long> updateIds = updateParams.stream()
-                .map(MealFoodUpdateParam::getMealFoodId)
+                .map(MealFoodUpdateParam::mealFoodId)
                 .collect(Collectors.toUnmodifiableSet());
 
         if (!originalIds.containsAll(updateIds)) {

@@ -11,7 +11,7 @@ public class MealSyncMenuSizeValidator implements ConstraintValidator<MenuSize, 
 
     @Override
     public boolean isValid(MealSyncRequest syncRequest, ConstraintValidatorContext context) {
-        int menuSize = syncRequest.getNewMealFoodParams().size() + syncRequest.getMealFoodUpdateParams().size();
+        int menuSize = syncRequest.newMealFoodParams().size() + syncRequest.mealFoodUpdateParams().size();
         return (MENU_MIN_SIZE_PER_MEAL <= menuSize) && (menuSize <= MENU_LIMIT_SIZE_PER_MEAL);
     }
 }

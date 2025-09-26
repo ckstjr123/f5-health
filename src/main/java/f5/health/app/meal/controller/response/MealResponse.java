@@ -1,4 +1,4 @@
-package f5.health.app.meal.vo;
+package f5.health.app.meal.controller.response;
 
 import f5.health.app.meal.entity.Meal;
 import io.swagger.v3.oas.annotations.media.Schema;

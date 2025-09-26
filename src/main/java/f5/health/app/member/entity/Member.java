@@ -5,22 +5,18 @@ import f5.health.app.member.constant.Badge;
 import f5.health.app.member.constant.BloodType;
 import f5.health.app.member.constant.Gender;
 import f5.health.app.member.constant.Role;
-import io.swagger.v3.oas.annotations.media.Schema;
+import f5.health.app.member.entity.vo.MemberCheckUp;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.Period;
 
 import static f5.health.app.member.constant.Gender.MALE;
-import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
 @Entity
@@ -73,17 +69,25 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private BloodType bloodType;
 
-
-    /** 회원 생성 메서드 */
-    public static Member createMember(String oauthId, String email, String nickname, Role role, CheckUp memberCheckUp) {
+    @Builder(builderMethodName = "createMember")
+    private static Member newInstance(String oauthId, String email, String nickname, Role role, MemberCheckUp checkUp) {
         Member member = new Member();
         member.oauthId = oauthId;
         member.email = email;
         member.nickname = nickname;
         member.role = role;
         member.badge = Badge.BEGINNER;
-        memberCheckUp.applyTo(member);
+        member.apply(checkUp);
         return member;
+    }
+
+    /** 설문 결과 반영 */
+    private void apply(MemberCheckUp checkUp) {
+        this.birthDate = checkUp.getBirthDate();
+        this.gender = checkUp.getGender();
+        this.height = checkUp.getHeight();
+        this.weight = checkUp.getWeight();
+        this.bloodType = checkUp.getBloodType();
     }
 
 
@@ -113,54 +117,4 @@ public class Member extends BaseEntity {
         this.weight = weight;
     }
 
-
-    @Schema(description = "회원가입 설문 정보")
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class CheckUp {
-
-        public static final int DAILY_MAX_WATER_ML = 5000;
-        public static final int DAILY_MAX_CIGARETTES = 40;
-        public static final int DAILY_MAX_ALCOHOL_ML = 1500;
-
-        @Schema(description = "생년월일", example = "2000-04-18", requiredMode = REQUIRED)
-        @NotNull(message = "생년월일을 입력해주세요.")
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        private LocalDate birthDate;
-
-        @Schema(description = "성별", example = "MALE", requiredMode = REQUIRED)
-        @NotNull(message = "성별을 입력해주세요.")
-        private Gender gender;
-
-        @Schema(description = "키", example = "173", requiredMode = REQUIRED)
-        @Range(min = 100, max = 230)
-        private int height;
-
-        @Schema(description = "몸무게", example = "65", requiredMode = REQUIRED)
-        @Range(min = 20, max = 200)
-        private int weight;
-
-        @Schema(description = "혈액형", example = "AB", requiredMode = REQUIRED)
-        @NotNull(message = "혈액형을 입력해주세요.")
-        private BloodType bloodType;
-
-        @Builder(toBuilder = true)
-        private CheckUp(LocalDate birthDate, Gender gender, int height, int weight, BloodType bloodType) {
-            this.birthDate = birthDate;
-            this.gender = gender;
-            this.height = height;
-            this.weight = weight;
-            this.bloodType = bloodType;
-        }
-
-        /** 설문 정보 반영 */
-        private void applyTo(Member member) {
-            member.birthDate = this.birthDate;
-            member.gender = this.gender;
-            member.height = this.height;
-            member.weight = this.weight;
-            member.bloodType = this.bloodType;
-        }
-    }
-    
 }

@@ -19,7 +19,7 @@ public interface ActivityApiDocs {
 
     @Operation(summary = "활동 조회", description = "해당 일자에 저장된 활동 데이터 조회",
             parameters = {
-                    @Parameter(name = "", description = "활동 조회일자",
+                    @Parameter(name = "recordDate", description = "활동 조회일자",
                             content = @Content(schema = @Schema(implementation = RecordDate.class)))
             }
     )

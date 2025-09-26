@@ -55,7 +55,7 @@ public class MealServiceIntegrationTest {
         Long mealId = mealService.saveMeal(member.getId(), mealRequest);
 
         Meal meal = mealRepository.findById(mealId).orElseThrow();
-        List<MealFoodParam> mealFoodParams = mealRequest.getMealFoodParams();
+        List<MealFoodParam> mealFoodParams = mealRequest.mealFoodParams();
         assertAll(
                 () -> assertThat(meal.getId()).isEqualTo(mealId),
                 () -> assertThat(meal.getEatenDate()).isEqualTo(eatenAt.toLocalDate()),
@@ -78,25 +78,25 @@ public class MealServiceIntegrationTest {
 
     private int getTotalKcal(List<Food> foods, List<MealFoodParam> mealFoodParams) {
         return IntStream.range(ZERO_INDEX, foods.size())
-                .map(i -> (int) (foods.get(i).getKcal() * mealFoodParams.get(i).getCount()))
+                .map(i -> (int) (foods.get(i).getKcal() * mealFoodParams.get(i).count()))
                 .sum();
     }
 
     private double getTotalCarbohydrate(List<Food> foods, List<MealFoodParam> mealFoodParams) {
         return IntStream.range(ZERO_INDEX, foods.size())
-                .mapToDouble(i -> foods.get(i).getCarbohydrate() * mealFoodParams.get(i).getCount())
+                .mapToDouble(i -> foods.get(i).getCarbohydrate() * mealFoodParams.get(i).count())
                 .sum();
     }
 
     private double getTotalProtein(List<Food> foods, List<MealFoodParam> mealFoodParams) {
         return IntStream.range(ZERO_INDEX, foods.size())
-                .mapToDouble(i -> foods.get(i).getProtein() * mealFoodParams.get(i).getCount())
+                .mapToDouble(i -> foods.get(i).getProtein() * mealFoodParams.get(i).count())
                 .sum();
     }
 
     private double getTotalFat(List<Food> foods, List<MealFoodParam> mealFoodParams) {
         return IntStream.range(ZERO_INDEX, foods.size())
-                .mapToDouble(i -> foods.get(i).getFat() * mealFoodParams.get(i).getCount())
+                .mapToDouble(i -> foods.get(i).getFat() * mealFoodParams.get(i).count())
                 .sum();
     }
 

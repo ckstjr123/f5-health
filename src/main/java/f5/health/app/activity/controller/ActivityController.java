@@ -23,7 +23,7 @@ public class ActivityController implements ActivityApiDocs {
     @GetMapping
     public ActivityResponse findActivity(@AuthenticationPrincipal JwtMember loginMember,
                                          @ModelAttribute("date") @Valid RecordDate recordDate) {
-        return activityService.find(loginMember.id(), recordDate.get());
+        return activityService.findActivity(loginMember.id(), recordDate.get());
     }
 
     @PostMapping

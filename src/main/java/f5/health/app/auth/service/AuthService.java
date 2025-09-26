@@ -32,12 +32,12 @@ public class AuthService {
     private final SessionService sessionService;
 
     public OAuth2LoginResult login(OAuth2Provider provider, OAuth2LoginRequest loginRequest) {
-        OAuth2UserInfo oauth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, loginRequest.getAccessToken());
+        OAuth2UserInfo oauth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, loginRequest.accessToken());
 
         return memberService.findByEmail(oauth2UserInfo.getEmail())
                 .map(findMember -> {
                     JwtResponse tokenResponse = issueTokens(findMember);
-                    sessionService.save(findMember.getId(), loginRequest.getDeviceInfo(), tokenResponse.getRefreshToken());
+                    sessionService.save(findMember.getId(), loginRequest.deviceInfo(), tokenResponse.getRefreshToken());
                     return OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, tokenResponse);
                 })
                 .orElse(OAuth2LoginResult.of(CHECKUP_REQUIRED, null));
@@ -45,13 +45,13 @@ public class AuthService {
 
     public JwtResponse join(OAuth2Provider provider, SignUpRequest signUpRequest) {
         // 액세스 토큰을 통해 유저 정보 조회
-        OAuth2UserInfo oauth2Userinfo = oauth2ClientService.fetchOAuth2UserInfo(provider, signUpRequest.getAccessToken());
+        OAuth2UserInfo oauth2Userinfo = oauth2ClientService.fetchOAuth2UserInfo(provider, signUpRequest.accessToken());
 
-        Long memberId = memberService.join(oauth2Userinfo, signUpRequest.getMemberCheckUp());
+        Long memberId = memberService.join(oauth2Userinfo, signUpRequest.memberCheckUp());
         Member joinMember = memberService.findById(memberId);
 
         JwtResponse tokenResponse = issueTokens(joinMember);
-        sessionService.save(joinMember.getId(), signUpRequest.getDeviceInfo(), tokenResponse.getRefreshToken());
+        sessionService.save(joinMember.getId(), signUpRequest.deviceInfo(), tokenResponse.getRefreshToken());
         return tokenResponse;
     }
 

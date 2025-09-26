@@ -28,7 +28,7 @@ public class ActivityService {
     private final ActivityRepository activityRepository;
 
     @Transactional(readOnly = true)
-    public ActivityResponse find(Long memberId, LocalDate recordDate) {
+    public ActivityResponse findActivity(Long memberId, LocalDate recordDate) {
         Activity activity = activityRepository.findByMemberIdAndRecordDate(memberId, recordDate)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACTIVITY));
         return new ActivityResponse(activity);
@@ -36,14 +36,14 @@ public class ActivityService {
 
     @Transactional
     public Long save(Long memberId, ActivityRequest activityRequest) {
-        LocalDate recordDate = activityRequest.getRecordDate();
+        LocalDate recordDate = activityRequest.recordDate();
         this.validateDuplicateActivity(memberId, recordDate);
 
         Member member = memberService.findById(memberId);
         Activity activity = Activity.builder(member)
-                .waterIntake(activityRequest.getWaterIntake())
-                .smokedCigarettes(activityRequest.getSmokedCigarettes())
-                .alcoholIntake(activityRequest.getAlcoholIntake())
+                .waterIntake(activityRequest.waterIntake())
+                .smokedCigarettes(activityRequest.smokedCigarettes())
+                .alcoholIntake(activityRequest.alcoholIntake())
                 .recordDate(recordDate)
                 .build();
 

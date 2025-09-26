@@ -57,7 +57,7 @@ public class MealService {
     }
 
 
-    // ----------------------------------------------------------------------------------------------------------------- //
+    // -------------------------------------------------------------------------------------------------------------- //
 
 
     /** 식단 등록 */
@@ -91,8 +91,6 @@ public class MealService {
     public void deleteMeal(Long mealId, JwtMember loginMember) {
         Meal meal = findMealById(mealId);
         validateMealOwner(meal, loginMember.id());
-
-        mealFoodRepository.deleteByMealId(mealId);
         mealRepository.delete(meal);
     }
 

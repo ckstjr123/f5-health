@@ -70,16 +70,6 @@ public class MealFoodRepositoryTest {
         assertThat(mealFoods).containsExactlyElementsOf(meal.getMealFoods());
     }
 
-    @Test
-    void deleteByMealId() {
-        Meal meal = saveMealWithMealFoods();
-
-        mealFoodRepository.deleteByMealId(meal.getId());
-
-        Set<Long> ids = collectIds(meal.getMealFoods());
-        assertThat(mealFoodRepository.findAllById(ids)).isEmpty();
-    }
-
 
     private Meal saveMealWithMealFoods() {
         Member member = memberRepository.save(MemberFixture.createMember());

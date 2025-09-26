@@ -33,7 +33,7 @@ public class Meal {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @OneToMany(mappedBy = "meal")
+    @OneToMany(mappedBy = "meal", cascade = CascadeType.REMOVE)
     private List<MealFood> mealFoods = new ArrayList<>();
 
     @Column(name = "MEAL_TYPE")

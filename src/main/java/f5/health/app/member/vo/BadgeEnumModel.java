@@ -18,4 +18,13 @@ public final class BadgeEnumModel extends EnumModel {
     public long getCutOffPoint() {
         return this.cutOffPoint;
     }
+
+    @Override
+    public String toString() {
+        return "BadgeEnumModel{" +
+                "value='" + super.getValue() + '\'' +
+                ", label='" + super.getLabel() + '\'' +
+                ", cutOffPoint=" + cutOffPoint +
+                '}';
+    }
 }

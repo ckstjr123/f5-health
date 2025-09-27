@@ -33,10 +33,10 @@ public final class MemberProfile {
     private final String gender;
 
     @Schema(description = "키", example = "170")
-    private final int height;
+    private final double height;
 
     @Schema(description = "체중", example = "65")
-    private final int weight;
+    private final double weight;
 
     public MemberProfile(Member member, EnumModelMapper enumMapper) {
         this.nickname = member.getNickname();

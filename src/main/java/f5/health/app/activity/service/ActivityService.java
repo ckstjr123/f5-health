@@ -40,7 +40,7 @@ public class ActivityService {
         this.validateDuplicateActivity(memberId, recordDate);
 
         Member member = memberService.findById(memberId);
-        Activity activity = Activity.builder(member)
+        Activity activity = Activity.createActivity(member)
                 .waterIntake(activityRequest.waterIntake())
                 .smokedCigarettes(activityRequest.smokedCigarettes())
                 .alcoholIntake(activityRequest.alcoholIntake())

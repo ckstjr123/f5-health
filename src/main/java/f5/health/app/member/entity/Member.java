@@ -26,6 +26,8 @@ import static f5.health.app.member.constant.Gender.MALE;
 public class Member extends BaseEntity {
 
     public static final int MAX_NICKNAME_LENGTH = 15;
+    public static final double MIN_HEIGHT = 100, MAX_HEIGHT = 230;
+    public static final double MIN_WEIGHT = 20, MAX_WEIGHT = 200;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +38,9 @@ public class Member extends BaseEntity {
     private String oauthId;
 
     @Column(name = "EMAIL", unique = true)
-    private String email; // OAuth 액세스 토큰 검증을 마치고 얻은 이메일
+    private String email;
 
-    @Column(name = "NICKNAME")
+    @Column(name = "NICKNAME", length = MAX_NICKNAME_LENGTH)
     private String nickname;
 
     @Column(name = "ROLE")
@@ -46,7 +48,7 @@ public class Member extends BaseEntity {
     private Role role;
 
     @Column(name = "TOTAL_POINT")
-    private long totalPoint; // 포인트 누적
+    private long totalPoint; // 누적 포인트
 
     @Column(name = "BADGE")
     @Enumerated(EnumType.STRING)
@@ -60,10 +62,10 @@ public class Member extends BaseEntity {
     private Gender gender;
 
     @Column(name = "HEIGHT")
-    private int height;
+    private double height;
 
     @Column(name = "WEIGHT")
-    private int weight;
+    private double weight;
 
     @Column(name = "BLOOD_TYPE")
     @Enumerated(EnumType.STRING)
@@ -111,7 +113,7 @@ public class Member extends BaseEntity {
         this.setBadge(Badge.fromTotalPoint(totalPoint));
     }
 
-    public void updateProfile(final String nickname, final int height, final int weight) {
+    public void updateProfile(final String nickname, final double height, final double weight) {
         this.nickname = nickname;
         this.height = height;
         this.weight = weight;

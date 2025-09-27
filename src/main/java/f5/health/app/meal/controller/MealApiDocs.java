@@ -23,11 +23,11 @@ import java.util.List;
 @Tag(name = "식단 API", description = "식단 조회")
 public interface MealApiDocs {
 
-    @Operation(summary = "식사 타입 리스트 조회", description = "아침/점심/저녁/간식...")
+    @Operation(summary = "식사 타입 목록 조회", description = "아침/점심/저녁/간식...")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "각 MealType(식사 유형 Enum) label, value가 담긴 리스트 응답",
+                    description = "식사 타입이 담긴 리스트 응답",
                     content = @Content(schema = @Schema(implementation = EnumModel.class))
             ),
             @ApiResponse(

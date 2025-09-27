@@ -18,7 +18,7 @@ public final class MealResponse {
     private final List<MealFoodResponse> mealFoodResponseList;
 
     @Schema(description = "해당 식사 타입 label", example = "저녁")
-    private final String mealTypeLabel;
+    private final String label;
 
     @Schema(description = "식사 시각", example = "2025-05-14T18:30:45.123")
     private final LocalDateTime eatenAt;
@@ -40,7 +40,7 @@ public final class MealResponse {
         this.mealFoodResponseList = isNeedMealFoods ? meal.getMealFoods().stream()
                         .map(MealFoodResponse::new)
                         .toList() : null;
-        this.mealTypeLabel = meal.getMealType().label();
+        this.label = meal.getMealType().label();
         this.eatenAt = meal.getEatenAt();
         this.totalKcal = meal.getTotalKcal();
         this.totalCarbohydrate = meal.getTotalCarbohydrate();

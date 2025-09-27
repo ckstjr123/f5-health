@@ -25,7 +25,7 @@ public class ActivityRepositoryTest {
     void findByMemberIdAndRecordDate() {
         Member member = memberRepository.save(MemberFixture.createMember());
         LocalDate recordDate = LocalDate.now();
-        Activity activity = Activity.builder(member)
+        Activity activity = Activity.createActivity(member)
                 .waterIntake(500)
                 .recordDate(recordDate)
                 .build();

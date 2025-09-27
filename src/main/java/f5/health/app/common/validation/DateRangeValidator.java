@@ -1,6 +1,6 @@
 package f5.health.app.common.validation;
 
-import f5.health.app.activity.service.request.DateRangeQuery;
+import f5.health.app.common.vo.DateRangeQuery;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -23,8 +23,8 @@ public class DateRangeValidator implements ConstraintValidator<DateRange, DateRa
 
     @Override
     public boolean isValid(DateRangeQuery dateRange, ConstraintValidatorContext context) {
-        LocalDate start = dateRange.getStart();
-        LocalDate end = dateRange.getEnd();
+        LocalDate start = dateRange.start();
+        LocalDate end = dateRange.end();
         if (start == null || end == null || start.isAfter(end)) {
             return false;
         }

@@ -2,25 +2,24 @@ package f5.health.app.member.entity.vo;
 
 import f5.health.app.member.constant.BloodType;
 import f5.health.app.member.constant.Gender;
+import f5.health.app.member.validation.Height;
+import f5.health.app.member.validation.Weight;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
+
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Getter
 @Schema(description = "회원가입 설문 정보")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberCheckUp {
-
-    public static final int DAILY_MAX_WATER_ML = 5000;
-    public static final int DAILY_MAX_CIGARETTES = 40;
-    public static final int DAILY_MAX_ALCOHOL_ML = 1500;
 
     @Schema(description = "생년월일", example = "2000-04-18", requiredMode = REQUIRED)
     @NotNull(message = "생년월일을 입력해주세요.")
@@ -32,19 +31,19 @@ public class MemberCheckUp {
     private Gender gender;
 
     @Schema(description = "키", example = "173", requiredMode = REQUIRED)
-    @Range(min = 100, max = 230)
-    private int height;
+    @Height
+    private double height;
 
     @Schema(description = "몸무게", example = "65", requiredMode = REQUIRED)
-    @Range(min = 20, max = 200)
-    private int weight;
+    @Weight
+    private double weight;
 
     @Schema(description = "혈액형", example = "AB", requiredMode = REQUIRED)
     @NotNull(message = "혈액형을 입력해주세요.")
     private BloodType bloodType;
 
     @Builder(toBuilder = true)
-    private MemberCheckUp(LocalDate birthDate, Gender gender, int height, int weight, BloodType bloodType) {
+    private MemberCheckUp(LocalDate birthDate, Gender gender, double height, double weight, BloodType bloodType) {
         this.birthDate = birthDate;
         this.gender = gender;
         this.height = height;

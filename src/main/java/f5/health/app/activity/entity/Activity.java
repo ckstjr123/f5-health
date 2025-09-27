@@ -17,6 +17,10 @@ import java.time.LocalDate;
 @Table(name = "ACTIVITY", uniqueConstraints = {@UniqueConstraint(columnNames = {"MEMBER_ID", "RECORD_DATE"})})
 public class Activity {
 
+    public static final int DAILY_MAX_WATER_ML = 5000;
+    public static final int DAILY_MAX_CIGARETTES = 40;
+    public static final int DAILY_MAX_ALCOHOL_ML = 1500;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ACTIVITY_ID")
@@ -35,13 +39,14 @@ public class Activity {
     @Column(name = "ALCOHOL_INTAKE")
     private int alcoholIntake; // 총 음주량(비정규화 컬럼)
 
+      // TODO: AlcoholConsumption 엔티티 추가
 //    @OneToMany(mappedBy = "", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<AlcoholConsumption> alcoholConsumptionList = new ArrayList<>();
 
     @Column(name = "RECORD_DATE")
     private LocalDate recordDate;
 
-    public static ActivityBuilder builder(Member writer) {
+    public static ActivityBuilder createActivity(Member writer) {
         return new ActivityBuilder(writer);
     }
 
@@ -53,7 +58,6 @@ public class Activity {
         private ActivityBuilder(final Member member) {
             this.activity = new Activity();
             activity.member = member;
-            member.addPoint(50);
         }
 
         public ActivityBuilder waterIntake(final int waterIntake) {

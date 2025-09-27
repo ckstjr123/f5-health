@@ -12,11 +12,11 @@ import lombok.ToString;
 @Schema(description = "Enum 응답 용도")
 public class EnumModel {
 
-    @Schema(description = "Display name", example = "저녁")
-    private final String label;
-
     @Schema(description = "실제 Enum 값", example = "DINNER")
     private final String value;
+
+    @Schema(description = "Display name", example = "저녁")
+    private final String label;
 
     public EnumModel(MappingEnum mappingEnum) {
         this.label = mappingEnum.label();

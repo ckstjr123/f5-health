@@ -15,7 +15,7 @@ public final class MealResponse {
     @Schema(description = "식사 id", example = "1")
     private final Long id;
 
-    @Schema(description = "식사한 음식들 정보 및 수량이 담긴 리스트. 메인에선 null, 아침 식사 상세 정보와 같은 식단 정보 조회 시 응답", nullable = true)
+    @Schema(description = "식사 음식 목록", nullable = true)
     private final List<MealFoodResponse> mealFoods;
 
     @Schema(description = "식사 타입 value", example = "DINNER")

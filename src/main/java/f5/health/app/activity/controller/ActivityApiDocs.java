@@ -20,7 +20,6 @@ import java.util.List;
 @Tag(name = "건강 관련 활동 기록", description = "건강 관련 기록 데이터 API")
 public interface ActivityApiDocs {
 
-
     @Operation(summary = "주류 목록 조회", description = "소주, 맥주, etc.")
     @ApiResponses({
             @ApiResponse(

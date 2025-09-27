@@ -76,7 +76,7 @@ public class MealService {
     /** 식단 일괄 수정 */
     public void synchronizeMeal(Long memberId, MealSyncRequest request) {
         Long mealId = request.mealId();
-        Meal meal = findMealById(request.mealId());
+        Meal meal = findMealById(mealId);
         validateMealOwner(meal, memberId);
         validateRequiredFoods(request.getFoodCodes());
 

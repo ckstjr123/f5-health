@@ -9,10 +9,10 @@ import java.util.List;
 @Schema(description = "식단 응답")
 public class MealsResponse {
 
-    private final List<MealResponse> mealResponseList;
+    private final List<MealResponse> meals;
 
     private MealsResponse(List<MealResponse> mealResponseList) {
-        this.mealResponseList = mealResponseList;
+        this.meals = mealResponseList;
     }
 
     public static MealsResponse from(List<MealResponse> mealResponseList) {

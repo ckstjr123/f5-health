@@ -1,5 +1,6 @@
 package f5.health.app.meal.controller.response;
 
+import f5.health.app.meal.constant.MealType;
 import f5.health.app.meal.entity.Meal;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -12,15 +13,18 @@ import java.util.List;
 public final class MealResponse {
 
     @Schema(description = "식사 id", example = "1")
-    private final Long mealId;
+    private final Long id;
 
     @Schema(description = "식사한 음식들 정보 및 수량이 담긴 리스트. 메인에선 null, 아침 식사 상세 정보와 같은 식단 정보 조회 시 응답", nullable = true)
-    private final List<MealFoodResponse> mealFoodResponseList;
+    private final List<MealFoodResponse> mealFoods;
 
-    @Schema(description = "해당 식사 타입 label", example = "저녁")
+    @Schema(description = "식사 타입 value", example = "DINNER")
+    private final MealType type;
+
+    @Schema(description = "식사 타입 label", example = "저녁")
     private final String label;
 
-    @Schema(description = "식사 시각", example = "2025-05-14T18:30:45.123")
+    @Schema(description = "식사 시각", example = "2025-05-14T20:30:45.123")
     private final LocalDateTime eatenAt;
 
     @Schema(description = "식사 총 섭취 칼로리", example = "1800")
@@ -36,11 +40,12 @@ public final class MealResponse {
     private final double totalFat;
 
     private MealResponse(Meal meal, boolean isNeedMealFoods) {
-        this.mealId = meal.getId();
-        this.mealFoodResponseList = isNeedMealFoods ? meal.getMealFoods().stream()
+        this.id = meal.getId();
+        this.mealFoods = isNeedMealFoods ? meal.getMealFoods().stream()
                         .map(MealFoodResponse::new)
                         .toList() : null;
-        this.label = meal.getMealType().label();
+        this.type = meal.getMealType();
+        this.label = type.label();
         this.eatenAt = meal.getEatenAt();
         this.totalKcal = meal.getTotalKcal();
         this.totalCarbohydrate = meal.getTotalCarbohydrate();

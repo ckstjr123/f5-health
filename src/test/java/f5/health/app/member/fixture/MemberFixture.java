@@ -11,8 +11,8 @@ public class MemberFixture {
     public static Member createMember() {
         String uuid = UUID.randomUUID().toString();
         MemberCheckUp checkUp = MemberCheckUp.builder()
-                .height(177)
-                .weight(60)
+                .height(177.5)
+                .weight(60.55)
                 .build();
 
         return Member.createMember()

@@ -10,13 +10,13 @@ import lombok.Getter;
 public class MealFoodResponse {
 
     @Schema(description = "식사한 음식 상세 정보")
-    private final FoodResponse foodResponse;
+    private final FoodResponse food;
 
     @Schema(description = "먹은 수량", example = "1.0")
     private final double count;
 
     public MealFoodResponse(MealFood mealFood) {
-        this.foodResponse = FoodResponse.from(mealFood.getFood());
+        this.food = FoodResponse.from(mealFood.getFood());
         this.count = mealFood.getCount();
     }
 }

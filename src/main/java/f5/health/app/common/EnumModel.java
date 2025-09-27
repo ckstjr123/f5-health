@@ -15,11 +15,11 @@ public class EnumModel {
     @Schema(description = "실제 Enum 값", example = "DINNER")
     private final String value;
 
-    @Schema(description = "Display name", example = "저녁")
+    @Schema(description = "display name", example = "저녁")
     private final String label;
 
     public EnumModel(MappingEnum mappingEnum) {
-        this.label = mappingEnum.label();
         this.value = mappingEnum.name();
+        this.label = mappingEnum.label();
     }
 }

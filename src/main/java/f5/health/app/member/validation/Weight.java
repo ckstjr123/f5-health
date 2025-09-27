@@ -8,8 +8,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static f5.health.app.member.entity.Member.MAX_WEIGHT;
 import static f5.health.app.member.entity.Member.MIN_WEIGHT;
+import static f5.health.app.member.entity.Member.MAX_WEIGHT;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

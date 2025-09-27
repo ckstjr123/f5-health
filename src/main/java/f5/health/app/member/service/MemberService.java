@@ -1,7 +1,6 @@
 package f5.health.app.member.service;
 
 import f5.health.app.auth.jwt.vo.JwtMember;
-import f5.health.app.common.EnumModelMapper;
 import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.member.constant.Role;
 import f5.health.app.member.entity.Member;
@@ -22,15 +21,12 @@ import static f5.health.app.member.exception.MemberErrorCode.NOT_FOUND_MEMBER;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final EnumModelMapper enumMapper;
     private final MemberRepository memberRepository;
 
-    /**
-     * 내 정보
-     */
+    /** 내 정보 */
     public MemberProfile getMyProfile(JwtMember loginMember) {
         Member member = this.findById(loginMember.id());
-        return new MemberProfile(member, enumMapper);
+        return new MemberProfile(member);
     }
 
     @Transactional
@@ -50,9 +46,7 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
-    /**
-     * 회원가입
-     */
+    /** 회원가입 */
     public Long join(OAuth2UserInfo userInfo, MemberCheckUp checkUp) {
         this.validateDuplicateMember(userInfo.getEmail());
         Member member = Member.createMember()

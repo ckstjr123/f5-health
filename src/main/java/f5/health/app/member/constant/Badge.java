@@ -1,7 +1,6 @@
 package f5.health.app.member.constant;
 
 import f5.health.app.common.MappingEnum;
-import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -10,8 +9,8 @@ public enum Badge implements MappingEnum {
 
     BEGINNER("비기너", 0L),
     ACTIVE("액티브", 3000L),
-    PRO("프로", 20100),
-    MASTER("마스터", 36500);
+    PRO("프로", 25000),
+    MASTER("마스터", 62000);
 
     private final String label;
     private final long cutOffPoint;

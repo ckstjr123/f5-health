@@ -1,14 +1,11 @@
 package f5.health.app.member.vo;
 
 import f5.health.app.common.EnumModel;
-import f5.health.app.common.EnumModelMapper;
-import f5.health.app.member.constant.Badge;
 import f5.health.app.member.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Schema(description = "회원 정보")
@@ -21,10 +18,7 @@ public final class MemberProfile {
     private final long totalPoint;
 
     @Schema(description = "회원 배지")
-    private final EnumModel myBadge;
-
-    @Schema(description = "배지 리스트")
-    private final List<? extends EnumModel> badgeModels;
+    private final EnumModel badge;
 
     @Schema(description = "생일", example = "2007-05-15")
     private final LocalDate birthDate;
@@ -38,11 +32,10 @@ public final class MemberProfile {
     @Schema(description = "체중", example = "65")
     private final double weight;
 
-    public MemberProfile(Member member, EnumModelMapper enumMapper) {
+    public MemberProfile(Member member) {
         this.nickname = member.getNickname();
         this.totalPoint = member.getTotalPoint();
-        this.myBadge = new EnumModel(member.getBadge());
-        this.badgeModels = enumMapper.get(Badge.class);
+        this.badge = new EnumModel(member.getBadge());
         this.birthDate = member.getBirthDate();
         this.gender = member.getGender().label();
         this.height = member.getHeight();

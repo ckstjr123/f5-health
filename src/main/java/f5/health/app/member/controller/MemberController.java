@@ -1,5 +1,8 @@
 package f5.health.app.member.controller;
 
+import f5.health.app.common.EnumModel;
+import f5.health.app.common.EnumModelMapper;
+import f5.health.app.member.constant.Badge;
 import f5.health.app.member.service.MemberUpdateRequest;
 import f5.health.app.auth.jwt.vo.JwtMember;
 import f5.health.app.member.service.MemberService;
@@ -9,12 +12,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/members")
 @RequiredArgsConstructor
 public class MemberController implements MemberApiDocs {
 
+    private final EnumModelMapper enumMapper;
     private final MemberService memberService;
+
+    @GetMapping("/badges")
+    public List<? extends EnumModel> badges() {
+        return enumMapper.get(Badge.class);
+    }
 
     @GetMapping("/me")
     public MemberProfile profile(@AuthenticationPrincipal JwtMember loginMember) {

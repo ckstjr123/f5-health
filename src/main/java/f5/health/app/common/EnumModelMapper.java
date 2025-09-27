@@ -13,12 +13,12 @@ public class EnumModelMapper {
     /** key: enum class name */
     private final Map<String, List<? extends EnumModel>> factory = new HashMap<>();
 
-    private List<? extends EnumModel> toEnumModels(Class<? extends MappingEnum> e) {
+    private List<EnumModel> toEnumModels(Class<? extends MappingEnum> e) {
         return Arrays.stream(e.getEnumConstants()).map(EnumModel::new).collect(Collectors.toList());
     }
 
     public void put(Class<? extends MappingEnum> e) {
-        factory.put(e.getName(), this.toEnumModels(e));
+        factory.put(e.getName(), toEnumModels(e));
     }
 
     /** for class extends EnumModel */
@@ -41,8 +41,10 @@ public class EnumModelMapper {
         return factory.get(e.getName());
     }
 
-    public Map<String, List<? extends EnumModel>> get(Set<Class<? extends MappingEnum>> enumClassSet) {
-        return enumClassSet.stream().map(Class::getName).collect(Collectors.toMap(Function.identity(), enumClassName -> factory.get(enumClassName)));
+    public Map<String, List<? extends EnumModel>> get(Set<Class<? extends MappingEnum>> enumClasses) {
+        return enumClasses.stream()
+                .map(Class::getName)
+                .collect(Collectors.toUnmodifiableMap(Function.identity(), factory::get));
     }
 
 }

@@ -1,4 +1,4 @@
-package f5.health.app.member.entity;
+package f5.health.app.member.entity.vo;
 
 import f5.health.app.activity.constant.AlcoholType;
 import io.swagger.v3.oas.annotations.media.Schema;

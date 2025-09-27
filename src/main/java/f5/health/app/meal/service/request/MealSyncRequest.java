@@ -12,12 +12,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static java.util.Objects.requireNonNullElseGet;
 
 @Schema(description = "식단 갱신 파라미터", requiredMode = REQUIRED)
 @MenuSize
@@ -28,8 +28,8 @@ public record MealSyncRequest(@Schema(description = "갱신 식단 id", example 
                               @Schema(description = "식사 시각", example = "2025-05-07T07:31:28", nullable = true) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @NotNull(message = "식사 시간대를 입력해 주세요.") @PastOrPresent LocalDateTime eatenAt) {
 
     public MealSyncRequest {
-        newMealFoodParams = Objects.requireNonNullElseGet(newMealFoodParams, ArrayList::new);
-        mealFoodUpdateParams = Objects.requireNonNullElseGet(mealFoodUpdateParams, ArrayList::new);
+        newMealFoodParams = requireNonNullElseGet(newMealFoodParams, ArrayList::new);
+        mealFoodUpdateParams = requireNonNullElseGet(mealFoodUpdateParams, ArrayList::new);
     }
 
     @Schema(hidden = true)

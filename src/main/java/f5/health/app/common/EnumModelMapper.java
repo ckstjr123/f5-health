@@ -1,20 +1,19 @@
 package f5.health.app.common;
 
-import org.springframework.web.server.ServerErrorException;
-
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class EnumModelMapper {
 
-    /** key: enum class name */
+    /** key: Enum Class name */
     private final Map<String, List<? extends EnumModel>> factory = new HashMap<>();
 
     private List<EnumModel> toEnumModels(Class<? extends MappingEnum> e) {
-        return Arrays.stream(e.getEnumConstants()).map(EnumModel::new).collect(Collectors.toList());
+        return Arrays.stream(e.getEnumConstants())
+                .map(EnumModel::new)
+                .collect(Collectors.toList());
     }
 
     public void put(Class<? extends MappingEnum> e) {
@@ -28,8 +27,8 @@ public class EnumModelMapper {
                     try {
                         Constructor<? extends EnumModel> constructor = enumModel.getConstructor(e);
                         return constructor.newInstance(mappingEnum);
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
-                        throw new ServerErrorException("Cannot instantiate [" + enumModel.getName() + "] " +
+                    } catch (ReflectiveOperationException ex) {
+                        throw new IllegalArgumentException("Cannot instantiate [" + enumModel.getName() + "] " +
                                 "with constructor(" + e.getName() + ")", ex);
                     }
                 })
@@ -41,10 +40,20 @@ public class EnumModelMapper {
         return factory.get(e.getName());
     }
 
-    public Map<String, List<? extends EnumModel>> get(Set<Class<? extends MappingEnum>> enumClasses) {
-        return enumClasses.stream()
-                .map(Class::getName)
-                .collect(Collectors.toUnmodifiableMap(Function.identity(), factory::get));
+    public Map<String, List<? extends EnumModel>> toEnumModelMapBy(Set<String> enumClassNames) {
+        if (enumClassNames == null || enumClassNames.isEmpty()) {
+            return new LinkedHashMap<>();
+        }
+
+        return enumClassNames.stream().collect(Collectors.toUnmodifiableMap(
+                Function.identity(),
+                name -> {
+                    if (factory.get(name) == null) {
+                        throw new IllegalArgumentException("'" + name + "' is not registered in the EnumModel factory.");
+                    }
+                    return factory.get(name);
+                })
+        );
     }
 
 }

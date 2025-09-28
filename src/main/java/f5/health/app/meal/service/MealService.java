@@ -143,8 +143,7 @@ public class MealService {
 
     private void updateMealFoods(List<MealFoodUpdateParam> updateParams) {
         for (MealFoodUpdateParam updateParam : updateParams) {
-            MealFood mealFood = mealFoodRepository.findById(updateParam.mealFoodId())
-                    .orElseThrow(IllegalArgumentException::new);
+            MealFood mealFood = mealFoodRepository.findById(updateParam.mealFoodId()).orElseThrow();
             Food food = foodRepository.findById(updateParam.foodCode()).orElseThrow();
 
             mealFood.update(food, updateParam.count());

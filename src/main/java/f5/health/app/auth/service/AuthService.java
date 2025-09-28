@@ -32,9 +32,9 @@ public class AuthService {
     private final SessionService sessionService;
 
     public OAuth2LoginResult login(OAuth2Provider provider, OAuth2LoginRequest loginRequest) {
-        OAuth2UserInfo oauth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, loginRequest.accessToken());
+        OAuth2UserInfo oAuth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, loginRequest.accessToken());
 
-        return memberService.findByEmail(oauth2UserInfo.getEmail())
+        return memberService.findByEmail(oAuth2UserInfo.getEmail())
                 .map(findMember -> {
                     JwtResponse tokenResponse = issueTokens(findMember);
                     sessionService.save(findMember.getId(), loginRequest.deviceInfo(), tokenResponse.getRefreshToken());

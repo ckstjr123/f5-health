@@ -13,6 +13,7 @@ import f5.health.app.member.service.oauth2userinfo.OAuth2UserInfo;
 import f5.health.app.session.service.SessionService;
 import f5.health.app.member.service.MemberService;
 import f5.health.app.auth.vo.OAuth2LoginResult;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +33,11 @@ public class AuthService {
     private final SessionService sessionService;
 
     public OAuth2LoginResult login(OAuth2Provider provider, OAuth2LoginRequest loginRequest) {
-        OAuth2UserInfo oAuth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, loginRequest.accessToken());
+        OAuth2UserInfo oauth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, loginRequest.accessToken());
 
-        return memberService.findByEmail(oAuth2UserInfo.getEmail())
+        return memberService.findByEmail(oauth2UserInfo.getEmail())
                 .map(findMember -> {
-                    JwtResponse tokenResponse = issueTokens(findMember);
+                    JwtResponse tokenResponse = issueJWTokens(findMember);
                     sessionService.save(findMember.getId(), loginRequest.deviceInfo(), tokenResponse.getRefreshToken());
                     return OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, tokenResponse);
                 })
@@ -44,41 +45,31 @@ public class AuthService {
     }
 
     public JwtResponse join(OAuth2Provider provider, SignUpRequest signUpRequest) {
-        // 액세스 토큰을 통해 유저 정보 조회
-        OAuth2UserInfo oauth2Userinfo = oauth2ClientService.fetchOAuth2UserInfo(provider, signUpRequest.accessToken());
+        OAuth2UserInfo oauth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, signUpRequest.accessToken());
 
-        Long memberId = memberService.join(oauth2Userinfo, signUpRequest.memberCheckUp());
+        Long memberId = memberService.join(oauth2UserInfo, signUpRequest.memberCheckUp());
         Member joinMember = memberService.findById(memberId);
 
-        JwtResponse tokenResponse = issueTokens(joinMember);
+        JwtResponse tokenResponse = issueJWTokens(joinMember);
         sessionService.save(joinMember.getId(), signUpRequest.deviceInfo(), tokenResponse.getRefreshToken());
         return tokenResponse;
     }
 
     public JwtResponse refresh(String refreshToken) {
-        this.jwtProvider.parseClaims(refreshToken);
+        jwtProvider.parseClaims(refreshToken);
         Session session = sessionService.findByRefreshTokenJoinFetch(refreshToken)
                 .orElseThrow(() -> new RefreshViolationException(NOT_MATCH_REFRESH_JWT));
 
-        return this.refreshRotate(session);
+        JwtResponse tokenResponse = issueJWTokens(session.getMember());
+        session.rotateRefreshToken(tokenResponse.getRefreshToken());
+        return tokenResponse;
     }
 
 
-    private JwtResponse issueTokens(Member member) {
+    private JwtResponse issueJWTokens(Member member) {
         Long memberId = member.getId();
         String accessToken = jwtProvider.issueAccessToken(memberId, member.getRole().name());
         JwtProvider.RefreshToken refreshToken = jwtProvider.issueRefreshToken(memberId);
-        return new JwtResponse(accessToken, refreshToken);
-    }
-
-    private JwtResponse refreshRotate(Session session) {
-        Long memberId = session.getMember().getId();
-        String role = session.getMember().getRole().name();
-
-        String accessToken = jwtProvider.issueAccessToken(memberId, role);
-        JwtProvider.RefreshToken refreshToken = jwtProvider.issueRefreshToken(memberId);
-        session.rotateRefreshToken(refreshToken); //
-
         return new JwtResponse(accessToken, refreshToken);
     }
 

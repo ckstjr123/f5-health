@@ -46,7 +46,6 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
-    /** 회원가입 */
     public Long join(OAuth2UserInfo userInfo, MemberCheckUp checkUp) {
         this.validateDuplicateMember(userInfo.getEmail());
         Member member = Member.createMember()

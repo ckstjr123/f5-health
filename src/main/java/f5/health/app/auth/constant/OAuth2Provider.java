@@ -1,6 +1,5 @@
 package f5.health.app.auth.constant;
 
-import f5.health.app.auth.service.oauth2client.OAuth2Client;
 import f5.health.app.auth.service.oauth2client.OAuth2KakaoClient;
 
 import static f5.health.app.auth.jwt.JwtProvider.ACCESS_TOKEN_TYPE;

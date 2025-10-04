@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
-import static f5.health.app.auth.constant.OAuth2LoginStatus.CHECKUP_REQUIRED;
+import static f5.health.app.auth.constant.OAuth2LoginStatus.SIGN_UP_REQUIRED;
 import static f5.health.app.auth.constant.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
 import static f5.health.app.auth.exception.AuthErrorCode.EXPIRED_JWT;
 import static f5.health.app.auth.exception.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
@@ -41,7 +41,7 @@ public class AuthService {
 
         return memberService.findByEmail(oauth2UserInfo.getEmail())
                 .map(findMember -> OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, issueJWTokens(findMember)))
-                .orElse(OAuth2LoginResult.of(CHECKUP_REQUIRED, null));
+                .orElse(OAuth2LoginResult.of(SIGN_UP_REQUIRED, null));
     }
 
     public JwtResponse join(OAuth2Provider provider, SignUpRequest signUpRequest) {

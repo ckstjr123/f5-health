@@ -10,7 +10,6 @@ import f5.health.app.auth.service.vo.request.OAuth2LoginRequest;
 import f5.health.app.auth.service.vo.request.SignUpRequest;
 import f5.health.app.auth.vo.OAuth2LoginResult;
 import f5.health.app.common.RedisManager;
-import f5.health.app.member.constant.Role;
 import f5.health.app.member.entity.Member;
 import f5.health.app.member.service.MemberService;
 import f5.health.app.member.service.oauth2userinfo.OAuth2UserInfo;
@@ -35,7 +34,7 @@ public class AuthService {
     private final MemberService memberService;
     private final JwtProvider jwtProvider;
     private final RedisManager redisManager;
-    private final String REFRESH_TOKEN_PREFIX = "refresh_token:member:";
+    private final String REFRESH_TOKEN_KEY_PREFIX = "refresh_token:member:";
 
     public OAuth2LoginResult login(OAuth2Provider provider, OAuth2LoginRequest loginRequest) {
         OAuth2UserInfo oauth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, loginRequest.accessToken());
@@ -56,7 +55,7 @@ public class AuthService {
     public JwtResponse refresh(String refreshToken) {
         Long memberId = Long.valueOf(jwtProvider.parseClaims(refreshToken).getSubject());
 
-        String savedRefreshToken = redisManager.get(REFRESH_TOKEN_PREFIX + memberId);
+        String savedRefreshToken = redisManager.get(getRefreshTokenKey(memberId));
         if (savedRefreshToken == null) {
             throw new AuthenticationException(EXPIRED_JWT);
         }
@@ -71,7 +70,11 @@ public class AuthService {
         Long memberId = member.getId();
         String accessToken = jwtProvider.issueAccessToken(memberId, member.getRole().name());
         String refreshToken = jwtProvider.issueRefreshToken(memberId);
-        redisManager.set(REFRESH_TOKEN_PREFIX + memberId, refreshToken, REFRESH_TOKEN_EXPIRATION_SEC); //
+        redisManager.set(getRefreshTokenKey(memberId), refreshToken, REFRESH_TOKEN_EXPIRATION_SEC); //
         return new JwtResponse(accessToken, refreshToken);
+    }
+
+    private String getRefreshTokenKey(Long memberId) {
+        return REFRESH_TOKEN_KEY_PREFIX + memberId;
     }
 }

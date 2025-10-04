@@ -1,11 +1,8 @@
 package f5.health.app.auth.service.vo.request;
 
-import f5.health.app.session.service.DeviceInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import java.util.ArrayList;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 

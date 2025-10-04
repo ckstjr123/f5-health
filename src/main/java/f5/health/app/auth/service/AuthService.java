@@ -13,7 +13,6 @@ import f5.health.app.member.service.oauth2userinfo.OAuth2UserInfo;
 import f5.health.app.session.service.SessionService;
 import f5.health.app.member.service.MemberService;
 import f5.health.app.auth.vo.OAuth2LoginResult;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,7 @@ public class AuthService {
         return memberService.findByEmail(oauth2UserInfo.getEmail())
                 .map(findMember -> {
                     JwtResponse tokenResponse = issueJWTokens(findMember);
-                    sessionService.save(findMember.getId(), loginRequest.deviceInfo(), tokenResponse.getRefreshToken());
+                    sessionService.save(findMember.getId(), loginRequest.deviceInfo(), tokenResponse.refreshToken());
                     return OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, tokenResponse);
                 })
                 .orElse(OAuth2LoginResult.of(CHECKUP_REQUIRED, null));
@@ -51,7 +50,7 @@ public class AuthService {
         Member joinMember = memberService.findById(memberId);
 
         JwtResponse tokenResponse = issueJWTokens(joinMember);
-        sessionService.save(joinMember.getId(), signUpRequest.deviceInfo(), tokenResponse.getRefreshToken());
+        sessionService.save(joinMember.getId(), signUpRequest.deviceInfo(), tokenResponse.refreshToken());
         return tokenResponse;
     }
 
@@ -61,7 +60,7 @@ public class AuthService {
                 .orElseThrow(() -> new RefreshViolationException(NOT_MATCH_REFRESH_JWT));
 
         JwtResponse tokenResponse = issueJWTokens(session.getMember());
-        session.rotateRefreshToken(tokenResponse.getRefreshToken());
+        session.rotateRefreshToken(tokenResponse.refreshToken().value(), tokenResponse.refreshToken().getExpiration());
         return tokenResponse;
     }
 

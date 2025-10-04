@@ -21,7 +21,7 @@ public class SessionService {
     @Transactional
     public void save(Long memberId, DeviceInfo deviceInfo, JwtProvider.RefreshToken refreshToken) {
         Member member = memberService.findById(memberId);
-        sessionRepository.save(Session.of(member, deviceInfo.udid(), deviceInfo.os(), refreshToken));
+        sessionRepository.save(Session.of(member, deviceInfo.udid(), deviceInfo.os(), refreshToken.value(), refreshToken.getExpiration()));
     }
 
     /** 토큰 재발급 시 사용 */

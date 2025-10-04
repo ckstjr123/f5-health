@@ -32,7 +32,8 @@ public class SessionRepositoryTest {
     @Test
     void save() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        Session session = Session.of(member, "7946DA4E-8429-423C-B405-B3FC77914E3E", iOS, tokenProvider.issueRefreshToken(member.getId()));
+        JwtProvider.RefreshToken refreshToken = tokenProvider.issueRefreshToken(member.getId());
+        Session session = Session.of(member, "7946DA4E-8429-423C-B405-B3FC77914E3E", iOS, refreshToken.value(), refreshToken.getExpiration());
 
         sessionRepository.save(session);
 
@@ -43,8 +44,9 @@ public class SessionRepositoryTest {
     @Test
     void findByMemberId() {
         Member member = memberRepository.save(MemberFixture.createMember());
+        JwtProvider.RefreshToken refreshToken = tokenProvider.issueRefreshToken(member.getId());
         List<Session> sessions = sessionRepository.saveAll(
-                List.of(Session.of(member, "7946DA4E-8429-423C-B405-B3FC77914E3E", iOS, tokenProvider.issueRefreshToken(member.getId())))
+                List.of(Session.of(member, "7946DA4E-8429-423C-B405-B3FC77914E3E", iOS, refreshToken.value(), refreshToken.getExpiration()))
         );
 
         List<Session> findSessions = this.sessionRepository.findByMemberIdJoinFetch(member.getId());
@@ -57,11 +59,11 @@ public class SessionRepositoryTest {
     void findByRefreshToken() {
         Member member = memberRepository.save(MemberFixture.createMember());
         JwtProvider.RefreshToken refreshToken = tokenProvider.issueRefreshToken(member.getId());
-        sessionRepository.save(Session.of(member, "7946DA4E-8429-423C-B405-B3FC77914E3E", iOS, tokenProvider.issueRefreshToken(member.getId())));
+        sessionRepository.save(Session.of(member, "7946DA4E-8429-423C-B405-B3FC77914E3E", iOS, refreshToken.value(), refreshToken.getExpiration()));
 
         Session findSession = this.sessionRepository.findByRefreshTokenJoinFetch(refreshToken.value()).orElseThrow();
         JwtProvider.RefreshToken reissuedRefreshToken = tokenProvider.issueRefreshToken(findSession.getMember().getId());
-        findSession.rotateRefreshToken(reissuedRefreshToken);
+        findSession.rotateRefreshToken(reissuedRefreshToken.value(), reissuedRefreshToken.getExpiration());
 
         assertThat(findSession.getRefreshToken()).isEqualTo(reissuedRefreshToken.value());
         assertThat(findSession.getRefreshTokenExpiration()).isEqualTo(reissuedRefreshToken.getExpiration());

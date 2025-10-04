@@ -11,5 +11,5 @@ public interface OAuth2KakaoClient extends OAuth2Client {
 
     @Override
     @PostMapping("/v2/user/me")
-    KakaoUserInfo getOAuth2UserInfo(@RequestHeader(HttpHeaders.AUTHORIZATION) String kakaoAccessToken);
+    KakaoUserInfo fetchOAuth2UserInfo(@RequestHeader(HttpHeaders.AUTHORIZATION) String kakaoAccessToken);
 }

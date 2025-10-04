@@ -37,7 +37,7 @@ public class AuthService {
     private final String REFRESH_TOKEN_KEY_PREFIX = "refresh_token:member:";
 
     public OAuth2LoginResult login(OAuth2Provider provider, OAuth2LoginRequest loginRequest) {
-        OAuth2UserInfo oauth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, loginRequest.accessToken());
+        OAuth2UserInfo oauth2UserInfo = oauth2ClientService.loadOAuth2UserInfo(provider, loginRequest.accessToken());
 
         return memberService.findByEmail(oauth2UserInfo.getEmail())
                 .map(findMember -> OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, issueJWTokens(findMember)))
@@ -45,7 +45,7 @@ public class AuthService {
     }
 
     public JwtResponse join(OAuth2Provider provider, SignUpRequest signUpRequest) {
-        OAuth2UserInfo oauth2UserInfo = oauth2ClientService.fetchOAuth2UserInfo(provider, signUpRequest.accessToken());
+        OAuth2UserInfo oauth2UserInfo = oauth2ClientService.loadOAuth2UserInfo(provider, signUpRequest.accessToken());
 
         Long memberId = memberService.join(oauth2UserInfo, signUpRequest.memberCheckUp());
 

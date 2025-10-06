@@ -1,11 +1,14 @@
 package f5.health.app.meal.service;
 
-import f5.health.app.auth.exception.AccessDeniedException;
-import f5.health.app.auth.jwt.vo.JwtMember;
+import f5.health.app.auth.vo.LoginMember;
+import f5.health.app.common.exception.AccessDeniedException;
 import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.food.entity.Food;
 import f5.health.app.food.repository.FoodRepository;
 import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.controller.response.MealDetail;
+import f5.health.app.meal.controller.response.MealSummary;
+import f5.health.app.meal.controller.response.MealsResponse;
 import f5.health.app.meal.entity.Meal;
 import f5.health.app.meal.entity.MealFood;
 import f5.health.app.meal.exception.MealLimitExceededException;
@@ -45,15 +48,18 @@ public class MealService {
     private final FoodRepository foodRepository;
 
 
-    public List<Meal> findMeals(Long memberId, LocalDate eatenDate) {
-        return mealRepository.findMeals(memberId, eatenDate);
+    public MealsResponse findMeals(Long memberId, LocalDate eatenDate) {
+        List<Meal> meals = mealRepository.findMeals(memberId, eatenDate);
+        return MealsResponse.from(meals.stream()
+                .map(MealSummary::from)
+                .toList());
     }
 
-    public Meal findWithMealFoods(Long mealId, JwtMember loginMember) {
+    public MealDetail getMealDetail(Long mealId, LoginMember loginMember) {
         Meal meal = mealRepository.findMealJoinFetch(mealId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEAL, mealId.toString()));
-        validateMealOwner(meal, loginMember.id());
-        return meal;
+        meal.validateOwnership(loginMember.getId());
+        return MealDetail.from(meal);
     }
 
 
@@ -77,7 +83,7 @@ public class MealService {
     public void synchronizeMeal(Long memberId, MealSyncRequest request) {
         Long mealId = request.mealId();
         Meal meal = findMealById(mealId);
-        validateMealOwner(meal, memberId);
+        meal.validateOwnership(memberId);
         validateRequiredFoods(request.getFoodCodes());
 
         syncMealFoods(request.newMealFoodParams(), request.mealFoodUpdateParams(), meal);
@@ -88,9 +94,9 @@ public class MealService {
     }
 
     /** 식단 삭제 */
-    public void deleteMeal(Long mealId, JwtMember loginMember) {
+    public void deleteMeal(Long mealId, LoginMember loginMember) {
         Meal meal = findMealById(mealId);
-        validateMealOwner(meal, loginMember.id());
+        meal.validateOwnership(loginMember.getId());
         mealRepository.delete(meal);
     }
 
@@ -185,11 +191,5 @@ public class MealService {
             throw MealLimitExceededException.forMealType(mealType);
         }
     }
-
-    private void validateMealOwner(Meal meal, Long memberId) {
-        if (!meal.isOwnedBy(memberId)) {
-            throw new AccessDeniedException(NOT_FOUND_MEAL_OWNERSHIP);
-        }
-    }
-
+    
 }

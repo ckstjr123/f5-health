@@ -1,6 +1,6 @@
 package f5.health.app.common.exception.exhandler;
 
-import f5.health.app.auth.exception.AccessDeniedException;
+import f5.health.app.common.exception.AccessDeniedException;
 import f5.health.app.auth.exception.AuthenticationException;
 import f5.health.app.common.exception.BadRequestException;
 import f5.health.app.common.exception.ConflictException;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j

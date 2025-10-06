@@ -8,7 +8,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-@Schema(description = "회원 정보")
+@Schema(description = "회원 프로필 응답")
 public final class MemberProfile {
 
     @Schema(description = "닉네임")

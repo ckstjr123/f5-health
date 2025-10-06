@@ -1,6 +1,8 @@
 package f5.health.app.activity.repository;
 
+import f5.health.app.activity.constant.AlcoholType;
 import f5.health.app.activity.entity.Activity;
+import f5.health.app.activity.entity.AlcoholConsumption;
 import f5.health.app.member.entity.Member;
 import f5.health.app.member.fixture.MemberFixture;
 import f5.health.app.member.repository.MemberRepository;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,8 +27,9 @@ public class ActivityRepositoryTest {
     @Test
     void findByMemberIdAndRecordDate() {
         Member member = memberRepository.save(MemberFixture.createMember());
+        List<AlcoholConsumption> alcoholConsumptions = List.of(AlcoholConsumption.newInstance(AlcoholType.BEER, 500));
         LocalDate recordDate = LocalDate.now();
-        Activity activity = Activity.createActivity(member)
+        Activity activity = Activity.createActivity(member, alcoholConsumptions)
                 .waterIntake(500)
                 .recordDate(recordDate)
                 .build();
@@ -34,6 +38,7 @@ public class ActivityRepositoryTest {
         Activity findActivity = activityRepository.findByMemberIdAndRecordDate(member.getId(), recordDate).orElseThrow();
 
         assertThat(findActivity).isEqualTo(activity);
+        assertThat(findActivity.getAlcoholConsumptions()).containsExactlyElementsOf(alcoholConsumptions);
     }
 
 }

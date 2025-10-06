@@ -23,8 +23,8 @@ public class RedisManager {
         redisTemplate.opsForValue().set(key, value);
     }
 
-    public void set(String key, String value, long timeoutSeconds) {
-        redisTemplate.opsForValue().set(key, value, Duration.ofSeconds(timeoutSeconds));
+    public void set(String key, String value, long timeoutMills) {
+        redisTemplate.opsForValue().set(key, value, Duration.ofMillis(timeoutMills));
     }
 
     public void delete(String key) {

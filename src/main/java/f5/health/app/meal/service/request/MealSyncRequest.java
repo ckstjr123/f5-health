@@ -25,7 +25,7 @@ public record MealSyncRequest(@Schema(description = "갱신 식단 id", example 
                               @Schema(description = "새로 추가된 식사 음식 항목") @Valid List<MealFoodParam> newMealFoodParams,
                               @Schema(description = "기존 식사 음식에 대한 수정 사항(삭제 대상 제외)") @Valid List<MealFoodUpdateParam> mealFoodUpdateParams,
                               @Schema(description = "식사 분류", example = "BREAKFAST") @NotNull(message = "식사 유형을 선택해 주세요.") MealType mealType,
-                              @Schema(description = "식사 시각", example = "2025-05-07T07:31:28", nullable = true) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @NotNull(message = "식사 시간대를 입력해 주세요.") @PastOrPresent LocalDateTime eatenAt) {
+                              @Schema(description = "식사 시각", example = "2025-05-07T07:31:28", nullable = true) @NotNull(message = "식사 시간대를 입력해 주세요.") @PastOrPresent LocalDateTime eatenAt) {
 
     public MealSyncRequest {
         newMealFoodParams = requireNonNullElseGet(newMealFoodParams, ArrayList::new);

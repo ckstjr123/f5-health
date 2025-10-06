@@ -1,5 +1,6 @@
 package f5.health.app.meal.entity;
 
+import f5.health.app.common.exception.AccessDeniedException;
 import f5.health.app.meal.constant.MealType;
 import f5.health.app.member.entity.Member;
 import jakarta.persistence.*;
@@ -11,6 +12,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static f5.health.app.meal.exception.MealErrorCode.NOT_FOUND_MEAL_OWNERSHIP;
 
 /**
  * 식단 엔티티
@@ -94,8 +97,14 @@ public class Meal {
         }
     }
 
-    public boolean isOwnedBy(Long memberId) {
+    private boolean isOwnedBy(Long memberId) {
         return member.getId().equals(memberId);
+    }
+
+    public void validateOwnership(Long memberId) {
+        if (!isOwnedBy(memberId)) {
+            throw new AccessDeniedException(NOT_FOUND_MEAL_OWNERSHIP);
+        }
     }
 
     public boolean hasSameEatenDate(LocalDate eatenDate) {

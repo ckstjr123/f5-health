@@ -21,7 +21,7 @@ import static java.util.Objects.requireNonNullElseGet;
 public record MealRequest(
         @Schema(description = "해당 식사로 섭취한 각 음식 코드(PK) 및 수량 리스트") @MenuSize @Valid List<MealFoodParam> mealFoodParams,
         @Schema(description = "식사 분류", example = "BREAKFAST") @NotNull(message = "식사 유형을 선택해 주세요.") MealType mealType,
-        @Schema(description = "식사 시각", example = "2025-05-07T07:31:28") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") @NotNull(message = "식사 시간대를 입력해 주세요.") @PastOrPresent LocalDateTime eatenAt) {
+        @Schema(description = "식사 시각", example = "2025-05-07T07:31:28") @NotNull(message = "식사 시간대를 입력해 주세요.") @PastOrPresent LocalDateTime eatenAt) {
 
     public MealRequest {
         mealFoodParams = requireNonNullElseGet(mealFoodParams, ArrayList::new);

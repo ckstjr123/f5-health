@@ -1,4 +1,4 @@
-package f5.health.app.member.vo;
+package f5.health.app.member.controller;
 
 import f5.health.app.common.EnumModel;
 import f5.health.app.member.constant.Badge;

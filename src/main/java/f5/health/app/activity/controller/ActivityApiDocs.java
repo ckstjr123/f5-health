@@ -2,7 +2,7 @@ package f5.health.app.activity.controller;
 
 import f5.health.app.activity.service.request.ActivityRequest;
 import f5.health.app.activity.vo.ActivityResponse;
-import f5.health.app.auth.jwt.vo.JwtMember;
+import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.common.EnumModel;
 import f5.health.app.common.exception.exhandler.response.ExceptionResult;
 import f5.health.app.common.exception.exhandler.response.FieldErrorsResult;
@@ -37,7 +37,7 @@ public interface ActivityApiDocs {
 
     @Operation(summary = "활동 조회", description = "해당 일자에 저장된 활동 데이터 조회",
             parameters = {
-                    @Parameter(name = "recordDate", description = "활동 조회일자",
+                    @Parameter(name = "date", description = "활동 조회일자",
                             content = @Content(schema = @Schema(implementation = RecordDate.class)))
             }
     )
@@ -58,7 +58,7 @@ public interface ActivityApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    ActivityResponse findActivity(JwtMember loginMember, RecordDate recordDate);
+    ActivityResponse findActivity(LoginMember loginMember, RecordDate date);
 
 
     @Operation(summary = "활동 기록 저장", description = "음수량 등 데이터 저장",
@@ -88,5 +88,5 @@ public interface ActivityApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    ResponseEntity<Void> save(JwtMember loginMember, ActivityRequest activityRequest);
+    ResponseEntity<Void> save(LoginMember loginMember, ActivityRequest activityRequest);
 }

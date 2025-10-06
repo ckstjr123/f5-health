@@ -22,14 +22,13 @@ public class JwtProvider {
 
     public static final String ACCESS_TOKEN_TYPE = "Bearer";
     public static final long ACCESS_TOKEN_EXPIRATION_MS = Duration.ofMinutes(30).toMillis();
-    public static final long REFRESH_TOKEN_EXPIRATION_SEC = Duration.ofDays(7).toSeconds();
+    public static final long REFRESH_TOKEN_EXPIRATION_MS = Duration.ofDays(7).toMillis();
     private final SecretKey secretKey;
 
     public JwtProvider(@Value("${spring.jwt.secret}") String secret) {
         // HS256: 양방향 대칭키 암호화 알고리즘
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
-
 
     public String issueAccessToken(Long memberId, String role) {
         Date now = new Date();
@@ -45,7 +44,7 @@ public class JwtProvider {
 
     public String issueRefreshToken(Long memberId) {
         Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_SEC);
+        Date expirationDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_MS);
         return Jwts.builder()
                 .subject(memberId.toString())
                 .issuedAt(now)

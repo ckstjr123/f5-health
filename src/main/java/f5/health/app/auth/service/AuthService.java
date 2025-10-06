@@ -23,7 +23,7 @@ import static f5.health.app.auth.constant.OAuth2LoginStatus.SIGN_UP_REQUIRED;
 import static f5.health.app.auth.constant.OAuth2LoginStatus.OAUTH2_LOGIN_SUCCESS;
 import static f5.health.app.auth.exception.AuthErrorCode.EXPIRED_JWT;
 import static f5.health.app.auth.exception.AuthErrorCode.NOT_MATCH_REFRESH_JWT;
-import static f5.health.app.auth.jwt.JwtProvider.REFRESH_TOKEN_EXPIRATION_SEC;
+import static f5.health.app.auth.jwt.JwtProvider.REFRESH_TOKEN_EXPIRATION_MS;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +70,7 @@ public class AuthService {
         Long memberId = member.getId();
         String accessToken = jwtProvider.issueAccessToken(memberId, member.getRole().name());
         String refreshToken = jwtProvider.issueRefreshToken(memberId);
-        redisManager.set(getRefreshTokenKey(memberId), refreshToken, REFRESH_TOKEN_EXPIRATION_SEC); //
+        redisManager.set(getRefreshTokenKey(memberId), refreshToken, REFRESH_TOKEN_EXPIRATION_MS); //
         return new JwtResponse(accessToken, refreshToken);
     }
 

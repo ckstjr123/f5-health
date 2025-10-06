@@ -1,7 +1,7 @@
 package f5.health.app.auth.jwt;
 
 import f5.health.app.auth.exception.AuthenticationException;
-import f5.health.app.auth.jwt.vo.JwtMember;
+import f5.health.app.auth.vo.LoginMember;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -56,8 +56,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Claims atClaims = jwtProvider.parseClaims(accessToken);
 
             // 요청에 사용될 임시 세션용 유저 객체 생성
-            JwtMember loginMember = new JwtMember(Long.valueOf(atClaims.getSubject()), atClaims.get(ROLE, String.class));
-            Authentication authentication = new UsernamePasswordAuthenticationToken(loginMember, null, List.of(new SimpleGrantedAuthority(loginMember.role())));
+            LoginMember loginMember = new LoginMember(Long.valueOf(atClaims.getSubject()), atClaims.get(ROLE, String.class));
+            Authentication authentication = new UsernamePasswordAuthenticationToken(loginMember, null, List.of(new SimpleGrantedAuthority(loginMember.getRole())));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (AuthenticationException ex) {
             request.setAttribute(JWT_EXCEPTION_ATTRIBUTE, ex.getErrorCode()); // AuthenticationEntryPoint에서 처리

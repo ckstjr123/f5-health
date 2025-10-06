@@ -1,12 +1,12 @@
 package f5.health.app.meal.controller;
 
+import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.common.EnumModel;
 import f5.health.app.common.exception.exhandler.response.ExceptionResult;
-import f5.health.app.auth.jwt.vo.JwtMember;
+import f5.health.app.meal.controller.response.MealDetail;
+import f5.health.app.meal.controller.response.MealsResponse;
 import f5.health.app.meal.service.request.MealRequest;
 import f5.health.app.meal.service.request.MealSyncRequest;
-import f5.health.app.meal.controller.response.MealResponse;
-import f5.health.app.meal.controller.response.MealsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -38,7 +38,7 @@ public interface MealApiDocs {
     })
     List<? extends EnumModel> mealTypes();
 
-    @Operation(summary = "식단 요약 목록",
+    @Operation(summary = "식사 요약 목록",
             description = "해당 일자에 기록된 식사 조회",
             parameters = {
                     @Parameter(in = ParameterIn.QUERY, name = "date", description = "일자", required = true)
@@ -51,7 +51,7 @@ public interface MealApiDocs {
                     content = @Content(schema = @Schema(implementation = MealsResponse.class))
             )
     })
-    MealsResponse meals(JwtMember loginMember, LocalDate date);
+    MealsResponse meals(LoginMember loginMember, LocalDate date);
 
     @Operation(summary = "식단 상세 정보",
             description = "섭취한 음식 및 영양정보 등 상세 조회",
@@ -63,7 +63,7 @@ public interface MealApiDocs {
             @ApiResponse(
                     responseCode = "200",
                     description = "식사 상세 정보 응답",
-                    content = @Content(schema = @Schema(implementation = MealResponse.class))
+                    content = @Content(schema = @Schema(implementation = MealDetail.class))
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -71,7 +71,7 @@ public interface MealApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    MealResponse meal(JwtMember loginMember, Long mealId);
+    MealDetail meal(LoginMember loginMember, Long mealId);
 
 
     @Operation(summary = "식단 등록",
@@ -93,7 +93,7 @@ public interface MealApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    Long save(JwtMember loginMember, MealRequest mealRequest);
+    Long save(LoginMember loginMember, MealRequest mealRequest);
 
 
     @Operation(summary = "식단 일괄 수정",
@@ -115,7 +115,7 @@ public interface MealApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    void synchronize(JwtMember loginMember, MealSyncRequest mealSyncRequest);
+    void synchronize(LoginMember loginMember, MealSyncRequest mealSyncRequest);
 
 
     @Operation(summary = "식단 삭제",
@@ -141,5 +141,5 @@ public interface MealApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    ResponseEntity<Void> delete(JwtMember loginMember, Long mealId);
+    ResponseEntity<Void> delete(LoginMember loginMember, Long mealId);
 }

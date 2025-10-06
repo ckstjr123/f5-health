@@ -6,16 +6,16 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-@Schema(description = "식단 응답")
+@Schema(description = "식사 요약 목록")
 public class MealsResponse {
 
-    private final List<MealResponse> meals;
+    private final List<MealSummary> meals;
 
-    private MealsResponse(List<MealResponse> mealResponseList) {
-        this.meals = mealResponseList;
+    private MealsResponse(List<MealSummary> mealSummaries) {
+        this.meals = mealSummaries;
     }
 
-    public static MealsResponse from(List<MealResponse> mealResponseList) {
-        return new MealsResponse(mealResponseList);
+    public static MealsResponse from(List<MealSummary> mealSummaries) {
+        return new MealsResponse(mealSummaries);
     }
 }

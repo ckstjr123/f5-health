@@ -26,6 +26,6 @@ public class OAuth2LoginResult {
     }
 
     public HttpStatusCode httpStatus() {
-        return this.oauth2LoginStatus.httpStatus();
+        return oauth2LoginStatus.httpStatus();
     }
 }

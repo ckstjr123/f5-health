@@ -1,6 +1,6 @@
 package f5.health.app.member.service;
 
-import f5.health.app.auth.jwt.vo.JwtMember;
+import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.member.constant.Role;
 import f5.health.app.member.entity.Member;
@@ -24,14 +24,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     /** 내 정보 */
-    public MemberProfile getMyProfile(JwtMember loginMember) {
-        Member member = this.findById(loginMember.id());
+    public MemberProfile getMyProfile(LoginMember loginMember) {
+        Member member = this.findById(loginMember.getId());
         return new MemberProfile(member);
     }
 
     @Transactional
-    public void updateMember(JwtMember loginMember, MemberUpdateRequest updateParam) {
-        Member member = memberRepository.findById(loginMember.id())
+    public void updateMember(LoginMember loginMember, MemberUpdateRequest updateParam) {
+        Member member = memberRepository.findById(loginMember.getId())
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEMBER));
 
         member.updateProfile(updateParam.nickname(), updateParam.height(), updateParam.weight());

@@ -1,15 +1,15 @@
 package f5.health.app.member.controller;
 
+import f5.health.app.auth.Login;
 import f5.health.app.common.EnumModel;
 import f5.health.app.common.EnumModelMapper;
 import f5.health.app.member.constant.Badge;
 import f5.health.app.member.service.MemberUpdateRequest;
-import f5.health.app.auth.jwt.vo.JwtMember;
+import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.member.service.MemberService;
 import f5.health.app.member.vo.MemberProfile;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,13 +28,12 @@ public class MemberController implements MemberApiDocs {
     }
 
     @GetMapping("/me")
-    public MemberProfile profile(@AuthenticationPrincipal JwtMember loginMember) {
+    public MemberProfile profile(@Login LoginMember loginMember) {
         return memberService.getMyProfile(loginMember);
     }
 
     @PatchMapping("/me/edit")
-    public void edit(@AuthenticationPrincipal JwtMember loginMember,
-                     @RequestBody @Valid MemberUpdateRequest updateParam) {
+    public void edit(@Login LoginMember loginMember, @RequestBody @Valid MemberUpdateRequest updateParam) {
         memberService.updateMember(loginMember, updateParam);
     }
 }

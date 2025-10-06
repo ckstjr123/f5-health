@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Schema(description = "식사 상세 정보 응답")
-public final class MealResponse {
+@Schema(description = "식단 상세 정보 응답")
+public final class MealDetail {
 
     @Schema(description = "식사 id", example = "1")
     private final Long id;
 
-    @Schema(description = "식사 음식 목록", nullable = true)
+    @Schema(description = "식사 음식 목록")
     private final List<MealFoodResponse> mealFoods;
 
     @Schema(description = "식사 타입 value", example = "DINNER")
@@ -39,11 +39,11 @@ public final class MealResponse {
     @Schema(description = "식사 지방", example = "48.2")
     private final double totalFat;
 
-    private MealResponse(Meal meal, boolean isNeedMealFoods) {
+    private MealDetail(Meal meal) {
         this.id = meal.getId();
-        this.mealFoods = isNeedMealFoods ? meal.getMealFoods().stream()
-                        .map(MealFoodResponse::new)
-                        .toList() : null;
+        this.mealFoods = meal.getMealFoods().stream()
+                .map(MealFoodResponse::new)
+                .toList();
         this.type = meal.getMealType();
         this.label = type.label();
         this.eatenAt = meal.getEatenAt();
@@ -53,11 +53,7 @@ public final class MealResponse {
         this.totalFat = meal.getTotalFat();
     }
 
-    public static MealResponse withoutMealFoods(Meal meal) {
-        return new MealResponse(meal, false);
-    }
-
-    public static MealResponse withMealFoods(Meal meal) {
-        return new MealResponse(meal, true);
+    public static MealDetail from(Meal meal) {
+        return new MealDetail(meal);
     }
 }

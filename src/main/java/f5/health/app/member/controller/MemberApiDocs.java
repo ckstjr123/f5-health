@@ -4,7 +4,7 @@ import f5.health.app.common.EnumModel;
 import f5.health.app.member.service.MemberUpdateRequest;
 import f5.health.app.common.exception.exhandler.response.ExceptionResult;
 import f5.health.app.common.exception.exhandler.response.FieldErrorsResult;
-import f5.health.app.auth.jwt.vo.JwtMember;
+import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.member.vo.MemberProfile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -52,7 +52,7 @@ public interface MemberApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    MemberProfile profile(JwtMember loginMember);
+    MemberProfile profile(LoginMember loginMember);
 
 
     @Operation(summary = "회원 정보 수정", description = "회원 프로필 조회 후 수정(수정 허용 필드를 제외하고 블락 처리)",
@@ -82,5 +82,5 @@ public interface MemberApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    void edit(JwtMember loginMember, MemberUpdateRequest updateParam);
+    void edit(LoginMember loginMember, MemberUpdateRequest updateParam);
 }

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 건강 관련 활동 기록
@@ -30,24 +32,25 @@ public class Activity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AlcoholConsumption> alcoholConsumptions = new ArrayList<>();
+
     @Column(name = "WATER_INTAKE")
-    private int waterIntake;
+    private Integer waterIntake;
 
     @Column(name = "SMOKED_CIGARETTES")
-    private int smokedCigarettes;
-
-    @Column(name = "ALCOHOL_INTAKE")
-    private int alcoholIntake; // 총 음주량(비정규화 컬럼)
-
-      // TODO: AlcoholConsumption 엔티티 추가
-//    @OneToMany(mappedBy = "", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<AlcoholConsumption> alcoholConsumptionList = new ArrayList<>();
+    private Integer smokedCigarettes;
 
     @Column(name = "RECORD_DATE")
     private LocalDate recordDate;
 
-    public static ActivityBuilder createActivity(Member writer) {
-        return new ActivityBuilder(writer);
+    public static ActivityBuilder createActivity(Member writer, List<AlcoholConsumption> alcoholConsumptions) {
+        return new ActivityBuilder(writer, alcoholConsumptions);
+    }
+
+    public void addAlcoholConsumption(AlcoholConsumption alcoholConsumption) {
+        this.alcoholConsumptions.add(alcoholConsumption);
+        alcoholConsumption.setActivity(this);
     }
 
 
@@ -55,23 +58,19 @@ public class Activity {
 
         private final Activity activity;
 
-        private ActivityBuilder(final Member member) {
-            this.activity = new Activity();
+        private ActivityBuilder(Member member, List<AlcoholConsumption> alcoholConsumptions) {
+            activity = new Activity();
             activity.member = member;
+            alcoholConsumptions.forEach(activity::addAlcoholConsumption);
         }
 
-        public ActivityBuilder waterIntake(final int waterIntake) {
+        public ActivityBuilder waterIntake(final Integer waterIntake) {
             activity.waterIntake = waterIntake;
             return this;
         }
 
-        public ActivityBuilder smokedCigarettes(final int smokedCigarettes) {
+        public ActivityBuilder smokedCigarettes(final Integer smokedCigarettes) {
             activity.smokedCigarettes = smokedCigarettes;
-            return this;
-        }
-
-        public ActivityBuilder alcoholIntake(final int alcoholIntake) {
-            activity.alcoholIntake = alcoholIntake;
             return this;
         }
 

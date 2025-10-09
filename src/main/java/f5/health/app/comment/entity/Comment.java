@@ -25,7 +25,7 @@ public class Comment extends BaseEntity {
     private Post post;
 
     @Column(name = "MEMBER_ID")
-    private Long memberId; // 외래키 X
+    private Long memberId; //
 
     @Column(name = "WRITER_NAME")
     private String writerName;

@@ -1,8 +1,9 @@
 package f5.health.app.activity.repository;
 
 import f5.health.app.activity.constant.AlcoholType;
-import f5.health.app.activity.entity.Activity;
-import f5.health.app.activity.entity.AlcoholConsumption;
+import f5.health.app.activity.domain.Activity;
+import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumption;
+import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumptionFactory;
 import f5.health.app.member.entity.Member;
 import f5.health.app.member.fixture.MemberFixture;
 import f5.health.app.member.repository.MemberRepository;
@@ -27,7 +28,7 @@ public class ActivityRepositoryTest {
     @Test
     void findByMemberIdAndRecordDate() {
         Member member = memberRepository.save(MemberFixture.createMember());
-        List<AlcoholConsumption> alcoholConsumptions = List.of(AlcoholConsumption.newInstance(AlcoholType.BEER, 500));
+        List<AlcoholConsumption> alcoholConsumptions = List.of(AlcoholConsumptionFactory.of(AlcoholType.BEER, 500));
         LocalDate recordDate = LocalDate.now();
         Activity activity = Activity.createActivity(member, alcoholConsumptions)
                 .waterIntake(500)

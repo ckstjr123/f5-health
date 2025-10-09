@@ -1,7 +1,8 @@
-package f5.health.app.meal.entity;
+package f5.health.app.meal.domain;
 
 import f5.health.app.common.exception.AccessDeniedException;
 import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.domain.embedded.Nutrients;
 import f5.health.app.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -43,35 +44,24 @@ public class Meal {
     @Enumerated(EnumType.STRING)
     private MealType mealType;
 
+    @Embedded
+    private Nutrients nutrients;
+
     @Column(name = "EATEN_AT")
     private LocalDateTime eatenAt;
 
     @Column(name = "EATEN_DATE")
     private LocalDate eatenDate; // 날짜 조건 조회용
 
-    @Column(name = "TOTAL_KCAL")
-    private int totalKcal; // 계산된 식사 총 섭취 칼로리
 
-    @Column(name = "TOTAL_CARBOHYDRATE")
-    private double totalCarbohydrate;
-
-    @Column(name = "TOTAL_PROTEIN")
-    private double totalProtein;
-
-    @Column(name = "TOTAL_FAT")
-    private double totalFat;
-
-    /**
-     * 식단 생성 메서드
-     */
-    public static Meal newInstance(Member member, LocalDateTime eatenAt, MealType mealType, List<MealFood> mealFoods) {
+    public static Meal of(Member member, LocalDateTime eatenAt, MealType mealType, List<MealFood> mealFoods) {
         Meal meal = new Meal();
         meal.member = member;
         meal.eatenAt = eatenAt;
         meal.eatenDate = eatenAt.toLocalDate();
         meal.mealType = mealType;
         meal.addAllMealFoods(mealFoods);
-        meal.calculateNutritionFacts(); //
+        meal.calculateNutrients(); //
         return meal;
     }
 
@@ -85,16 +75,9 @@ public class Meal {
         });
     }
 
-    
-    public void calculateNutritionFacts() {
-        this.totalKcal = 0;
-        this.totalCarbohydrate = this.totalProtein = this.totalFat = 0.0;
-        for (MealFood mealFood : mealFoods) {
-            this.totalKcal += mealFood.calculateKcal();
-            this.totalCarbohydrate += mealFood.calculateCarbohydrate();
-            this.totalProtein += mealFood.calculateProtein();
-            this.totalFat += mealFood.calculateFat();
-        }
+
+    public void calculateNutrients() {
+        this.nutrients = Nutrients.from(mealFoods);
     }
 
     private boolean isOwnedBy(Long memberId) {
@@ -102,7 +85,7 @@ public class Meal {
     }
 
     public void validateOwnership(Long memberId) {
-        if (!isOwnedBy(memberId)) {
+        if (!this.isOwnedBy(memberId)) {
             throw new AccessDeniedException(NOT_FOUND_MEAL_OWNERSHIP);
         }
     }

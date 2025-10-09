@@ -1,11 +1,11 @@
 package f5.health.app.activity.controller;
 
-import f5.health.app.activity.service.request.ActivityRequest;
+import f5.health.app.activity.service.ActivityRequest;
 import f5.health.app.activity.vo.ActivityResponse;
 import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.common.EnumModel;
 import f5.health.app.common.exception.exhandler.response.ExceptionResult;
-import f5.health.app.common.exception.exhandler.response.FieldErrorsResult;
+import f5.health.app.common.exception.exhandler.response.ErrorsResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -80,7 +80,7 @@ public interface ActivityApiDocs {
             @ApiResponse(
                     responseCode = "400",
                     description = "필드 유효성 검증 실패",
-                    content = @Content(schema = @Schema(implementation = FieldErrorsResult.class))
+                    content = @Content(schema = @Schema(implementation = ErrorsResult.class))
             ),
             @ApiResponse(
                     responseCode = "404",

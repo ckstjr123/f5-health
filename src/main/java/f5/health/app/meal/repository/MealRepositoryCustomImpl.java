@@ -2,17 +2,16 @@ package f5.health.app.meal.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import f5.health.app.meal.constant.MealType;
-import f5.health.app.meal.entity.Meal;
+import f5.health.app.meal.domain.Meal;
 import jakarta.persistence.EntityManager;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.querydsl.jpa.JPAExpressions.selectOne;
 import static f5.health.app.food.entity.QFood.food;
-import static f5.health.app.meal.entity.QMeal.meal;
-import static f5.health.app.meal.entity.QMealFood.mealFood;
+import static f5.health.app.meal.domain.QMeal.meal;
+import static f5.health.app.meal.domain.QMealFood.mealFood;
 
 public class MealRepositoryCustomImpl implements MealRepositoryCustom {
 

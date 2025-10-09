@@ -1,7 +1,7 @@
 package f5.health.app.meal.repository;
 
 import f5.health.app.meal.constant.MealType;
-import f5.health.app.meal.entity.Meal;
+import f5.health.app.meal.domain.Meal;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -68,8 +68,8 @@ public class AuthService {
 
     private JwtResponse issueJWTokens(Member member) {
         Long memberId = member.getId();
-        String accessToken = jwtProvider.issueAccessToken(memberId, member.getRole().name());
-        String refreshToken = jwtProvider.issueRefreshToken(memberId);
+        String accessToken = jwtProvider.generateAccessToken(memberId, member.getRole().name());
+        String refreshToken = jwtProvider.generateRefreshToken(memberId);
         redisManager.set(getRefreshTokenKey(memberId), refreshToken, REFRESH_TOKEN_EXPIRATION_MS); //
         return new JwtResponse(accessToken, refreshToken);
     }

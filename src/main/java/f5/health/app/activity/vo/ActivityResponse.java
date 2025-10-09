@@ -1,6 +1,6 @@
 package f5.health.app.activity.vo;
 
-import f5.health.app.activity.entity.Activity;
+import f5.health.app.activity.domain.Activity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

@@ -33,7 +33,7 @@ public class FoodResponse {
     private final int natrium;
 
     @Schema(description = "1회 제공량", example = "550")
-    private final double totalGram;
+    private final double servingSize;
 
     @Schema(description = "제공 단위", example = "그릇")
     private final String unit;
@@ -47,7 +47,8 @@ public class FoodResponse {
                 food.getFat(),
                 food.getSugar(),
                 food.getNatrium(),
-                food.getTotalGram(),
-                food.getUnit());
+                food.getServingSize(),
+                food.getUnit()
+        );
     }
 }

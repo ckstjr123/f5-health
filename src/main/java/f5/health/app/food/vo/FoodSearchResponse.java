@@ -21,8 +21,8 @@ public class FoodSearchResponse {
     @Schema(description = "음식 검색 결과(자세한 음식 정보는 음식 상세 조회 필요)")
     public static class FoodSearchResult {
 
-        @Schema(description = "음식 코드", example = "D303-148170000-0001")
-        private final String foodCode;
+        @Schema(description = "음식 식별자", example = "1")
+        private final Long foodId;
 
         @Schema(description = "음식명", example = "라면")
         private final String foodName;
@@ -39,20 +39,20 @@ public class FoodSearchResponse {
         @Schema(description = "지방(g)", example = "6.2")
         private final double fat;
 
-        @Schema(description = "중량", example = "250")
-        private final double totalGram;
+        @Schema(description = "1회 제공량", example = "250")
+        private final double servingSize;
 
         @Schema(description = "제공 단위", example = "컵", nullable = true)
         private final String unit;
 
         public FoodSearchResult(Food food) {
-            this.foodCode = food.getFoodCode();
+            this.foodId = food.getId();
             this.foodName = food.getFoodName();
             this.kcal = food.getKcal();
             this.carbohydrate = food.getCarbohydrate();
             this.protein = food.getProtein();
             this.fat = food.getFat();
-            this.totalGram = food.getTotalGram();
+            this.servingSize = food.getServingSize();
             this.unit = food.getUnit();
         }
     }

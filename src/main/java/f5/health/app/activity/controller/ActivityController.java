@@ -2,7 +2,7 @@ package f5.health.app.activity.controller;
 
 import f5.health.app.activity.constant.AlcoholType;
 import f5.health.app.activity.service.ActivityService;
-import f5.health.app.activity.service.request.ActivityRequest;
+import f5.health.app.activity.service.ActivityRequest;
 import f5.health.app.activity.vo.ActivityResponse;
 import f5.health.app.auth.Login;
 import f5.health.app.auth.vo.LoginMember;

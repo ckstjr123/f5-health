@@ -3,7 +3,7 @@ package f5.health.app.member.controller;
 import f5.health.app.common.EnumModel;
 import f5.health.app.member.service.MemberUpdateRequest;
 import f5.health.app.common.exception.exhandler.response.ExceptionResult;
-import f5.health.app.common.exception.exhandler.response.FieldErrorsResult;
+import f5.health.app.common.exception.exhandler.response.ErrorsResult;
 import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.member.vo.MemberProfile;
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,7 +69,7 @@ public interface MemberApiDocs {
             @ApiResponse(
                     responseCode = "400",
                     description = "입력 값이 올바르지 않음",
-                    content = @Content(schema = @Schema(implementation = FieldErrorsResult.class))
+                    content = @Content(schema = @Schema(implementation = ErrorsResult.class))
             ),
             @ApiResponse(
                     responseCode = "401",

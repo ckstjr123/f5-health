@@ -1,14 +1,17 @@
 package f5.health.app.meal.repository;
 
+import f5.health.app.food.entity.Food;
+import f5.health.app.food.fixture.FoodFixture;
 import f5.health.app.food.repository.FoodRepository;
 import f5.health.app.meal.constant.MealType;
-import f5.health.app.meal.entity.Meal;
-import f5.health.app.meal.entity.MealFood;
+import f5.health.app.meal.domain.Meal;
+import f5.health.app.meal.domain.MealFood;
 import f5.health.app.meal.fixture.MealFixture;
 import f5.health.app.member.entity.Member;
 import f5.health.app.member.fixture.MemberFixture;
 import f5.health.app.member.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -38,21 +41,15 @@ public class MealFoodRepositoryTest {
     @Autowired
     private MealFoodRepository mealFoodRepository;
 
-    @Autowired
-    private EntityManager em;
-
-
     @Test
     void saveAllBatch() {
-        Member member = memberRepository.save(MemberFixture.createMember());
-        Meal meal = createMealWithMealFoods(member, LocalDateTime.now(), MealType.BREAKFAST);
-        meal.getMealFoods().forEach(mealFood -> {
-            foodRepository.save(mealFood.getFood());
-            mealFood.setMeal(meal);
-        });
-        mealRepository.save(meal);
+        Member member = saveMember();
+        Meal meal = saveMealOnly(member, LocalDateTime.now(), MealType.BREAKFAST);
+        List<Food> foods = saveFoods();
+        List<MealFood> mealFoods = MealFixture.createMealFoods(foods);
+        mealFoods.forEach(mealFood -> mealFood.setMeal(meal));
 
-        int[] rows = mealFoodRepository.saveAllBatch(meal.getMealFoods());
+        int[] rows = mealFoodRepository.saveAllBatch(mealFoods);
 
         List<MealFood> savedMealFoods = mealFoodRepository.findAll();
         assertThat(rows.length).isEqualTo(savedMealFoods.size());
@@ -63,31 +60,28 @@ public class MealFoodRepositoryTest {
 
     @Test
     void findByMealId() {
-        Meal meal = saveMealWithMealFoods();
+        Member member = saveMember();
+        Meal meal = saveMealOnly(member, LocalDateTime.now(), MealType.DINNER);
+        List<Food> foods = saveFoods();
+        meal.addAllMealFoods(MealFixture.createMealFoods(foods));
+        List<MealFood> mealFoods = mealFoodRepository.saveAll(meal.getMealFoods());
 
-        List<MealFood> mealFoods = mealFoodRepository.findByMealId(meal.getId());
+        List<MealFood> findMealFoods = mealFoodRepository.findByMealId(meal.getId());
 
-        assertThat(mealFoods).containsExactlyElementsOf(meal.getMealFoods());
+        assertThat(findMealFoods).containsExactlyElementsOf(mealFoods);
     }
 
 
-    private Meal saveMealWithMealFoods() {
-        Member member = memberRepository.save(MemberFixture.createMember());
-        Meal meal = MealFixture.createMealWithMealFoods(member, LocalDateTime.now(), MealType.LUNCH);
-        mealRepository.save(meal);
-
-        meal.getMealFoods().forEach(mealFood -> {
-            foodRepository.save(mealFood.getFood());
-            mealFood.setMeal(meal);
-        });
-        mealFoodRepository.saveAll(meal.getMealFoods());
-        return meal;
+    private Member saveMember() {
+        return memberRepository.save(MemberFixture.createMember());
     }
 
-    private Set<Long> collectIds(List<MealFood> mealFoods) {
-        return mealFoods.stream()
-                .map(MealFood::getId)
-                .collect(Collectors.toUnmodifiableSet());
+    private List<Food> saveFoods() {
+        return foodRepository.saveAll(FoodFixture.createFoods());
+    }
+
+    private Meal saveMealOnly(Member member, LocalDateTime eatenAt, MealType mealType) {
+        return mealRepository.save(MealFixture.createMealOnly(member, eatenAt, mealType));
     }
 
 }

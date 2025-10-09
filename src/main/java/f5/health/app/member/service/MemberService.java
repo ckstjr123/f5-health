@@ -5,7 +5,7 @@ import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.member.constant.Role;
 import f5.health.app.member.entity.Member;
 import f5.health.app.member.entity.vo.MemberCheckUp;
-import f5.health.app.member.exception.MemberAlreadyJoinedException;
+import f5.health.app.member.exception.MemberAlreadyRegisteredException;
 import f5.health.app.member.repository.MemberRepository;
 import f5.health.app.member.service.oauth2userinfo.OAuth2UserInfo;
 import f5.health.app.member.vo.MemberProfile;
@@ -62,7 +62,7 @@ public class MemberService {
     private void validateDuplicateMember(String email) {
         Optional<Member> findMember = memberRepository.findByEmail(email);
         if (!findMember.isEmpty()) {
-            throw new MemberAlreadyJoinedException();
+            throw new MemberAlreadyRegisteredException();
         }
     }
 

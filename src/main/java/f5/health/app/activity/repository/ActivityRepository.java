@@ -1,6 +1,6 @@
 package f5.health.app.activity.repository;
 
-import f5.health.app.activity.entity.Activity;
+import f5.health.app.activity.domain.Activity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

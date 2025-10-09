@@ -1,4 +1,4 @@
-package f5.health.app.meal.entity;
+package f5.health.app.meal.domain;
 
 import f5.health.app.food.entity.Food;
 import jakarta.persistence.*;
@@ -23,15 +23,15 @@ public class MealFood {
     private Meal meal;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FOOD_CODE")
+    @JoinColumn(name = "FOOD_ID")
     private Food food;
 
     @Column(name = "COUNT")
     private double count; // 해당 음식 섭취 수량(0.5, 1 , 1.5...)
 
-    public static MealFood newInstance(Food eatenFood, double count) {
+    public static MealFood of(Food food, double count) {
         MealFood mealFood = new MealFood();
-        mealFood.food = eatenFood;
+        mealFood.food = food;
         mealFood.count = count;
         return mealFood;
     }
@@ -47,7 +47,7 @@ public class MealFood {
     }
 
     public int calculateKcal() {
-        return (int) (food.getKcal() * count);
+        return (int) Math.round(food.getKcal() * count);
     }
 
     public double calculateCarbohydrate() {

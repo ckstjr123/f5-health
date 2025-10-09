@@ -8,8 +8,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static f5.health.app.meal.entity.Meal.MENU_LIMIT_SIZE_PER_MEAL;
-import static f5.health.app.meal.entity.Meal.MENU_MIN_SIZE_PER_MEAL;
+import static f5.health.app.meal.domain.Meal.MENU_LIMIT_SIZE_PER_MEAL;
+import static f5.health.app.meal.domain.Meal.MENU_MIN_SIZE_PER_MEAL;
 
 @Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

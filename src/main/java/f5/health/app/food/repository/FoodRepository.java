@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Set;
 
-public interface FoodRepository extends JpaRepository<Food, String> {
+public interface FoodRepository extends JpaRepository<Food, Long> {
     /** 음식 검색 */
     List<Food> findByFoodNameLike(String foodName, Pageable pageable);
 }

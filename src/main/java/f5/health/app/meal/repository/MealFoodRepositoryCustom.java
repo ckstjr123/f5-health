@@ -1,6 +1,6 @@
 package f5.health.app.meal.repository;
 
-import f5.health.app.meal.entity.MealFood;
+import f5.health.app.meal.domain.MealFood;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package f5.health.app.activity.service.request;
+package f5.health.app.activity.service;
 
 import f5.health.app.activity.constant.AlcoholType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static f5.health.app.activity.constant.AlcoholType.ALCOHOL_TYPE_SIZE;
-import static f5.health.app.activity.entity.Activity.*;
+import static f5.health.app.activity.domain.Activity.*;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Schema(description = "활동 데이터 기록 요청 VO", requiredMode = REQUIRED)
@@ -28,6 +28,6 @@ public record ActivityRequest(
 
     @Schema(description = "음주 정보")
     public record AlcoholParam(@Schema(description = "마신 술 종류", example = "BEER") @NotNull AlcoholType alcoholType,
-                               @Schema(description = "음주량(ml)", example = "500") @Positive @Max(value = DAILY_MAX_ALCOHOL_ML, message = "하루에 기록 가능한 음주량은 최대 " + DAILY_MAX_ALCOHOL_ML + "ml입니다.") int alcoholIntake) {
+                               @Schema(description = "음주량(ml)", example = "500") @Positive @Max(value = DAILY_MAX_ALCOHOL_ML, message = "하루에 기록 가능한 음주량은 최대 " + DAILY_MAX_ALCOHOL_ML + "ml입니다.") int intake) {
     }
 }

@@ -30,7 +30,7 @@ public class JwtProvider {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String issueAccessToken(Long memberId, String role) {
+    public String generateAccessToken(Long memberId, String role) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION_MS);
         return Jwts.builder()
@@ -42,7 +42,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String issueRefreshToken(Long memberId) {
+    public String generateRefreshToken(Long memberId) {
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_MS);
         return Jwts.builder()

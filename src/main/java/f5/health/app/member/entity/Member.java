@@ -72,7 +72,7 @@ public class Member extends BaseEntity {
     private BloodType bloodType;
 
     @Builder(builderMethodName = "createMember")
-    private static Member newInstance(String oauthId, String email, String nickname, Role role, MemberCheckUp checkUp) {
+    private static Member create(String oauthId, String email, String nickname, Role role, MemberCheckUp checkUp) {
         Member member = new Member();
         member.oauthId = oauthId;
         member.email = email;

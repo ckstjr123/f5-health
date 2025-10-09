@@ -3,6 +3,7 @@ package f5.health.app.meal.controller;
 import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.common.EnumModel;
 import f5.health.app.common.exception.exhandler.response.ExceptionResult;
+import f5.health.app.common.validation.PrimaryKey;
 import f5.health.app.meal.controller.response.MealDetail;
 import f5.health.app.meal.controller.response.MealsResponse;
 import f5.health.app.meal.service.request.MealRequest;
@@ -15,7 +16,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -99,6 +102,7 @@ public interface MealApiDocs {
     @Operation(summary = "식단 일괄 수정",
             description = "식사 시간대/메뉴 갱신",
             parameters = {
+                    @Parameter(in = ParameterIn.PATH, name = "mealId", description = "갱신 대상 식단 id", required = true),
                     @Parameter(name = "mealSyncRequest", description = "식단 갱신 요청 VO", required = true,
                             content = @Content(schema = @Schema(implementation = MealSyncRequest.class)))
             }
@@ -115,7 +119,7 @@ public interface MealApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    void synchronize(LoginMember loginMember, MealSyncRequest mealSyncRequest);
+    void synchronize(LoginMember loginMember, Long mealId, MealSyncRequest mealSyncRequest);
 
 
     @Operation(summary = "식단 삭제",

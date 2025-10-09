@@ -1,6 +1,6 @@
 package f5.health.app.meal.repository;
 
-import f5.health.app.meal.entity.MealFood;
+import f5.health.app.meal.domain.MealFood;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,14 +19,14 @@ public class MealFoodRepositoryCustomImpl implements MealFoodRepositoryCustom {
     public int[] saveAllBatch(final List<MealFood> mealFoods) {
         return jdbcTemplate.batchUpdate(
                 "INSERT INTO MEAL_FOOD " +
-                        "(MEAL_ID, FOOD_CODE, COUNT) " +
+                        "(MEAL_ID, FOOD_ID, COUNT) " +
                         "VALUES (?, ?, ?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         MealFood mealFood = mealFoods.get(i);
                         ps.setLong(1, mealFood.getMeal().getId());
-                        ps.setString(2, mealFood.getFood().getFoodCode());
+                        ps.setLong(2, mealFood.getFood().getId());
                         ps.setFloat(3, (float) mealFood.getCount());
                     }
 

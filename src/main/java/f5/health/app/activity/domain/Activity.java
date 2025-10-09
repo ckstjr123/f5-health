@@ -1,8 +1,10 @@
-package f5.health.app.activity.entity;
+package f5.health.app.activity.domain;
 
+import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumption;
 import f5.health.app.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +17,7 @@ import java.util.List;
  */
 @Getter
 @Entity
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "ACTIVITY", uniqueConstraints = {@UniqueConstraint(columnNames = {"MEMBER_ID", "RECORD_DATE"})})
 public class Activity {
@@ -32,7 +35,7 @@ public class Activity {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<AlcoholConsumption> alcoholConsumptions = new ArrayList<>();
 
     @Column(name = "WATER_INTAKE")

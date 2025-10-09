@@ -6,10 +6,10 @@ import f5.health.app.common.EnumModel;
 import f5.health.app.common.EnumModelMapper;
 import f5.health.app.meal.constant.MealType;
 import f5.health.app.meal.controller.response.MealDetail;
+import f5.health.app.meal.controller.response.MealsResponse;
 import f5.health.app.meal.service.MealService;
 import f5.health.app.meal.service.request.MealRequest;
 import f5.health.app.meal.service.request.MealSyncRequest;
-import f5.health.app.meal.controller.response.MealsResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("")
+@RequestMapping
 @RequiredArgsConstructor
 public class MealController implements MealApiDocs {
 
@@ -37,24 +37,23 @@ public class MealController implements MealApiDocs {
         return mealService.findMeals(loginMember.getId(), date);
     }
 
-    @GetMapping("/meal/{mealId}")
+    @GetMapping("/meals/{mealId}")
     public MealDetail meal(@Login LoginMember loginMember, @PathVariable("mealId") Long mealId) {
         return mealService.getMealDetail(mealId, loginMember);
     }
-
 
     @PostMapping("/meal")
     public Long save(@Login LoginMember loginMember, @RequestBody @Valid MealRequest mealRequest) {
         return mealService.saveMeal(loginMember.getId(), mealRequest);
     }
 
-    @PostMapping("/meal/edit")
-    public void synchronize(@Login LoginMember loginMember,
+    @PostMapping("/meals/{mealId}/edit")
+    public void synchronize(@Login LoginMember loginMember, @PathVariable("mealId") Long mealId,
                             @RequestBody @Valid MealSyncRequest mealSyncRequest) {
-        mealService.synchronizeMeal(loginMember.getId(), mealSyncRequest);
+        mealService.synchronizeMeal(mealId, mealSyncRequest, loginMember.getId());
     }
 
-    @DeleteMapping("/meal/{mealId}")
+    @DeleteMapping("/meals/{mealId}")
     public ResponseEntity<Void> delete(@Login LoginMember loginMember, @PathVariable("mealId") Long mealId) {
         mealService.deleteMeal(mealId, loginMember);
         return ResponseEntity.noContent().build();

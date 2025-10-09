@@ -1,7 +1,7 @@
 package f5.health.app.member.constant;
 
-
 public enum Gender {
+
     MALE("남자"), FEMALE("여자");
 
     private final String label;

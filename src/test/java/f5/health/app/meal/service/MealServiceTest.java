@@ -1,15 +1,14 @@
 package f5.health.app.meal.service;
 
+import f5.health.app.common.exception.ConflictException;
 import f5.health.app.common.exception.NotFoundException;
-import f5.health.app.food.entity.Food;
 import f5.health.app.food.repository.FoodRepository;
 import f5.health.app.meal.constant.MealType;
-import f5.health.app.meal.entity.Meal;
-import f5.health.app.meal.entity.MealFood;
-import f5.health.app.meal.exception.MealLimitExceededException;
+import f5.health.app.meal.domain.Meal;
 import f5.health.app.meal.fixture.MealFixture;
 import f5.health.app.meal.repository.MealFoodRepository;
 import f5.health.app.meal.repository.MealRepository;
+import f5.health.app.meal.service.request.MealFoodParam;
 import f5.health.app.meal.service.request.MealRequest;
 import f5.health.app.member.entity.Member;
 import f5.health.app.member.fixture.MemberFixture;
@@ -27,11 +26,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static f5.health.app.food.FoodErrorCode.NOT_FOUND_FOOD;
 import static f5.health.app.meal.fixture.MealRequestFixture.createMealRequest;
+import static f5.health.app.meal.fixture.MealRequestFixture.toMealFoodParams;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
 
 @Transactional
@@ -66,33 +67,27 @@ public class MealServiceTest {
             MealType mealType = MealType.LUNCH;
             LocalDateTime eatenAt = LocalDateTime.now();
             Meal meal = MealFixture.createMealWithMealFoods(member, eatenAt, mealType);
-            List<Food> foods = meal.getMealFoods().stream()
-                    .map(MealFood::getFood)
-                    .toList();
-
             when(mealRepository.countBy(memberId, eatenAt.toLocalDate(), mealType)).thenReturn((long) mealType.maxCountPerDay());
 
-            assertThrows(MealLimitExceededException.class,
-                    () -> mealService.saveMeal(memberId, createMealRequest(mealType, eatenAt, foods)));
+            MealRequest mealRequest = createMealRequest(mealType, eatenAt, toMealFoodParams(meal.getMealFoods()));
+
+            assertThatThrownBy(() -> mealService.saveMeal(memberId, mealRequest))
+                    .isInstanceOf(ConflictException.class);
         }
 
-        @DisplayName("음식 코드에 해당하는 음식을 찾지 못하면 예외")
+        @DisplayName("음식을 찾지 못하면 예외")
         @Test
-        void getFoodOrElseThrow() {
-            final Long memberId = 1L;
-            Member member = MemberFixture.createMember();
+        void getFoodsOrElseThrow() {
+            final Long notExistsId = 1L;
             MealType mealType = MealType.LUNCH;
             LocalDateTime eatenAt = LocalDateTime.now();
-            Meal meal = MealFixture.createMealWithMealFoods(member, eatenAt, mealType);
-            List<Food> foods = meal.getMealFoods().stream()
-                    .map(MealFood::getFood)
-                    .toList();
+            when(foodRepository.findAllById(anySet())).thenReturn(new ArrayList<>());
 
-            MealRequest mealRequest = createMealRequest(mealType, eatenAt, foods);
-            when(foodRepository.findAllById(mealRequest.getFoodCodes())).thenReturn(new ArrayList<>());
+            List<MealFoodParam> mealFoodParams = List.of(new MealFoodParam(notExistsId, 1.0));
 
-            assertThrows(NotFoundException.class,
-                    () -> mealService.saveMeal(memberId, createMealRequest(mealType, eatenAt, foods)));
+            NotFoundException ex = assertThrows(NotFoundException.class,
+                    () -> mealService.saveMeal(notExistsId, createMealRequest(mealType, eatenAt, mealFoodParams)));
+            assertThat(ex.getErrorCode()).isEqualTo(NOT_FOUND_FOOD);
         }
     }
 

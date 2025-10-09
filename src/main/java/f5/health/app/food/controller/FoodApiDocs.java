@@ -3,7 +3,7 @@ package f5.health.app.food.controller;
 import f5.health.app.food.vo.FoodResponse;
 import f5.health.app.food.vo.FoodSearchResponse;
 import f5.health.app.common.exception.exhandler.response.ExceptionResult;
-import f5.health.app.common.exception.exhandler.response.FieldErrorsResult;
+import f5.health.app.common.exception.exhandler.response.ErrorsResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -27,7 +27,7 @@ public interface FoodApiDocs {
             @ApiResponse(
                     responseCode = "400",
                     description = "검색어가 존재하지 않음",
-                    content = @Content(schema = @Schema(implementation = FieldErrorsResult.class))
+                    content = @Content(schema = @Schema(implementation = ErrorsResult.class))
             )
     })
     FoodSearchResponse searchFoods(@NotBlank String foodSearchQuery);
@@ -35,7 +35,7 @@ public interface FoodApiDocs {
 
     @Operation(summary = "음식 상세 조회", description = "식품 영양 정보",
             parameters = {
-                    @Parameter(in = ParameterIn.PATH, name = "foodCode", description = "식품 코드(PK)", required = true)
+                    @Parameter(in = ParameterIn.PATH, name = "foodId", description = "음식 id", required = true)
             }
     )
     @ApiResponses({
@@ -51,9 +51,9 @@ public interface FoodApiDocs {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "해당하는 식품 코드를 가진 음식을 찾을 수 없음",
+                    description = "해당하는 음식을 찾을 수 없음",
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    FoodResponse food(String foodCode);
+    FoodResponse food(Long foodId);
 }

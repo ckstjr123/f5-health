@@ -21,7 +21,7 @@ public class FoodRepositoryTest {
 
     @Test
     void findByFoodNameLike() {
-        Food food = foodRepository.save(FoodFixture.createBasicFood("R211-927054101-1205", "음식"));
+        Food food = foodRepository.save(FoodFixture.createBasicFood("식품"));
 
         List<Food> foods = foodRepository.findByFoodNameLike(food.getFoodName() + "%", PageRequest.of(0, 1));
 

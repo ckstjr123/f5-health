@@ -1,7 +1,8 @@
 package f5.health.app.meal.controller.response;
 
 import f5.health.app.meal.constant.MealType;
-import f5.health.app.meal.entity.Meal;
+import f5.health.app.meal.domain.Meal;
+import f5.health.app.meal.domain.embedded.Nutrients;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -40,10 +41,11 @@ public final class MealSummary {
         this.type = meal.getMealType();
         this.label = type.label();
         this.eatenAt = meal.getEatenAt();
-        this.totalKcal = meal.getTotalKcal();
-        this.totalCarbohydrate = meal.getTotalCarbohydrate();
-        this.totalProtein = meal.getTotalProtein();
-        this.totalFat = meal.getTotalFat();
+        Nutrients nutrients = meal.getNutrients();
+        this.totalKcal = nutrients.getKcal();
+        this.totalCarbohydrate = nutrients.getCarbohydrate();
+        this.totalProtein = nutrients.getProtein();
+        this.totalFat = nutrients.getFat();
     }
 
     public static MealSummary from(Meal meal) {

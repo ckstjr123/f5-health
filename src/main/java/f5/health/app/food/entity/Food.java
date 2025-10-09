@@ -12,11 +12,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "FOOD")
 public class Food {
 
-    public static final int FOOD_CODE_LENGTH = 19;
-
     @Id
-    @Column(name = "FOOD_CODE", length = FOOD_CODE_LENGTH)
-    private String foodCode;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "FOOD_ID")
+    private Long id;
 
     @Column(name = "FOOD_NAME", unique = true)
     private String foodName;
@@ -42,15 +41,14 @@ public class Food {
     @Column(name = "FAT")
     private double fat;
 
-    @Column(name = "TOTAL_GRAM")
-    private double totalGram;
+    @Column(name = "SERVING_SIZE")
+    private double servingSize;
 
     @Column(name = "UNIT")
     private String unit;
 
     @Builder
-    private Food(String foodCode, String foodName, String foodType, int kcal, int natrium, double carbohydrate, double sugar, double protein, double fat, double totalGram, String unit) {
-        this.foodCode = foodCode;
+    private Food(String foodName, String foodType, int kcal, int natrium, double carbohydrate, double sugar, double protein, double fat, double servingSize, String unit) {
         this.foodName = foodName;
         this.foodType = foodType;
         this.kcal = kcal;
@@ -59,7 +57,7 @@ public class Food {
         this.sugar = sugar;
         this.protein = protein;
         this.fat = fat;
-        this.totalGram = totalGram;
+        this.servingSize = servingSize;
         this.unit = unit;
     }
 }

@@ -4,7 +4,10 @@ import f5.health.app.food.entity.Food;
 import f5.health.app.food.fixture.FoodFixture;
 import f5.health.app.food.repository.FoodRepository;
 import f5.health.app.meal.constant.MealType;
-import f5.health.app.meal.entity.Meal;
+import f5.health.app.meal.domain.Meal;
+import f5.health.app.meal.domain.MealFood;
+import f5.health.app.meal.domain.embedded.Nutrients;
+import f5.health.app.meal.fixture.MealFixture;
 import f5.health.app.meal.repository.MealRepository;
 import f5.health.app.meal.service.request.MealFoodParam;
 import f5.health.app.meal.service.request.MealRequest;
@@ -18,18 +21,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static f5.health.app.meal.fixture.MealRequestFixture.createMealRequest;
+import static f5.health.app.meal.fixture.MealRequestFixture.toMealFoodParams;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Transactional
 @SpringBootTest
 public class MealServiceIntegrationTest {
-
-    private static final int ZERO_INDEX = 0;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -50,23 +53,26 @@ public class MealServiceIntegrationTest {
         Member member = createMember();
         List<Food> foods = createFoods();
         LocalDateTime eatenAt = LocalDateTime.now();
-        MealRequest mealRequest = createMealRequest(MealType.LUNCH, eatenAt, foods);
+
+        List<MealFood> mealFoodFixtures = MealFixture.createMealFoods(foods);
+        MealRequest mealRequest = createMealRequest(MealType.LUNCH, eatenAt, toMealFoodParams(mealFoodFixtures));
 
         Long mealId = mealService.saveMeal(member.getId(), mealRequest);
 
         Meal meal = mealRepository.findById(mealId).orElseThrow();
-        List<MealFoodParam> mealFoodParams = mealRequest.mealFoodParams();
+
+        Nutrients expectedNutrients = Nutrients.from(mealFoodFixtures);
+        Nutrients nutrients = meal.getNutrients();
         assertAll(
                 () -> assertThat(meal.getId()).isEqualTo(mealId),
                 () -> assertThat(meal.getEatenDate()).isEqualTo(eatenAt.toLocalDate()),
                 () -> assertThat(meal.getMealFoods().size()).isEqualTo(foods.size()),
-                () -> assertThat(meal.getTotalKcal()).isEqualTo(getTotalKcal(foods, mealFoodParams)),
-                () -> assertThat(meal.getTotalCarbohydrate()).isEqualTo(getTotalCarbohydrate(foods, mealFoodParams)),
-                () -> assertThat(meal.getTotalProtein()).isEqualTo(getTotalProtein(foods, mealFoodParams)),
-                () -> assertThat(meal.getTotalFat()).isEqualTo(getTotalFat(foods, mealFoodParams))
+                () -> assertThat(nutrients.getKcal()).isEqualTo(expectedNutrients.getKcal()),
+                () -> assertThat(nutrients.getCarbohydrate()).isEqualTo(expectedNutrients.getCarbohydrate()),
+                () -> assertThat(nutrients.getProtein()).isEqualTo(expectedNutrients.getProtein()),
+                () -> assertThat(nutrients.getFat()).isEqualTo(expectedNutrients.getFat())
         );
     }
-
 
     private Member createMember() {
         return memberRepository.save(MemberFixture.createMember());
@@ -74,30 +80,6 @@ public class MealServiceIntegrationTest {
 
     private List<Food> createFoods() {
         return foodRepository.saveAll(FoodFixture.createFoods());
-    }
-
-    private int getTotalKcal(List<Food> foods, List<MealFoodParam> mealFoodParams) {
-        return IntStream.range(ZERO_INDEX, foods.size())
-                .map(i -> (int) (foods.get(i).getKcal() * mealFoodParams.get(i).count()))
-                .sum();
-    }
-
-    private double getTotalCarbohydrate(List<Food> foods, List<MealFoodParam> mealFoodParams) {
-        return IntStream.range(ZERO_INDEX, foods.size())
-                .mapToDouble(i -> foods.get(i).getCarbohydrate() * mealFoodParams.get(i).count())
-                .sum();
-    }
-
-    private double getTotalProtein(List<Food> foods, List<MealFoodParam> mealFoodParams) {
-        return IntStream.range(ZERO_INDEX, foods.size())
-                .mapToDouble(i -> foods.get(i).getProtein() * mealFoodParams.get(i).count())
-                .sum();
-    }
-
-    private double getTotalFat(List<Food> foods, List<MealFoodParam> mealFoodParams) {
-        return IntStream.range(ZERO_INDEX, foods.size())
-                .mapToDouble(i -> foods.get(i).getFat() * mealFoodParams.get(i).count())
-                .sum();
     }
 
 }

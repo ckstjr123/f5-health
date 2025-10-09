@@ -1,9 +1,13 @@
 package f5.health.app.common.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.util.HashSet;
 import java.util.Set;
 
-public final class SetUtils {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class Sets {
 
     /**
      * @param s1

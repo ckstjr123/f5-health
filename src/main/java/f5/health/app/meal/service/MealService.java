@@ -1,17 +1,16 @@
 package f5.health.app.meal.service;
 
 import f5.health.app.auth.vo.LoginMember;
-import f5.health.app.common.exception.AccessDeniedException;
-import f5.health.app.common.exception.NotFoundException;
+import f5.health.app.common.exception.*;
+import f5.health.app.common.util.Sets;
 import f5.health.app.food.entity.Food;
 import f5.health.app.food.repository.FoodRepository;
 import f5.health.app.meal.constant.MealType;
 import f5.health.app.meal.controller.response.MealDetail;
 import f5.health.app.meal.controller.response.MealSummary;
 import f5.health.app.meal.controller.response.MealsResponse;
-import f5.health.app.meal.entity.Meal;
-import f5.health.app.meal.entity.MealFood;
-import f5.health.app.meal.exception.MealLimitExceededException;
+import f5.health.app.meal.domain.Meal;
+import f5.health.app.meal.domain.MealFood;
 import f5.health.app.meal.repository.MealFoodRepository;
 import f5.health.app.meal.repository.MealRepository;
 import f5.health.app.meal.service.request.MealFoodParam;
@@ -27,13 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static f5.health.app.common.util.EntityManagerHelper.flushAndClear;
-import static f5.health.app.common.util.SetUtils.difference;
 import static f5.health.app.food.FoodErrorCode.NOT_FOUND_FOOD;
+import static f5.health.app.meal.domain.Meal.MENU_LIMIT_SIZE_PER_MEAL;
 import static f5.health.app.meal.exception.MealErrorCode.*;
 
 @Service
@@ -66,34 +66,34 @@ public class MealService {
     // -------------------------------------------------------------------------------------------------------------- //
 
 
-    /** 식단 등록 */
+    /** 식사 기록 */
     public Long saveMeal(Long memberId, MealRequest request) {
         Member member = memberService.findById(memberId);
         validateMealLimit(memberId, request.eatenAt().toLocalDate(), request.mealType());
-        validateRequiredFoods(request.getFoodCodes());
+        validateRequiredFoods(request.getRequestedFoodIds());
 
-        Meal meal = createMealWithMealFoods(request, member);
+        List<MealFood> mealFoods = createMealFoods(request.mealFoodParams());
+        Meal meal = Meal.of(member, request.eatenAt(), request.mealType(), mealFoods);
 
         mealRepository.save(meal);
-        mealFoodRepository.saveAllBatch(meal.getMealFoods());
+        mealFoodRepository.saveAllBatch(mealFoods);
         return meal.getId();
     }
 
-    /** 식단 일괄 수정 */
-    public void synchronizeMeal(Long memberId, MealSyncRequest request) {
-        Long mealId = request.mealId();
+    /** 식사 기록 일괄 수정 */
+    public void synchronizeMeal(Long mealId, MealSyncRequest request, Long memberId) {
         Meal meal = findMealById(mealId);
         meal.validateOwnership(memberId);
-        validateRequiredFoods(request.getFoodCodes());
+        validateRequiredFoods(request.getRequestedFoodIds());
 
-        syncMealFoods(request.newMealFoodParams(), request.mealFoodUpdateParams(), meal);
+        syncMealFoods(request.getNewMealFoodParams(), request.getMealFoodUpdateParams(), request.getToDeleteMealFoodIds(), meal);
 
         Meal refreshMeal = findMealById(mealId);
-        changeMealTime(refreshMeal, memberId, request.eatenAt(), request.mealType());
-        refreshMeal.calculateNutritionFacts();
+        changeMealTime(refreshMeal, memberId, request.getEatenAt(), request.getMealType());
+        refreshMeal.calculateNutrients();
     }
 
-    /** 식단 삭제 */
+    /** 식사 기록 삭제 */
     public void deleteMeal(Long mealId, LoginMember loginMember) {
         Meal meal = findMealById(mealId);
         meal.validateOwnership(loginMember.getId());
@@ -106,29 +106,24 @@ public class MealService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_MEAL, mealId.toString()));
     }
 
-    private void validateRequiredFoods(Set<String> foodCodes) {
-        List<Food> foods = foodRepository.findAllById(foodCodes);
-        if (foods.size() != foodCodes.size()) {
-            Set<String> invalidFoodCodes = difference(
-                    foodCodes,
+    private void validateRequiredFoods(Set<Long> requestedFoodIds) {
+        List<Food> foods = foodRepository.findAllById(requestedFoodIds);
+        if (foods.size() != requestedFoodIds.size()) {
+            Set<Long> invalidFoodIds = Sets.difference(
+                    requestedFoodIds,
                     foods.stream()
-                         .map(Food::getFoodCode)
-                         .collect(Collectors.toSet())
+                            .map(Food::getId)
+                            .collect(Collectors.toSet())
             );
-            throw new NotFoundException(NOT_FOUND_FOOD, String.join(", ", invalidFoodCodes));
+            throw new NotFoundException(NOT_FOUND_FOOD, String.join(", ", invalidFoodIds.toString()));
         }
-    }
-
-    private Meal createMealWithMealFoods(MealRequest mealRequest, Member member) {
-        List<MealFood> mealFoods = createMealFoods(mealRequest.mealFoodParams());
-        return Meal.newInstance(member, mealRequest.eatenAt(), mealRequest.mealType(), mealFoods);
     }
 
     private List<MealFood> createMealFoods(List<MealFoodParam> mealFoodParams) {
         return mealFoodParams.stream()
                 .map(param -> {
-                    Food food = foodRepository.findById(param.foodCode()).orElseThrow();
-                    return MealFood.newInstance(food, param.count());
+                    Food food = foodRepository.findById(param.foodId()).orElseThrow();
+                    return MealFood.of(food, param.count());
                 })
                 .toList();
     }
@@ -150,7 +145,7 @@ public class MealService {
     private void updateMealFoods(List<MealFoodUpdateParam> updateParams) {
         for (MealFoodUpdateParam updateParam : updateParams) {
             MealFood mealFood = mealFoodRepository.findById(updateParam.mealFoodId()).orElseThrow();
-            Food food = foodRepository.findById(updateParam.foodCode()).orElseThrow();
+            Food food = foodRepository.findById(updateParam.foodId()).orElseThrow();
 
             mealFood.update(food, updateParam.count());
         }
@@ -162,34 +157,45 @@ public class MealService {
         }
     }
 
-    private void syncMealFoods(List<MealFoodParam> newParams, List<MealFoodUpdateParam> updateParams, Meal meal) {
-        List<MealFood> mealFoods = mealFoodRepository.findByMealId(meal.getId());
+    private void syncMealFoods(List<MealFoodParam> newParams, List<MealFoodUpdateParam> updateParams, Set<Long> deleteIds, Meal meal) {
+        validate(meal.getId(), newParams, updateParams, deleteIds);
 
-        Set<Long> originalIds = mealFoods.stream()
-                .map(MealFood::getId)
-                .collect(Collectors.toUnmodifiableSet());
-
-        Set<Long> updateIds = updateParams.stream()
-                .map(MealFoodUpdateParam::mealFoodId)
-                .collect(Collectors.toUnmodifiableSet());
-
-        if (!originalIds.containsAll(updateIds)) {
-            throw new AccessDeniedException(NOT_FOUND_MEAL_FOOD_OWNERSHIP);
-        }
-
-        deleteMealFoodByIdIn(difference(originalIds, updateIds));
+        deleteMealFoodByIdIn(deleteIds);
         saveAllNewMealFoods(newParams, meal);
         updateMealFoods(updateParams);
 
         flushAndClear(em);
     }
 
+    private void validate(Long mealId, List<MealFoodParam> newParams, List<MealFoodUpdateParam> updateParams, Set<Long> deleteIds) {
+        Set<Long> requestedIds = new HashSet<>(deleteIds);
+        for (MealFoodUpdateParam updateParam : updateParams) {
+            boolean isAlreadyContained = !requestedIds.add(updateParam.mealFoodId());
+            if (isAlreadyContained) {
+                throw new BadRequestException();
+            }
+        }
+
+        List<MealFood> origins = mealFoodRepository.findByMealId(mealId);
+        boolean hasOwnership = origins.stream()
+                .map(MealFood::getId)
+                .collect(Collectors.toSet())
+                .containsAll(requestedIds);
+        if (!hasOwnership) {
+            throw new AccessDeniedException();
+        }
+
+        if ((origins.size() + newParams.size()) - deleteIds.size() > MENU_LIMIT_SIZE_PER_MEAL) {
+            throw new ConflictException(EXCEEDED_MAX_MENU_LIMIT);
+        }
+    }
+
     private void validateMealLimit(Long memberId, LocalDate eatenDate, MealType mealType) {
         long mealCount = mealRepository.countBy(memberId, eatenDate, mealType);
 
         if (mealCount >= mealType.maxCountPerDay()) {
-            throw MealLimitExceededException.forMealType(mealType);
+            throw new ConflictException(mealLimitExceededErrorCodeFor(mealType));
         }
     }
-    
+
 }

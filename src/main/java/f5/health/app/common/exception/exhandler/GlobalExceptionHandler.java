@@ -5,9 +5,10 @@ import f5.health.app.auth.exception.AuthenticationException;
 import f5.health.app.common.exception.BadRequestException;
 import f5.health.app.common.exception.ConflictException;
 import f5.health.app.common.exception.NotFoundException;
-import f5.health.app.common.exception.exhandler.response.CustomFieldError;
+import f5.health.app.common.exception.exhandler.response.FieldError;
 import f5.health.app.common.exception.exhandler.response.ExceptionResult;
-import f5.health.app.common.exception.exhandler.response.FieldErrorsResult;
+import f5.health.app.common.exception.exhandler.response.ErrorsResult;
+import f5.health.app.common.exception.exhandler.response.GlobalError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -23,15 +24,19 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public FieldErrorsResult methodArgumentNotValidExHandler(MethodArgumentNotValidException ex) {
+    public ErrorsResult methodArgumentNotValidExHandler(MethodArgumentNotValidException ex) {
         log.warn("MethodArgumentNotValidExHandler", ex);
-        List<CustomFieldError> fieldErrors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(fieldError -> new CustomFieldError(fieldError.getField(), fieldError.getDefaultMessage()))
+
+        List<GlobalError> globalErrors = ex.getBindingResult()
+                .getGlobalErrors().stream()
+                .map(objectError -> new GlobalError(objectError.getCode(), objectError.getDefaultMessage()))
+                .toList();
+        List<FieldError> fieldErrors = ex.getBindingResult()
+                .getFieldErrors().stream()
+                .map(fieldError -> new FieldError(fieldError.getField(), fieldError.getDefaultMessage()))
                 .toList();
 
-        return new FieldErrorsResult(fieldErrors);
+        return ErrorsResult.of(globalErrors, fieldErrors);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -57,8 +62,8 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(ConflictException.class)
-    public ExceptionResult conflictExHandler(ConflictException ex) {
-        log.warn("ConflictExHandler", ex);
+    public ExceptionResult duplicateExHandler(ConflictException ex) {
+        log.warn("DuplicateExHandler", ex);
         return ExceptionResult.from(ex.getErrorCode());
     }
 
@@ -68,4 +73,7 @@ public class GlobalExceptionHandler {
         log.warn("AccessDeniedExHandler", ex);
         return ExceptionResult.of(ex.getErrorCode(), ex.getMessage());
     }
+
+
+
 }

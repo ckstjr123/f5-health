@@ -30,9 +30,9 @@ public class FoodController implements FoodApiDocs {
         return new FoodSearchResponse(foods.stream().map(FoodSearchResponse.FoodSearchResult::new).toList());
     }
 
-    @GetMapping("/{foodCode}")
-    public FoodResponse food(@PathVariable("foodCode") String foodCode) {
-        Food food = foodRepository.findById(foodCode).orElseThrow(() -> new NotFoundException(NOT_FOUND_FOOD));
+    @GetMapping("/{foodId}")
+    public FoodResponse food(@PathVariable("foodId") Long foodId) {
+        Food food = foodRepository.findById(foodId).orElseThrow(() -> new NotFoundException(NOT_FOUND_FOOD));
         return FoodResponse.from(food);
     }
 

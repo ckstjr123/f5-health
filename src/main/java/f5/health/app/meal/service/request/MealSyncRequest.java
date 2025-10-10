@@ -38,6 +38,6 @@ public final class MealSyncRequest {
 
     @Schema(hidden = true)
     public Set<Long> getRequestedFoodIds() {
-        return mealFoodSyncParam.getRequestedFoodIds();
+        return mealFoodSyncParam.requestedFoodIds();
     }
 }

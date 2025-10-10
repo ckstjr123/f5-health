@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -157,30 +158,30 @@ public class MealService {
     private void syncMealFoods(MealFoodSyncParam param, Meal meal) {
         validate(param, meal.getId());
 
-        deleteMealFoodByIdIn(param.getDeleteIds());
-        saveAllNewMealFoods(param.getNewParams(), meal);
-        updateMealFoods(param.getUpdateParams());
+        deleteMealFoodByIdIn(param.deleteIds());
+        saveAllNewMealFoods(param.newParams(), meal);
+        updateMealFoods(param.updateParams());
 
         flushAndClear(em); //
     }
 
     private void validate(MealFoodSyncParam param, Long mealId) {
         List<MealFood> origins = mealFoodRepository.findByMealId(mealId);
-        if (!containsAll(origins, param.getRequestedMealFoodIds())) {
+        if (!containsAll(origins, param.requestedMealFoodIds())) {
             throw new AccessDeniedException();
         }
 
-        int expectedMenuCount = (origins.size() + param.getNewParams().size()) - param.getDeleteIds().size();
+        int expectedMenuCount = (origins.size() + param.newParams().size()) - param.deleteIds().size();
         if (expectedMenuCount < MENU_MIN_SIZE_PER_MEAL || expectedMenuCount > MENU_LIMIT_SIZE_PER_MEAL) {
             throw new ConflictException(NOT_ALLOWED_MENU_COUNT);
         }
     }
 
-    private boolean containsAll(List<MealFood> origins, Set<Long> requestedIds) {
+    private boolean containsAll(List<MealFood> origins, Set<Long> ids) {
         return origins.stream()
                 .map(MealFood::getId)
                 .collect(Collectors.toSet())
-                .containsAll(requestedIds);
+                .containsAll(ids);
     }
 
     private void validateMealLimit(Long memberId, LocalDate eatenDate, MealType mealType) {

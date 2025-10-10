@@ -14,10 +14,10 @@ import static f5.health.app.meal.domain.Meal.MENU_MIN_SIZE_PER_MEAL;
 @Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {
-        MealMenuSizeValidator.class,
-        MealSyncMenuSizeValidator.class
+        MenuValidatorForMealSave.class,
+        MenuValidatorForMealSync.class
 })
-public @interface MenuSize {
+public @interface Menu {
 
     String message() default "식단 메뉴를 " + MENU_MIN_SIZE_PER_MEAL + "~" + MENU_LIMIT_SIZE_PER_MEAL + "개 사이로 입력해 주세요.";
 

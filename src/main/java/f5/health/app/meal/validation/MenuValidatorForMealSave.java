@@ -8,7 +8,7 @@ import java.util.List;
 
 import static f5.health.app.meal.domain.Meal.MENU_LIMIT_SIZE_PER_MEAL;
 
-public class MealMenuSizeValidator implements ConstraintValidator<MenuSize, List<MealFoodParam>> {
+public class MenuValidatorForMealSave implements ConstraintValidator<Menu, List<MealFoodParam>> {
 
     @Override
     public boolean isValid(List<MealFoodParam> menus, ConstraintValidatorContext context) {

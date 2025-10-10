@@ -54,7 +54,7 @@ public class Meal {
     private LocalDate eatenDate; // 날짜 조건 조회용
 
 
-    public static Meal of(Member member, LocalDateTime eatenAt, MealType mealType, List<MealFood> mealFoods) {
+    public static Meal createMeal(Member member, LocalDateTime eatenAt, MealType mealType, List<MealFood> mealFoods) {
         Meal meal = new Meal();
         meal.member = member;
         meal.eatenAt = eatenAt;

@@ -70,7 +70,7 @@ public class MealService {
         validateRequiredFoods(request.getRequestedFoodIds());
 
         List<MealFood> mealFoods = createMealFoods(request.mealFoodParams());
-        Meal meal = Meal.of(member, request.eatenAt(), request.mealType(), mealFoods);
+        Meal meal = Meal.createMeal(member, request.eatenAt(), request.mealType(), mealFoods);
 
         mealRepository.save(meal);
         mealFoodRepository.saveAllBatch(mealFoods);

@@ -15,7 +15,7 @@ import java.util.SplittableRandom;
 public class MealFixture {
 
     public static Meal createMealOnly(Member member, LocalDateTime eatenAt, MealType mealType) {
-        return Meal.of(member, eatenAt, mealType, new ArrayList<>());
+        return Meal.createMeal(member, eatenAt, mealType, new ArrayList<>());
     }
 
     public static List<MealFood> createMealFoods(List<Food> foods) {
@@ -30,7 +30,7 @@ public class MealFixture {
         Food food2 = FoodFixture.createLowCalorieFood("현미밥");
 
         SplittableRandom random = new SplittableRandom();
-        return Meal.of(
+        return Meal.createMeal(
                 member,
                 eatenAt,
                 mealType,

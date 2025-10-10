@@ -15,4 +15,8 @@ public class BadRequestException extends ApiException {
     public BadRequestException(ErrorCode errorCode) {
         super(errorCode);
     }
+
+    public BadRequestException(String message) {
+        super(INVALID_REQUEST, message);
+    }
 }

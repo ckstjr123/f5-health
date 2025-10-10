@@ -20,6 +20,7 @@ public record ActivityRequest(
         @Schema(description = "음주 정보", requiredMode = REQUIRED) @NotNull(message = "음주 여부를 알려주세요.") @Size(max = ALCOHOL_TYPE_SIZE, message = "주류는 " + ALCOHOL_TYPE_SIZE + "개입니다.") @Valid List<AlcoholParam> alcoholParams,
         @Schema(description = "기록 시각", example = "2025-05-01") @NotNull(message = "날짜를 지정해 주세요.") @PastOrPresent LocalDate recordDate) {
 
+    @Schema(hidden = true)
     @AssertFalse(message = "기록을 입력해 주세요.")
     private boolean isNotRecorded() {
         return waterIntake == null && smokedCigarettes == null && CollectionUtils.isEmpty(alcoholParams);

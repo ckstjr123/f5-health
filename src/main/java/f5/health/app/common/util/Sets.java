@@ -19,6 +19,6 @@ public final class Sets {
     public static <T> Set<T> difference(Set<T> s1, Set<T> s2) {
         Set<T> difference = new HashSet<>(s1);
         difference.removeAll(s2);
-        return difference;
+        return Set.copyOf(difference);
     }
 }

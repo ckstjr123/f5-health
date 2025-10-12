@@ -57,7 +57,7 @@ public class ActivityService {
         return activity.getId();
     }
 
-    public void addAlcoholConsumption(Long activityId, ActivityRequest.AlcoholConsumptionParam alcoholParam, LoginMember loginMember) {
+    public void saveOrUpdateAlcoholConsumption(Long activityId, ActivityRequest.AlcoholConsumptionParam alcoholParam, LoginMember loginMember) {
         Activity activity = activityRepository.findById(activityId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACTIVITY));
         validateActivityOwnership(activity, loginMember.getId());

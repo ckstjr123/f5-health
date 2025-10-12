@@ -120,6 +120,6 @@ public interface ActivityApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    void addAlcoholConsumption(Long activityId, AlcoholType alcoholType,
-                                               LoginMember loginMember, ActivityRequest.AlcoholConsumptionParam alcoholParam);
+    void saveOrUpdateAlcoholConsumption(Long activityId, AlcoholType alcoholType,
+                                        LoginMember loginMember, ActivityRequest.AlcoholConsumptionParam alcoholParam);
 }

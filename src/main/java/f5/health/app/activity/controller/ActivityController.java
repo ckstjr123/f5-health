@@ -51,9 +51,9 @@ public class ActivityController implements ActivityApiDocs {
     }
 
     @PutMapping("/{activityId}/{alcoholType}")
-    public void addAlcoholConsumption(@PathVariable("activityId") Long activityId, @PathVariable("alcoholType") AlcoholType alcoholType,
-                                                      @Login LoginMember loginMember, @RequestBody @Valid ActivityRequest.AlcoholConsumptionParam alcoholParam) {
-        activityService.addAlcoholConsumption(activityId, alcoholParam, loginMember);
+    public void saveOrUpdateAlcoholConsumption(@PathVariable("activityId") Long activityId, @PathVariable("alcoholType") AlcoholType alcoholType,
+                                               @Login LoginMember loginMember, @RequestBody @Valid ActivityRequest.AlcoholConsumptionParam alcoholParam) {
+        activityService.saveOrUpdateAlcoholConsumption(activityId, alcoholParam, loginMember);
     }
 
 }

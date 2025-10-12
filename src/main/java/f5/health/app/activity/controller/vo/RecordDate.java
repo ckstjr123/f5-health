@@ -1,4 +1,4 @@
-package f5.health.app.activity.controller;
+package f5.health.app.activity.controller.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;

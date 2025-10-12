@@ -40,5 +40,9 @@ public class AlcoholConsumption {
     public void setActivity(Activity activity) {
         this.activity = activity;
     }
+
+    public void update(int intake) {
+        this.intake = intake;
+    }
 }
 

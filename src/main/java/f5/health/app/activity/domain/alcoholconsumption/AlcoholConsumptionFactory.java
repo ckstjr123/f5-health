@@ -1,7 +1,7 @@
 package f5.health.app.activity.domain.alcoholconsumption;
 
 import f5.health.app.activity.constant.AlcoholType;
-import f5.health.app.activity.service.ActivityRequest;
+import f5.health.app.activity.vo.ActivityRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -13,16 +13,16 @@ public class AlcoholConsumptionFactory {
         return new AlcoholConsumption(alcoholType, intake);
     }
 
-    public static List<AlcoholConsumption> from(List<ActivityRequest.AlcoholParam> alcoholParams) {
-        Map<AlcoholType, List<ActivityRequest.AlcoholParam>> paramsByAlcoholType = alcoholParams.stream()
-                .collect(Collectors.groupingBy(ActivityRequest.AlcoholParam::alcoholType));
+    public static List<AlcoholConsumption> from(List<ActivityRequest.AlcoholConsumptionParam> alcoholParams) {
+        Map<AlcoholType, List<ActivityRequest.AlcoholConsumptionParam>> paramsByAlcoholType = alcoholParams.stream()
+                .collect(Collectors.groupingBy(ActivityRequest.AlcoholConsumptionParam::alcoholType));
 
         return paramsByAlcoholType.entrySet().stream()
                 .map(entry -> {
                     AlcoholType alcoholType = entry.getKey();
-                    List<ActivityRequest.AlcoholParam> params = entry.getValue();
+                    List<ActivityRequest.AlcoholConsumptionParam> params = entry.getValue();
                     int intake = params.stream()
-                            .mapToInt(ActivityRequest.AlcoholParam::intake)
+                            .mapToInt(ActivityRequest.AlcoholConsumptionParam::intake)
                             .sum();
                     return new AlcoholConsumption(alcoholType, intake);
                 })

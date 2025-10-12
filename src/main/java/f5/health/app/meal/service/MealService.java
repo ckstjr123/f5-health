@@ -1,14 +1,17 @@
 package f5.health.app.meal.service;
 
 import f5.health.app.auth.vo.LoginMember;
-import f5.health.app.common.exception.*;
+import f5.health.app.common.exception.AccessDeniedException;
+import f5.health.app.common.exception.BadRequestException;
+import f5.health.app.common.exception.ConflictException;
+import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.common.util.Sets;
 import f5.health.app.food.entity.Food;
 import f5.health.app.food.repository.FoodRepository;
 import f5.health.app.meal.constant.MealType;
-import f5.health.app.meal.controller.response.MealDetail;
-import f5.health.app.meal.controller.response.MealSummary;
-import f5.health.app.meal.controller.response.MealsResponse;
+import f5.health.app.meal.vo.response.MealDetail;
+import f5.health.app.meal.vo.response.MealSummary;
+import f5.health.app.meal.vo.response.MealsResponse;
 import f5.health.app.meal.domain.Meal;
 import f5.health.app.meal.domain.MealFood;
 import f5.health.app.meal.repository.MealFoodRepository;
@@ -30,9 +33,9 @@ import java.util.stream.Collectors;
 
 import static f5.health.app.common.util.EntityManagerHelper.flushAndClear;
 import static f5.health.app.food.FoodErrorCode.NOT_FOUND_FOOD;
-import static f5.health.app.meal.domain.Meal.MENU_LIMIT_SIZE_PER_MEAL;
+import static f5.health.app.meal.domain.Meal.MENU_MAX_SIZE_PER_MEAL;
 import static f5.health.app.meal.domain.Meal.MENU_MIN_SIZE_PER_MEAL;
-import static f5.health.app.meal.exception.MealErrorCode.*;
+import static f5.health.app.meal.constant.MealErrorCode.*;
 
 @Service
 @Transactional
@@ -67,7 +70,7 @@ public class MealService {
     /** 식사 기록 */
     public Long saveMeal(Long memberId, MealRequest request) {
         Member member = memberService.findById(memberId);
-        validateMealLimit(memberId, request.eatenAt().toLocalDate(), request.mealType());
+        validateMealLimitExceeded(memberId, request.eatenAt().toLocalDate(), request.mealType());
         validateRequiredFoods(request.getRequestedFoodIds());
 
         List<MealFood> mealFoods = createMealFoods(request.mealFoodParams());
@@ -128,7 +131,7 @@ public class MealService {
 
     private void changeMealTime(Meal meal, Long memberId, LocalDateTime eatenAt, MealType mealType) {
         if (!meal.hasSameEatenDate(eatenAt.toLocalDate()) || meal.isDifferentTypeFrom(mealType)) {
-            validateMealLimit(memberId, eatenAt.toLocalDate(), mealType);
+            validateMealLimitExceeded(memberId, eatenAt.toLocalDate(), mealType);
         }
 
         meal.updateMealTime(eatenAt, mealType);
@@ -166,13 +169,21 @@ public class MealService {
     }
 
     private void validate(MealFoodSyncParam param, Long mealId) {
+        if (param.hasDuplicateUpdate()) {
+            throw new BadRequestException(REPEATED_MENU_UPDATE);
+        }
+
+        if (!Collections.disjoint(param.updateIds(), param.deleteIds())) {
+            throw new BadRequestException(CANNOT_DELETE_EDITED_MENU);
+        }
+
         List<MealFood> origins = mealFoodRepository.findByMealId(mealId);
         if (!containsAll(origins, param.requestedMealFoodIds())) {
             throw new AccessDeniedException();
         }
 
         int expectedMenuCount = (origins.size() + param.newParams().size()) - param.deleteIds().size();
-        if (expectedMenuCount < MENU_MIN_SIZE_PER_MEAL || expectedMenuCount > MENU_LIMIT_SIZE_PER_MEAL) {
+        if (expectedMenuCount < MENU_MIN_SIZE_PER_MEAL || expectedMenuCount > MENU_MAX_SIZE_PER_MEAL) {
             throw new ConflictException(NOT_ALLOWED_MENU_COUNT);
         }
     }
@@ -184,11 +195,11 @@ public class MealService {
                 .containsAll(ids);
     }
 
-    private void validateMealLimit(Long memberId, LocalDate eatenDate, MealType mealType) {
+    private void validateMealLimitExceeded(Long memberId, LocalDate eatenDate, MealType mealType) {
         long mealCount = mealRepository.countBy(memberId, eatenDate, mealType);
 
         if (mealCount >= mealType.maxCountPerDay()) {
-            throw new ConflictException(mealLimitExceededErrorCodeFor(mealType));
+            throw new ConflictException(getLimitExceededErrorCodeFor(mealType));
         }
     }
 

@@ -1,4 +1,4 @@
-package f5.health.app.meal.controller.response;
+package f5.health.app.meal.vo.response;
 
 import f5.health.app.food.vo.FoodResponse;
 import f5.health.app.meal.domain.MealFood;

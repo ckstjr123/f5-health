@@ -1,4 +1,4 @@
-package f5.health.app.meal.controller.response;
+package f5.health.app.meal.vo.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

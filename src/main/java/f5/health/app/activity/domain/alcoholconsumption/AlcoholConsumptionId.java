@@ -12,5 +12,14 @@ import java.io.Serializable;
 public class AlcoholConsumptionId implements Serializable {
     private Long activity; // Activity activity;
     private AlcoholType alcoholType;
+
+    private AlcoholConsumptionId(Long activityId, AlcoholType alcoholType) {
+        this.activity = activityId;
+        this.alcoholType = alcoholType;
+    }
+
+    public static AlcoholConsumptionId of(Long activityId, AlcoholType alcoholType) {
+        return new AlcoholConsumptionId(activityId, alcoholType);
+    }
 }
 

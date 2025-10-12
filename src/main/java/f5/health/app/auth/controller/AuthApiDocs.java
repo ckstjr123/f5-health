@@ -40,7 +40,7 @@ public interface AuthApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    ResponseEntity<OAuth2LoginResult> signin(OAuth2Provider provider, OAuth2LoginRequest loginRequest);
+    ResponseEntity<OAuth2LoginResult> login(OAuth2Provider provider, OAuth2LoginRequest loginRequest);
 
 
     /** 회원가입 */

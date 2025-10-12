@@ -8,8 +8,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-@Schema(description = "건강 일지 저장/조회 응답")
+@Schema(description = "활동 기록 조회")
 public class ActivityResponse {
+
+    @Schema(description = "활동 id", example = "1")
+    private final Long activityId;
 
     @Schema(description = "수분 섭취량(ml)", example = "650")
     private final Integer waterIntake;
@@ -18,16 +21,17 @@ public class ActivityResponse {
     private final Integer smokedCigarettes;
 
     @Schema(description = "음주 정보")
-    private final List<AlcoholResult> alcoholResults;
+    private final List<AlcoholConsumptionResult> alcoholConsumptionResult;
 
     @Schema(description = "기록일자", example = "2025-10-05")
     private final LocalDate recordDate;
 
     private ActivityResponse(Activity activity) {
+        this.activityId = activity.getId();
         this.waterIntake = activity.getWaterIntake();
         this.smokedCigarettes = activity.getSmokedCigarettes();
-        this.alcoholResults = activity.getAlcoholConsumptions().stream()
-                .map(AlcoholResult::new)
+        this.alcoholConsumptionResult = activity.getAlcoholConsumptions().stream()
+                .map(AlcoholConsumptionResult::new)
                 .toList();
         this.recordDate = activity.getRecordDate();
     }

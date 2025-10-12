@@ -3,11 +3,10 @@ package f5.health.app.meal.controller;
 import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.common.EnumModel;
 import f5.health.app.common.exception.exhandler.response.ExceptionResult;
-import f5.health.app.common.validation.PrimaryKey;
-import f5.health.app.meal.controller.response.MealDetail;
-import f5.health.app.meal.controller.response.MealsResponse;
+import f5.health.app.meal.vo.response.MealDetail;
 import f5.health.app.meal.service.request.MealRequest;
 import f5.health.app.meal.service.request.MealSyncRequest;
+import f5.health.app.meal.vo.response.MealsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -16,9 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -86,6 +83,11 @@ public interface MealApiDocs {
     )
     @ApiResponses({
             @ApiResponse(
+                    responseCode = "200",
+                    description = "식단 등록 완료",
+                    content = @Content(schema = @Schema(implementation = CreateMealResponse.class))
+            ),
+            @ApiResponse(
                     responseCode = "400",
                     description = "식단 중복 등록",
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
@@ -96,7 +98,7 @@ public interface MealApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    Long save(LoginMember loginMember, MealRequest mealRequest);
+    ResponseEntity<CreateMealResponse> save(LoginMember loginMember, MealRequest mealRequest);
 
 
     @Operation(summary = "식단 일괄 수정",
@@ -131,8 +133,7 @@ public interface MealApiDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "204",
-                    description = "식사 기록 삭제 완료",
-                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+                    description = "식사 기록 삭제 완료"
             ),
             @ApiResponse(
                     responseCode = "404",

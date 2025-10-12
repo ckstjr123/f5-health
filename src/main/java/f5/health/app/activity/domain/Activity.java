@@ -56,6 +56,10 @@ public class Activity {
         alcoholConsumption.setActivity(this);
     }
 
+    public boolean isOwnedBy(Long memberId) {
+        return this.member.getId().equals(memberId);
+    }
+
 
     public static class ActivityBuilder {
 

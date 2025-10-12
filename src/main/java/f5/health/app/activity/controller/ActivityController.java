@@ -1,8 +1,11 @@
 package f5.health.app.activity.controller;
 
 import f5.health.app.activity.constant.AlcoholType;
+import f5.health.app.activity.controller.vo.CreateActivityResponse;
+import f5.health.app.activity.controller.vo.RecordDate;
+import f5.health.app.activity.repository.AlcoholConsumptionRepository;
 import f5.health.app.activity.service.ActivityService;
-import f5.health.app.activity.service.ActivityRequest;
+import f5.health.app.activity.vo.ActivityRequest;
 import f5.health.app.activity.vo.ActivityResponse;
 import f5.health.app.auth.Login;
 import f5.health.app.auth.vo.LoginMember;
@@ -25,6 +28,7 @@ public class ActivityController implements ActivityApiDocs {
 
     private final EnumModelMapper enumMapper;
     private final ActivityService activityService;
+    private final AlcoholConsumptionRepository alcoholConsumptionRepository;
 
     @GetMapping("/alcohol-types")
     public List<? extends EnumModel> alcoholTypes() {
@@ -32,16 +36,24 @@ public class ActivityController implements ActivityApiDocs {
     }
 
     @GetMapping
-    public ActivityResponse findActivity(@Login LoginMember loginMember,
-                                         @ModelAttribute("date") @Valid RecordDate date) {
-        return activityService.findActivity(loginMember.getId(), date.get());
+    public ActivityResponse findOne(@Login LoginMember loginMember,
+                                    @ModelAttribute("date") @Valid RecordDate date) {
+        return activityService.findOne(loginMember.getId(), date.get());
     }
 
+
     @PostMapping
-    public ResponseEntity<Void> save(@Login LoginMember loginMember,
-                                     @RequestBody @Valid ActivityRequest activityRequest) {
-        activityService.save(loginMember.getId(), activityRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<CreateActivityResponse> save(@Login LoginMember loginMember, @RequestBody @Valid ActivityRequest activityRequest) {
+        Long activityId = activityService.save(loginMember.getId(), activityRequest);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new CreateActivityResponse(activityId));
+    }
+
+    @PutMapping("/{activityId}/{alcoholType}")
+    public void addAlcoholConsumption(@PathVariable("activityId") Long activityId, @PathVariable("alcoholType") AlcoholType alcoholType,
+                                                      @Login LoginMember loginMember, @RequestBody @Valid ActivityRequest.AlcoholConsumptionParam alcoholParam) {
+        activityService.addAlcoholConsumption(activityId, alcoholParam, loginMember);
     }
 
 }

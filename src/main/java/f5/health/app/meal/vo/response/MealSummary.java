@@ -1,4 +1,4 @@
-package f5.health.app.meal.controller.response;
+package f5.health.app.meal.vo.response;
 
 import f5.health.app.meal.constant.MealType;
 import f5.health.app.meal.domain.Meal;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public final class MealSummary {
 
     @Schema(description = "식사 id", example = "1")
-    private final Long id;
+    private final Long mealId;
 
     @Schema(description = "식사 타입 value", example = "DINNER")
     private final MealType type;
@@ -37,7 +37,7 @@ public final class MealSummary {
     private final double totalFat;
 
     private MealSummary(Meal meal) {
-        this.id = meal.getId();
+        this.mealId = meal.getId();
         this.type = meal.getMealType();
         this.label = type.label();
         this.eatenAt = meal.getEatenAt();

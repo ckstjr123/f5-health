@@ -1,7 +1,7 @@
 package f5.health.app.meal.service.request;
 
 import f5.health.app.common.validation.PrimaryKey;
-import f5.health.app.meal.validation.Menu;
+import f5.health.app.meal.validation.MenuSize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 
@@ -16,7 +16,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static java.util.Objects.requireNonNullElseGet;
 
 @Schema(description = "식단 메뉴 갱신 파라미터", requiredMode = REQUIRED)
-@Menu
+@MenuSize
 public record MealFoodSyncParam(@Schema(description = "새로 추가된 식사 음식 항목") @Valid List<MealFoodParam> newParams,
                                 @Schema(description = "기존 식사 음식에 대한 수정 사항") @Valid List<MealFoodUpdateParam> updateParams,
                                 @Schema(hidden = true, description = "업데이트 대상 id 수집용 필드") Set<Long> updateIds,

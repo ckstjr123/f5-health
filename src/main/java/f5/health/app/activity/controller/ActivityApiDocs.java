@@ -1,6 +1,9 @@
 package f5.health.app.activity.controller;
 
-import f5.health.app.activity.service.ActivityRequest;
+import f5.health.app.activity.constant.AlcoholType;
+import f5.health.app.activity.controller.vo.CreateActivityResponse;
+import f5.health.app.activity.controller.vo.RecordDate;
+import f5.health.app.activity.vo.ActivityRequest;
 import f5.health.app.activity.vo.ActivityResponse;
 import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.common.EnumModel;
@@ -8,6 +11,7 @@ import f5.health.app.common.exception.exhandler.response.ExceptionResult;
 import f5.health.app.common.exception.exhandler.response.ErrorsResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -58,7 +62,7 @@ public interface ActivityApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    ActivityResponse findActivity(LoginMember loginMember, RecordDate date);
+    ActivityResponse findOne(LoginMember loginMember, RecordDate date);
 
 
     @Operation(summary = "활동 기록 저장", description = "음수량 등 데이터 저장",
@@ -70,7 +74,8 @@ public interface ActivityApiDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "활동 기록 완료"
+                    description = "활동 기록 완료",
+                    content = @Content(schema = @Schema(implementation = CreateActivityResponse.class))
             ),
             @ApiResponse(
                     responseCode = "401",
@@ -88,5 +93,33 @@ public interface ActivityApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    ResponseEntity<Void> save(LoginMember loginMember, ActivityRequest activityRequest);
+    ResponseEntity<CreateActivityResponse> save(LoginMember loginMember, ActivityRequest activityRequest);
+
+
+    @Operation(summary = "음주 기록 추가", description = "해당 주류에 대해 이미 기록된 음주 정보가 있으면 업데이트",
+            parameters = {
+                    @Parameter(in = ParameterIn.PATH, name = "activityId", description = "활동 id", required = true),
+                    @Parameter(in = ParameterIn.PATH, name = "alcoholType", description = "주류", required = true),
+                    @Parameter(name = "alcoholParam", description = "음주 정보 추가 요청",
+                            content = @Content(schema = @Schema(implementation = ActivityRequest.AlcoholConsumptionParam.class)), required = true)
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "음주 기록 추가 완료"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "필드 유효성 검증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorsResult.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "저장된 활동 기록을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            )
+    })
+    void addAlcoholConsumption(Long activityId, AlcoholType alcoholType,
+                                               LoginMember loginMember, ActivityRequest.AlcoholConsumptionParam alcoholParam);
 }

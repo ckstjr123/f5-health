@@ -25,9 +25,9 @@ public class JwtProvider {
     public static final long REFRESH_TOKEN_EXPIRATION_MS = Duration.ofDays(7).toMillis();
     private final SecretKey secretKey;
 
-    public JwtProvider(@Value("${spring.jwt.secret}") String secret) {
+    public JwtProvider(@Value("${jwt.secret-key}") String secretKey) {
         // HS256: 양방향 대칭키 암호화 알고리즘
-        this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+        this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
     public String generateAccessToken(Long memberId, String role) {

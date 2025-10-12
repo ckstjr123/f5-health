@@ -41,10 +41,10 @@ public class AuthService {
 
         return memberService.findByEmail(oauth2UserInfo.getEmail())
                 .map(findMember -> OAuth2LoginResult.of(OAUTH2_LOGIN_SUCCESS, issueJWTokens(findMember)))
-                .orElse(OAuth2LoginResult.of(SIGN_UP_REQUIRED, null));
+                .orElseGet(() -> OAuth2LoginResult.of(SIGN_UP_REQUIRED, null));
     }
 
-    public JwtResponse join(OAuth2Provider provider, SignUpRequest signUpRequest) {
+    public JwtResponse signup(OAuth2Provider provider, SignUpRequest signUpRequest) {
         OAuth2UserInfo oauth2UserInfo = oauth2ClientService.loadOAuth2UserInfo(provider, signUpRequest.accessToken());
 
         Long memberId = memberService.join(oauth2UserInfo, signUpRequest.memberCheckUp());
@@ -58,8 +58,7 @@ public class AuthService {
         String savedRefreshToken = redisManager.get(getRefreshTokenKey(memberId));
         if (savedRefreshToken == null) {
             throw new AuthenticationException(EXPIRED_JWT);
-        }
-        if (!Objects.equals(refreshToken, savedRefreshToken)) {
+        } else if (!Objects.equals(refreshToken, savedRefreshToken)) {
             throw new RefreshViolationException(NOT_MATCH_REFRESH_JWT);
         }
 

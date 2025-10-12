@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Schema(description = "음주 결과")
-public class AlcoholResult {
+public class AlcoholConsumptionResult {
 
     @Schema(description = "주류", example = "BEER")
     private AlcoholType type;
@@ -18,7 +18,7 @@ public class AlcoholResult {
     @Schema(description = "음주량(ml)", example = "550")
     private int intake;
 
-    public AlcoholResult(AlcoholConsumption alcoholConsumption) {
+    public AlcoholConsumptionResult(AlcoholConsumption alcoholConsumption) {
         this.type = alcoholConsumption.getAlcoholType();
         this.label = type.label();
         this.intake = alcoholConsumption.getIntake();

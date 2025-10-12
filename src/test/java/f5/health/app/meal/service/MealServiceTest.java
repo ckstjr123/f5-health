@@ -61,7 +61,7 @@ public class MealServiceTest {
 
         @DisplayName("각 식사 타입에 대해 당일 식사 기록 제한 초과 시 예외")
         @Test
-        void validateRegularMealLimit() {
+        void validateMealLimitExceeded() {
             final Long memberId = 1L;
             Member member = MemberFixture.createMember();
             MealType mealType = MealType.LUNCH;
@@ -77,7 +77,7 @@ public class MealServiceTest {
 
         @DisplayName("음식을 찾지 못하면 예외")
         @Test
-        void getFoodsOrElseThrow() {
+        void notFoundRequiredFoods() {
             final Long notExistsId = 1L;
             MealType mealType = MealType.LUNCH;
             LocalDateTime eatenAt = LocalDateTime.now();

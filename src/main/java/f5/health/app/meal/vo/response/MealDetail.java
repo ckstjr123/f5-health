@@ -1,4 +1,4 @@
-package f5.health.app.meal.controller.response;
+package f5.health.app.meal.vo.response;
 
 import f5.health.app.meal.constant.MealType;
 import f5.health.app.meal.domain.Meal;
@@ -13,8 +13,8 @@ import java.util.List;
 @Schema(description = "식단 상세 정보 응답")
 public final class MealDetail {
 
-    @Schema(description = "식사 id", example = "1")
-    private final Long id;
+    @Schema(description = "식단 id", example = "1")
+    private final Long mealId;
 
     @Schema(description = "식사 음식 목록")
     private final List<MealFoodResponse> mealFoods;
@@ -41,7 +41,7 @@ public final class MealDetail {
     private final double totalFat;
 
     private MealDetail(Meal meal) {
-        this.id = meal.getId();
+        this.mealId = meal.getId();
         this.mealFoods = meal.getMealFoods().stream()
                 .map(MealFoodResponse::new)
                 .toList();

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static f5.health.app.meal.exception.MealErrorCode.NOT_FOUND_MEAL_OWNERSHIP;
+import static f5.health.app.meal.constant.MealErrorCode.NOT_FOUND_MEAL_OWNERSHIP;
 
 /**
  * 식단 엔티티
@@ -26,7 +26,7 @@ import static f5.health.app.meal.exception.MealErrorCode.NOT_FOUND_MEAL_OWNERSHI
 public class Meal {
 
     public static final int MENU_MIN_SIZE_PER_MEAL = 1;
-    public static final int MENU_LIMIT_SIZE_PER_MEAL = 15;
+    public static final int MENU_MAX_SIZE_PER_MEAL = 15;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

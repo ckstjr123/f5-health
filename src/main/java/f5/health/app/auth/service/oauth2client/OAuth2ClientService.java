@@ -9,10 +9,10 @@ import java.util.Map;
 @Service
 public class OAuth2ClientService {
 
-    private final Map<String, OAuth2Client> oauth2Clients;
+    private final OAuth2Clients oauth2Clients;
 
     public OAuth2ClientService(final Map<String, OAuth2Client> oauth2Clients) {
-        this.oauth2Clients = Map.copyOf(oauth2Clients);
+        this.oauth2Clients = new OAuth2Clients(oauth2Clients);
     }
 
     /** 액세스 토큰으로 사용자 정보 조회하는 API 호출 */

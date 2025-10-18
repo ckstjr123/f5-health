@@ -46,8 +46,7 @@ public class ActivityService {
         Member member = memberService.findById(memberId);
         validateDuplicateActivity(memberId, activityRequest.getRecordDate());
 
-        List<AlcoholConsumption> alcoholConsumptions = AlcoholConsumptionFactory.from(activityRequest.getAlcoholParams());
-        Activity activity = Activity.createActivity(member, alcoholConsumptions)
+        Activity activity = Activity.createActivity(member, activityRequest.getAlcoholParams())
                 .waterIntake(activityRequest.getWaterIntake())
                 .smokedCigarettes(activityRequest.getSmokedCigarettes())
                 .recordDate(activityRequest.getRecordDate())
@@ -62,6 +61,8 @@ public class ActivityService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACTIVITY));
         validateActivityOwnership(activity, loginMember.getId());
 
+
+        // TODO: alcoholConsumption 리포지토리 삭제 후 activity로 crud하도록 수정
         AlcoholConsumptionId alcoholConsumptionId = AlcoholConsumptionId.of(activityId, alcoholParam.alcoholType());
         Optional<AlcoholConsumption> alcoholConsumption = alcoholConsumptionRepository.findById(alcoholConsumptionId);
 

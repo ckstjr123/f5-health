@@ -1,6 +1,8 @@
 package f5.health.app.activity.domain;
 
 import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumption;
+import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumptionFactory;
+import f5.health.app.activity.vo.ActivityRequest;
 import f5.health.app.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -47,7 +49,8 @@ public class Activity {
     @Column(name = "RECORD_DATE")
     private LocalDate recordDate;
 
-    public static ActivityBuilder createActivity(Member writer, List<AlcoholConsumption> alcoholConsumptions) {
+    public static ActivityBuilder createActivity(Member writer, List<ActivityRequest.AlcoholConsumptionParam> alcoholParams) {
+        List<AlcoholConsumption> alcoholConsumptions = AlcoholConsumptionFactory.from(alcoholParams);
         return new ActivityBuilder(writer, alcoholConsumptions);
     }
 

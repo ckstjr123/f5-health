@@ -1,7 +1,9 @@
 package f5.health.app.activity.domain;
 
+import f5.health.app.activity.constant.AlcoholType;
 import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumption;
 import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumptionFactory;
+import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumptionId;
 import f5.health.app.activity.vo.ActivityRequest;
 import f5.health.app.member.entity.Member;
 import jakarta.persistence.*;
@@ -13,6 +15,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 건강 관련 활동 기록
@@ -49,18 +52,34 @@ public class Activity {
     @Column(name = "RECORD_DATE")
     private LocalDate recordDate;
 
+
     public static ActivityBuilder createActivity(Member writer, List<ActivityRequest.AlcoholConsumptionParam> alcoholParams) {
         List<AlcoholConsumption> alcoholConsumptions = AlcoholConsumptionFactory.from(alcoholParams);
         return new ActivityBuilder(writer, alcoholConsumptions);
     }
 
-    public void addAlcoholConsumption(AlcoholConsumption alcoholConsumption) {
+    private void addAlcoholConsumption(AlcoholConsumption alcoholConsumption) {
         this.alcoholConsumptions.add(alcoholConsumption);
         alcoholConsumption.setActivity(this);
     }
 
     public boolean isOwnedBy(Long memberId) {
         return this.member.getId().equals(memberId);
+    }
+
+    private Optional<AlcoholConsumption> findAlcoholConsumption(AlcoholConsumptionId id) {
+        return this.alcoholConsumptions.stream()
+                .filter(ac -> ac.getId().equals(id))
+                .findFirst();
+    }
+
+    public void addOrUpdateAlcoholConsumption(AlcoholConsumptionId id, AlcoholType alcoholType, int intake) {
+        Optional<AlcoholConsumption> alcoholConsumptionOpt = findAlcoholConsumption(id);
+
+        alcoholConsumptionOpt.ifPresentOrElse(
+                alcoholConsumption -> alcoholConsumption.update(intake),
+                () -> addAlcoholConsumption(AlcoholConsumptionFactory.create(alcoholType, intake))
+        );
     }
 
 

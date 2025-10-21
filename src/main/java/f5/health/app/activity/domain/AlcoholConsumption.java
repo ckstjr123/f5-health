@@ -37,11 +37,16 @@ public class AlcoholConsumption {
     }
 
 
-    public void setActivity(Activity activity) {
+    void setActivity(Activity activity) {
         this.activity = activity;
     }
 
-    public void update(int intake) {
+
+    AlcoholConsumptionId getId() {
+        return AlcoholConsumptionId.of(this.activity.getId(), this.alcoholType);
+    }
+
+     void update(int intake) {
         this.intake = intake;
     }
 }

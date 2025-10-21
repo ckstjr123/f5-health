@@ -1,6 +1,5 @@
-package f5.health.app.activity.domain.alcoholconsumption;
+package f5.health.app.activity.domain;
 
-import f5.health.app.activity.constant.AlcoholType;
 import f5.health.app.activity.vo.ActivityRequest;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class AlcoholConsumptionFactory {
 
-    public static AlcoholConsumption of(AlcoholType alcoholType, int intake) {
+    public static AlcoholConsumption create(AlcoholType alcoholType, int intake) {
         return new AlcoholConsumption(alcoholType, intake);
     }
 

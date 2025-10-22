@@ -1,7 +1,7 @@
 package f5.health.app.activity.vo;
 
-import f5.health.app.activity.constant.AlcoholType;
-import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumption;
+import f5.health.app.activity.domain.AlcoholType;
+import f5.health.app.activity.domain.AlcoholConsumption;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 

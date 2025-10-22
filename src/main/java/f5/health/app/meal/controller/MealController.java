@@ -4,7 +4,7 @@ import f5.health.app.auth.Login;
 import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.common.EnumModel;
 import f5.health.app.common.EnumModelMapper;
-import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.domain.MealType;
 import f5.health.app.meal.vo.response.MealDetail;
 import f5.health.app.meal.service.MealService;
 import f5.health.app.meal.service.request.MealRequest;

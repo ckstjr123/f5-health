@@ -1,4 +1,4 @@
-package f5.health.app.activity.constant;
+package f5.health.app.activity.domain;
 
 import f5.health.app.common.MappingEnum;
 

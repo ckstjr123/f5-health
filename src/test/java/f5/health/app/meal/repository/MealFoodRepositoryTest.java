@@ -3,15 +3,13 @@ package f5.health.app.meal.repository;
 import f5.health.app.food.entity.Food;
 import f5.health.app.food.fixture.FoodFixture;
 import f5.health.app.food.repository.FoodRepository;
-import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.domain.MealType;
 import f5.health.app.meal.domain.Meal;
 import f5.health.app.meal.domain.MealFood;
 import f5.health.app.meal.fixture.MealFixture;
 import f5.health.app.member.entity.Member;
 import f5.health.app.member.fixture.MemberFixture;
 import f5.health.app.member.repository.MemberRepository;
-import jakarta.persistence.EntityManager;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,10 +17,7 @@ import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import static f5.health.app.meal.fixture.MealFixture.createMealWithMealFoods;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest

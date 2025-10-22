@@ -1,10 +1,9 @@
 package f5.health.app.meal.fixture;
 
-import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.domain.MealType;
 import f5.health.app.meal.domain.MealFood;
 import f5.health.app.meal.service.request.MealFoodParam;
 import f5.health.app.meal.service.request.MealRequest;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.List;

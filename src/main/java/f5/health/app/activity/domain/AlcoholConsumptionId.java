@@ -1,6 +1,5 @@
-package f5.health.app.activity.domain.alcoholconsumption;
+package f5.health.app.activity.domain;
 
-import f5.health.app.activity.constant.AlcoholType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -10,6 +9,7 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AlcoholConsumptionId implements Serializable {
+
     private Long activity; // Activity activity;
     private AlcoholType alcoholType;
 

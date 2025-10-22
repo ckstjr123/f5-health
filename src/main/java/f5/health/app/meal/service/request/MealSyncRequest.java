@@ -1,6 +1,6 @@
 package f5.health.app.meal.service.request;
 
-import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.domain.MealType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

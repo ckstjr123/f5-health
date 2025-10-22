@@ -1,6 +1,6 @@
 package f5.health.app.activity.controller;
 
-import f5.health.app.activity.constant.AlcoholType;
+import f5.health.app.activity.domain.AlcoholType;
 import f5.health.app.activity.controller.vo.CreateActivityResponse;
 import f5.health.app.activity.controller.vo.RecordDate;
 import f5.health.app.activity.vo.ActivityRequest;
@@ -62,7 +62,7 @@ public interface ActivityApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    ActivityResponse findOne(LoginMember loginMember, RecordDate date);
+    ActivityResponse find(LoginMember loginMember, RecordDate date);
 
 
     @Operation(summary = "활동 기록 저장", description = "음수량 등 데이터 저장",

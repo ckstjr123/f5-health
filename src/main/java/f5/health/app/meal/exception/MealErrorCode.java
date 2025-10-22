@@ -1,9 +1,10 @@
-package f5.health.app.meal.constant;
+package f5.health.app.meal.exception;
 
 import f5.health.app.common.exception.ErrorCode;
+import f5.health.app.meal.domain.MealType;
 import lombok.Getter;
 
-import static f5.health.app.meal.constant.MealType.SNACK;
+import static f5.health.app.meal.domain.MealType.SNACK;
 import static f5.health.app.meal.domain.Meal.MENU_MAX_SIZE_PER_MEAL;
 import static f5.health.app.meal.domain.Meal.MENU_MIN_SIZE_PER_MEAL;
 

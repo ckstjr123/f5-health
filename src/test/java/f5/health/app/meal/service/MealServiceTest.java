@@ -3,7 +3,7 @@ package f5.health.app.meal.service;
 import f5.health.app.common.exception.ConflictException;
 import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.food.repository.FoodRepository;
-import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.domain.MealType;
 import f5.health.app.meal.domain.Meal;
 import f5.health.app.meal.fixture.MealFixture;
 import f5.health.app.meal.repository.MealFoodRepository;

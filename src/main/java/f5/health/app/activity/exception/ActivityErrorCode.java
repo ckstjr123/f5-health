@@ -1,4 +1,4 @@
-package f5.health.app.activity.constant;
+package f5.health.app.activity.exception;
 
 import f5.health.app.common.exception.ErrorCode;
 import lombok.Getter;

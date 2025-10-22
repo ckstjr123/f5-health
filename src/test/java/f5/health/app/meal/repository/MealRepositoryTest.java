@@ -1,7 +1,7 @@
 package f5.health.app.meal.repository;
 
 import f5.health.app.food.repository.FoodRepository;
-import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.domain.MealType;
 import f5.health.app.meal.domain.Meal;
 import f5.health.app.meal.domain.MealFood;
 import f5.health.app.meal.fixture.MealFixture;
@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static f5.health.app.meal.fixture.MealFixture.createMealWithMealFoods;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest

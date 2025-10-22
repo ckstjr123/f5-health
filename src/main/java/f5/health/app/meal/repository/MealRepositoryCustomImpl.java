@@ -1,7 +1,7 @@
 package f5.health.app.meal.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.domain.MealType;
 import f5.health.app.meal.domain.Meal;
 import jakarta.persistence.EntityManager;
 
@@ -37,16 +37,18 @@ public class MealRepositoryCustomImpl implements MealRepositoryCustom {
     public Optional<Meal> findMealJoinFetch(Long mealId) {
         return Optional.ofNullable(
                 query.selectFrom(meal)
-                        .join(meal.mealFoods, mealFood).fetchJoin()
-                        .join(mealFood.food, food).fetchJoin()
-                        .where(meal.id.eq(mealId))
-                        .fetchOne());
+                     .join(meal.mealFoods, mealFood).fetchJoin()
+                     .join(mealFood.food, food).fetchJoin()
+                     .where(meal.id.eq(mealId))
+                     .fetchOne());
     }
 
     @Override
     public List<Meal> findMeals(Long memberId, LocalDate eatenDate) {
         return query.selectFrom(meal)
-                .where(meal.member.id.eq(memberId), meal.eatenDate.eq(eatenDate))
-                .fetch();
+                    .where(
+                            meal.member.id.eq(memberId),
+                            meal.eatenDate.eq(eatenDate))
+                    .fetch();
     }
 }

@@ -8,7 +8,7 @@ import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.common.util.Sets;
 import f5.health.app.food.entity.Food;
 import f5.health.app.food.repository.FoodRepository;
-import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.domain.MealType;
 import f5.health.app.meal.vo.response.MealDetail;
 import f5.health.app.meal.vo.response.MealSummary;
 import f5.health.app.meal.vo.response.MealsResponse;
@@ -35,7 +35,7 @@ import static f5.health.app.common.util.EntityManagerHelper.flushAndClear;
 import static f5.health.app.food.FoodErrorCode.NOT_FOUND_FOOD;
 import static f5.health.app.meal.domain.Meal.MENU_MAX_SIZE_PER_MEAL;
 import static f5.health.app.meal.domain.Meal.MENU_MIN_SIZE_PER_MEAL;
-import static f5.health.app.meal.constant.MealErrorCode.*;
+import static f5.health.app.meal.exception.MealErrorCode.*;
 
 @Service
 @Transactional
@@ -91,7 +91,7 @@ public class MealService {
 
         Meal refreshMeal = findMealById(mealId);
         changeMealTime(refreshMeal, memberId, request.getEatenAt(), request.getMealType());
-        refreshMeal.calculateNutrients();
+        refreshMeal.calculateNutrition();
     }
 
     /** 식사 기록 삭제 */
@@ -116,7 +116,7 @@ public class MealService {
                             .map(Food::getId)
                             .collect(Collectors.toSet())
             );
-            throw new NotFoundException(NOT_FOUND_FOOD, String.join(", ", invalidFoodIds.toString()));
+            throw new NotFoundException(NOT_FOUND_FOOD, invalidFoodIds.toString());
         }
     }
 

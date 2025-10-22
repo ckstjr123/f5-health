@@ -1,11 +1,8 @@
 package f5.health.app.activity.service;
 
 import f5.health.app.activity.domain.Activity;
-import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumption;
-import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumptionFactory;
-import f5.health.app.activity.domain.alcoholconsumption.AlcoholConsumptionId;
+import f5.health.app.activity.domain.AlcoholConsumptionId;
 import f5.health.app.activity.repository.ActivityRepository;
-import f5.health.app.activity.repository.AlcoholConsumptionRepository;
 import f5.health.app.activity.vo.ActivityRequest;
 import f5.health.app.activity.vo.ActivityResponse;
 import f5.health.app.auth.vo.LoginMember;
@@ -20,10 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
-import static f5.health.app.activity.constant.ActivityErrorCode.*;
+import static f5.health.app.activity.exception.ActivityErrorCode.*;
 
 @Slf4j
 @Service
@@ -33,11 +29,10 @@ public class ActivityService {
 
     private final MemberService memberService;
     private final ActivityRepository activityRepository;
-    private final AlcoholConsumptionRepository alcoholConsumptionRepository;
 
-    public ActivityResponse findOne(Long memberId, LocalDate recordDate) {
-        // todo: 조인해서 조회
-        Activity activity = activityRepository.findByMemberIdAndRecordDate(memberId, recordDate)
+
+    public ActivityResponse findActivity(Long memberId, LocalDate recordDate) {
+        Activity activity = activityRepository.findActivityJoinFetch(memberId, recordDate)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACTIVITY));
         return ActivityResponse.from(activity);
     }
@@ -61,22 +56,9 @@ public class ActivityService {
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACTIVITY));
         validateActivityOwnership(activity, loginMember.getId());
 
-
-        // TODO: alcoholConsumption 리포지토리 삭제 후 activity로 crud하도록 수정
-        AlcoholConsumptionId alcoholConsumptionId = AlcoholConsumptionId.of(activityId, alcoholParam.alcoholType());
-        Optional<AlcoholConsumption> alcoholConsumption = alcoholConsumptionRepository.findById(alcoholConsumptionId);
-
-        alcoholConsumption.ifPresentOrElse(
-                ac -> ac.update(alcoholParam.intake()),
-                () -> saveAlcoholConsumption(activity, alcoholParam)
-        );
+        activity.addOrUpdateAlcoholConsumption(alcoholParam.alcoholType(), alcoholParam.intake());
     }
 
-
-    private void saveAlcoholConsumption(Activity activity, ActivityRequest.AlcoholConsumptionParam alcoholParam) {
-        AlcoholConsumption alcoholConsumption = AlcoholConsumptionFactory.of(alcoholParam.alcoholType(), alcoholParam.intake());
-        activity.addAlcoholConsumption(alcoholConsumption);
-    }
 
     private void validateDuplicateActivity(Long memberId, LocalDate recordDate) {
         Optional<Activity> findActivity = activityRepository.findByMemberIdAndRecordDate(memberId, recordDate);

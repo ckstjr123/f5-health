@@ -3,13 +3,12 @@ package f5.health.app.meal.service;
 import f5.health.app.food.entity.Food;
 import f5.health.app.food.fixture.FoodFixture;
 import f5.health.app.food.repository.FoodRepository;
-import f5.health.app.meal.constant.MealType;
+import f5.health.app.meal.domain.MealType;
 import f5.health.app.meal.domain.Meal;
 import f5.health.app.meal.domain.MealFood;
-import f5.health.app.meal.domain.embedded.Nutrients;
+import f5.health.app.meal.domain.embedded.Nutrition;
 import f5.health.app.meal.fixture.MealFixture;
 import f5.health.app.meal.repository.MealRepository;
-import f5.health.app.meal.service.request.MealFoodParam;
 import f5.health.app.meal.service.request.MealRequest;
 import f5.health.app.member.entity.Member;
 import f5.health.app.member.fixture.MemberFixture;
@@ -21,9 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static f5.health.app.meal.fixture.MealRequestFixture.createMealRequest;
 import static f5.health.app.meal.fixture.MealRequestFixture.toMealFoodParams;
@@ -61,16 +58,16 @@ public class MealServiceIntegrationTest {
 
         Meal meal = mealRepository.findById(mealId).orElseThrow();
 
-        Nutrients expectedNutrients = Nutrients.from(mealFoodFixtures);
-        Nutrients nutrients = meal.getNutrients();
+        Nutrition expectedNutrition = Nutrition.from(mealFoodFixtures);
+        Nutrition nutrition = meal.getNutrition();
         assertAll(
                 () -> assertThat(meal.getId()).isEqualTo(mealId),
                 () -> assertThat(meal.getEatenDate()).isEqualTo(eatenAt.toLocalDate()),
                 () -> assertThat(meal.getMealFoods().size()).isEqualTo(foods.size()),
-                () -> assertThat(nutrients.getKcal()).isEqualTo(expectedNutrients.getKcal()),
-                () -> assertThat(nutrients.getCarbohydrate()).isEqualTo(expectedNutrients.getCarbohydrate()),
-                () -> assertThat(nutrients.getProtein()).isEqualTo(expectedNutrients.getProtein()),
-                () -> assertThat(nutrients.getFat()).isEqualTo(expectedNutrients.getFat())
+                () -> assertThat(nutrition.getKcal()).isEqualTo(expectedNutrition.getKcal()),
+                () -> assertThat(nutrition.getCarbohydrate()).isEqualTo(expectedNutrition.getCarbohydrate()),
+                () -> assertThat(nutrition.getProtein()).isEqualTo(expectedNutrition.getProtein()),
+                () -> assertThat(nutrition.getFat()).isEqualTo(expectedNutrition.getFat())
         );
     }
 

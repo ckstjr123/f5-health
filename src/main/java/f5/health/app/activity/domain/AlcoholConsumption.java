@@ -1,15 +1,11 @@
-package f5.health.app.activity.domain.alcoholconsumption;
+package f5.health.app.activity.domain;
 
-import f5.health.app.activity.constant.AlcoholType;
-import f5.health.app.activity.domain.Activity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @IdClass(AlcoholConsumptionId.class)
@@ -17,13 +13,10 @@ import lombok.NoArgsConstructor;
 public class AlcoholConsumption {
 
     @Id
-    @EqualsAndHashCode.Include
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ACTIVITY_ID")
     private Activity activity;
-
     @Id
-    @EqualsAndHashCode.Include
     @Column(name = "ALCOHOL_TYPE")
     @Enumerated(EnumType.STRING)
     private AlcoholType alcoholType;
@@ -31,7 +24,7 @@ public class AlcoholConsumption {
     @Column(name = "INTAKE")
     private int intake;
 
-    protected AlcoholConsumption(AlcoholType alcoholType, int intake) {
+    public AlcoholConsumption(AlcoholType alcoholType, int intake) {
         this.alcoholType = alcoholType;
         this.intake = intake;
     }
@@ -41,12 +34,11 @@ public class AlcoholConsumption {
         this.activity = activity;
     }
 
-
-    AlcoholConsumptionId getId() {
-        return AlcoholConsumptionId.of(this.activity.getId(), this.alcoholType);
+    public AlcoholConsumptionId getId() {
+        return AlcoholConsumptionId.of(activity.getId(), alcoholType);
     }
 
-     void update(int intake) {
+    void update(int intake) {
         this.intake = intake;
     }
 }

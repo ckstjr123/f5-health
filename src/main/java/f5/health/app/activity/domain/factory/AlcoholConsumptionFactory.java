@@ -1,5 +1,7 @@
-package f5.health.app.activity.domain;
+package f5.health.app.activity.domain.factory;
 
+import f5.health.app.activity.domain.AlcoholConsumption;
+import f5.health.app.activity.domain.AlcoholType;
 import f5.health.app.activity.vo.ActivityRequest;
 
 import java.util.List;

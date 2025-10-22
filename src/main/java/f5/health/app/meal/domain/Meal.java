@@ -1,8 +1,7 @@
 package f5.health.app.meal.domain;
 
 import f5.health.app.common.exception.AccessDeniedException;
-import f5.health.app.meal.constant.MealType;
-import f5.health.app.meal.domain.embedded.Nutrients;
+import f5.health.app.meal.domain.embedded.Nutrition;
 import f5.health.app.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,8 +12,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import static f5.health.app.meal.constant.MealErrorCode.NOT_FOUND_MEAL_OWNERSHIP;
+import static f5.health.app.meal.exception.MealErrorCode.NOT_FOUND_MEAL_OWNERSHIP;
 
 /**
  * 식단 엔티티
@@ -45,7 +45,7 @@ public class Meal {
     private MealType mealType;
 
     @Embedded
-    private Nutrients nutrients;
+    private Nutrition nutrition;
 
     @Column(name = "EATEN_AT")
     private LocalDateTime eatenAt;
@@ -61,7 +61,7 @@ public class Meal {
         meal.eatenDate = eatenAt.toLocalDate();
         meal.mealType = mealType;
         meal.addAllMealFoods(mealFoods);
-        meal.calculateNutrients(); //
+        meal.calculateNutrition(); //
         return meal;
     }
 
@@ -76,16 +76,13 @@ public class Meal {
     }
 
 
-    public void calculateNutrients() {
-        this.nutrients = Nutrients.from(mealFoods);
+    public void calculateNutrition() {
+        this.nutrition = Nutrition.from(mealFoods);
     }
 
-    private boolean isOwnedBy(Long memberId) {
-        return member.getId().equals(memberId);
-    }
 
     public void validateOwnership(Long memberId) {
-        if (!this.isOwnedBy(memberId)) {
+        if (!Objects.equals(this.member.getId(), memberId)) {
             throw new AccessDeniedException(NOT_FOUND_MEAL_OWNERSHIP);
         }
     }

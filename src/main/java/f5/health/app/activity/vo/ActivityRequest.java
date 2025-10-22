@@ -1,6 +1,6 @@
 package f5.health.app.activity.vo;
 
-import f5.health.app.activity.constant.AlcoholType;
+import f5.health.app.activity.domain.AlcoholType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -10,7 +10,7 @@ import org.springframework.util.CollectionUtils;
 import java.time.LocalDate;
 import java.util.List;
 
-import static f5.health.app.activity.constant.AlcoholType.ALCOHOL_TYPE_SIZE;
+import static f5.health.app.activity.domain.AlcoholType.ALCOHOL_TYPE_SIZE;
 import static f5.health.app.activity.domain.Activity.*;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 

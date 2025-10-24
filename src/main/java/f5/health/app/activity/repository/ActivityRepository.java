@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface ActivityRepository extends JpaRepository<Activity, Long>, ActivityRepositoryCustom {
 
-    Optional<Activity> findByMemberIdAndRecordDate(Long memberId, LocalDate recordDate);
+    Optional<Activity> findByMemberIdAndRecordedDate(Long memberId, LocalDate recordedDate);
 }

@@ -2,7 +2,8 @@ package f5.health.app.activity.controller;
 
 import f5.health.app.activity.domain.AlcoholType;
 import f5.health.app.activity.controller.vo.CreateActivityResponse;
-import f5.health.app.activity.controller.vo.RecordDate;
+import f5.health.app.activity.vo.ActivityUpdateRequest;
+import f5.health.app.common.vo.Date;
 import f5.health.app.activity.service.ActivityService;
 import f5.health.app.activity.vo.ActivityRequest;
 import f5.health.app.activity.vo.ActivityResponse;
@@ -34,11 +35,9 @@ public class ActivityController implements ActivityApiDocs {
     }
 
     @GetMapping
-    public ActivityResponse find(@Login LoginMember loginMember,
-                                 @ModelAttribute("date") @Valid RecordDate date) {
-        return activityService.findActivity(loginMember.getId(), date.get());
+    public ActivityResponse find(@Login LoginMember loginMember, @ModelAttribute("date") @Valid Date date) {
+        return activityService.findOne(loginMember.getId(), date.get());
     }
-
 
     @PostMapping
     public ResponseEntity<CreateActivityResponse> save(@Login LoginMember loginMember, @RequestBody @Valid ActivityRequest activityRequest) {
@@ -48,10 +47,17 @@ public class ActivityController implements ActivityApiDocs {
                 .body(new CreateActivityResponse(activityId));
     }
 
+    @PatchMapping("/{activityId}/edit")
+    public void updateActivity(@PathVariable("activityId") Long activityId, @Login LoginMember loginMember,
+                               @RequestBody @Valid ActivityUpdateRequest activityUpdateRequest) {
+        activityService.updateActivity(activityId, activityUpdateRequest, loginMember);
+    }
+
     @PutMapping("/{activityId}/{alcoholType}")
     public void saveOrUpdateAlcoholConsumption(@PathVariable("activityId") Long activityId, @PathVariable("alcoholType") AlcoholType alcoholType,
                                                @Login LoginMember loginMember, @RequestBody @Valid ActivityRequest.AlcoholConsumptionParam alcoholParam) {
         activityService.saveOrUpdateAlcoholConsumption(activityId, alcoholParam, loginMember);
     }
+
 
 }

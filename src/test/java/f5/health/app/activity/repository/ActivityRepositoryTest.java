@@ -25,17 +25,17 @@ public class ActivityRepositoryTest {
     private ActivityRepository activityRepository;
 
     @Test
-    void findByMemberIdAndRecordDate() {
+    void findByMemberIdAndRecordedDate() {
         Member member = memberRepository.save(MemberFixture.createMember());
         ActivityRequest.AlcoholConsumptionParam alcoholParam = new ActivityRequest.AlcoholConsumptionParam(AlcoholType.SOJU, 500);
-        LocalDate recordDate = LocalDate.now();
+        LocalDate recordedDate = LocalDate.now();
         Activity activity = Activity.createActivity(member, List.of(alcoholParam))
                 .waterIntake(500)
-                .recordDate(recordDate)
+                .recordedDate(recordedDate)
                 .build();
         activityRepository.save(activity);
 
-        Activity findActivity = activityRepository.findByMemberIdAndRecordDate(member.getId(), recordDate).orElseThrow();
+        Activity findActivity = activityRepository.findByMemberIdAndRecordedDate(member.getId(), recordedDate).orElseThrow();
 
         assertThat(findActivity).isEqualTo(activity);
         assertThat(findActivity.getAlcoholConsumptions()).containsExactlyElementsOf(activity.getAlcoholConsumptions());
@@ -45,14 +45,14 @@ public class ActivityRepositoryTest {
     void findOneJoinFetch() {
         Member member = memberRepository.save(MemberFixture.createMember());
         ActivityRequest.AlcoholConsumptionParam alcoholParam = new ActivityRequest.AlcoholConsumptionParam(AlcoholType.BEER, 500);
-        LocalDate recordDate = LocalDate.now();
+        LocalDate recordedDate = LocalDate.now();
         Activity activity = Activity.createActivity(member, List.of(alcoholParam))
                 .smokedCigarettes(3)
-                .recordDate(recordDate)
+                .recordedDate(recordedDate)
                 .build();
         activityRepository.save(activity);
 
-        Activity findActivity = activityRepository.findActivityJoinFetch(member.getId(), recordDate).orElseThrow();
+        Activity findActivity = activityRepository.findActivityJoinFetch(member.getId(), recordedDate).orElseThrow();
 
         assertThat(findActivity).isEqualTo(activity);
         assertThat(findActivity.getAlcoholConsumptions()).containsExactlyElementsOf(activity.getAlcoholConsumptions());

@@ -31,19 +31,19 @@ public final class ActivityRequest {
 
     @Schema(description = "흡연량(개비)", example = "6", nullable = true)
     @PositiveOrZero
-    @Max(value = DAILY_MAX_CIGARETTES, message = "하루에 기록 가능한 흡연량 최대치는 " + DAILY_MAX_CIGARETTES + "개비입니다.")
+    @Max(value = DAILY_MAX_CIGARETTES, message = "하루에 기록 가능한 최대 흡연량은 " + DAILY_MAX_CIGARETTES + "개비입니다.")
     private final Integer smokedCigarettes;
 
     @Schema(description = "기록 시각", example = "2025-05-01")
     @NotNull(message = "날짜를 지정해 주세요.")
     @PastOrPresent
-    private final LocalDate recordDate;
+    private final LocalDate recordedDate;
 
-    public ActivityRequest(Integer waterIntake, List<AlcoholConsumptionParam> alcoholParams, Integer smokedCigarettes, LocalDate recordDate) {
+    public ActivityRequest(Integer waterIntake, List<AlcoholConsumptionParam> alcoholParams, Integer smokedCigarettes, LocalDate recordedDate) {
         this.waterIntake = waterIntake;
         this.alcoholParams = alcoholParams;
         this.smokedCigarettes = smokedCigarettes;
-        this.recordDate = recordDate;
+        this.recordedDate = recordedDate;
     }
 
     @Schema(hidden = true)

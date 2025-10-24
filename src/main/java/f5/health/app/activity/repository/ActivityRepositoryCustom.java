@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface ActivityRepositoryCustom {
 
-    Optional<Activity> findActivityJoinFetch(Long memberId, LocalDate recordDate);
+    Optional<Activity> findActivityJoinFetch(Long memberId, LocalDate recordedDate);
 }

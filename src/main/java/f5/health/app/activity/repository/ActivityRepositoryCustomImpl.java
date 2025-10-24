@@ -20,13 +20,13 @@ public class ActivityRepositoryCustomImpl implements ActivityRepositoryCustom {
 
 
     @Override
-    public Optional<Activity> findActivityJoinFetch(Long memberId, LocalDate recordDate) {
+    public Optional<Activity> findActivityJoinFetch(Long memberId, LocalDate recordedDate) {
         return Optional.ofNullable(
                 query.selectFrom(activity)
                      .leftJoin(activity.alcoholConsumptions, alcoholConsumption).fetchJoin()
                      .where(
                              activity.member.id.eq(memberId),
-                             activity.recordDate.eq(recordDate)
+                             activity.recordedDate.eq(recordedDate)
                      )
                      .fetchOne());
     }

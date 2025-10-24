@@ -21,7 +21,7 @@ import java.util.Optional;
 @Entity
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "ACTIVITY", uniqueConstraints = {@UniqueConstraint(columnNames = {"MEMBER_ID", "RECORD_DATE"})})
+@Table(name = "ACTIVITY", uniqueConstraints = {@UniqueConstraint(columnNames = {"MEMBER_ID", "RECORDED_DATE"})})
 public class Activity {
 
     public static final int DAILY_MAX_WATER_ML = 5000;
@@ -47,8 +47,8 @@ public class Activity {
     @Column(name = "SMOKED_CIGARETTES")
     private Integer smokedCigarettes;
 
-    @Column(name = "RECORD_DATE")
-    private LocalDate recordDate;
+    @Column(name = "RECORDED_DATE")
+    private LocalDate recordedDate;
 
 
     public static ActivityBuilder createActivity(Member writer, List<ActivityRequest.AlcoholConsumptionParam> alcoholParams) {
@@ -80,6 +80,15 @@ public class Activity {
         );
     }
 
+    public void update(Integer waterIntake, Integer smokedCigarettes) {
+        if (waterIntake != null) {
+            this.waterIntake = waterIntake;
+        }
+        if (smokedCigarettes != null) {
+            this.smokedCigarettes = smokedCigarettes;
+        }
+    }
+
 
     public static class ActivityBuilder {
 
@@ -101,8 +110,8 @@ public class Activity {
             return this;
         }
 
-        public ActivityBuilder recordDate(final LocalDate recordDate) {
-            activity.recordDate = recordDate;
+        public ActivityBuilder recordedDate(final LocalDate recordedDate) {
+            activity.recordedDate = recordedDate;
             return this;
         }
 

@@ -24,7 +24,7 @@ public class ActivityResponse {
     private final List<AlcoholConsumptionResult> alcoholConsumptionResult;
 
     @Schema(description = "기록일자", example = "2025-10-05")
-    private final LocalDate recordDate;
+    private final LocalDate recordedDate;
 
     private ActivityResponse(Activity activity) {
         this.activityId = activity.getId();
@@ -33,7 +33,7 @@ public class ActivityResponse {
         this.alcoholConsumptionResult = activity.getAlcoholConsumptions().stream()
                 .map(AlcoholConsumptionResult::new)
                 .toList();
-        this.recordDate = activity.getRecordDate();
+        this.recordedDate = activity.getRecordedDate();
     }
 
     public static ActivityResponse from(Activity activity) {

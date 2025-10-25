@@ -33,7 +33,7 @@ public class MemberController implements MemberApiDocs {
     }
 
     @PatchMapping("/me/edit")
-    public void edit(@Login LoginMember loginMember, @RequestBody @Valid MemberUpdateRequest updateParam) {
+    public void updaaye(@Login LoginMember loginMember, @RequestBody @Valid MemberUpdateRequest updateParam) {
         memberService.updateMember(loginMember, updateParam);
     }
 }

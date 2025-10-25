@@ -77,9 +77,8 @@ public class Meal {
 
 
     public void calculateNutrition() {
-        this.nutrition = Nutrition.from(mealFoods);
+        this.nutrition = Nutrition.from(this.mealFoods);
     }
-
 
     public void validateOwnership(Long memberId) {
         if (!Objects.equals(this.member.getId(), memberId)) {

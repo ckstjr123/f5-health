@@ -21,5 +21,12 @@ public class AlcoholConsumptionId implements Serializable {
     public static AlcoholConsumptionId of(Long activityId, AlcoholType alcoholType) {
         return new AlcoholConsumptionId(activityId, alcoholType);
     }
-}
 
+    Long activityId() {
+        return this.activity;
+    }
+
+    AlcoholType alcoholType() {
+        return this.alcoholType;
+    }
+}

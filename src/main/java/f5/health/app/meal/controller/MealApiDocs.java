@@ -125,7 +125,7 @@ public interface MealApiDocs {
 
 
     @Operation(summary = "식단 삭제",
-            description = "식사 기록 완전 삭제",
+            description = "식사 기록 삭제",
             parameters = {
                     @Parameter(in = ParameterIn.PATH, name = "mealId", description = "삭제할 식단 식별자", required = true)
             }

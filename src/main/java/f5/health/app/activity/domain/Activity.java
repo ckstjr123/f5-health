@@ -1,11 +1,12 @@
 package f5.health.app.activity.domain;
 
 import f5.health.app.activity.domain.factory.AlcoholConsumptionFactory;
+import f5.health.app.activity.exception.ActivityErrorCode;
 import f5.health.app.activity.vo.ActivityRequest;
+import f5.health.app.common.exception.NotFoundException;
 import f5.health.app.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,12 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static f5.health.app.activity.exception.ActivityErrorCode.NOT_FOUND_ALCOHOL_CONSUMPTION;
+
 /**
  * 건강 관련 활동 기록
  */
 @Getter
 @Entity
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "ACTIVITY", uniqueConstraints = {@UniqueConstraint(columnNames = {"MEMBER_ID", "RECORDED_DATE"})})
 public class Activity {
@@ -65,21 +67,6 @@ public class Activity {
         return this.member.getId().equals(memberId);
     }
 
-    private Optional<AlcoholConsumption> findAlcoholConsumption(AlcoholConsumptionId id) {
-        return alcoholConsumptions.stream()
-                .filter(ac -> ac.getId().equals(id))
-                .findFirst();
-    }
-
-    public void addOrUpdateAlcoholConsumption(AlcoholType alcoholType, int intake) {
-        AlcoholConsumptionId alcoholConsumptionId = AlcoholConsumptionId.of(this.id, alcoholType);
-
-        findAlcoholConsumption(alcoholConsumptionId).ifPresentOrElse(
-                alcoholConsumption -> alcoholConsumption.update(intake),
-                () -> addAlcoholConsumption(AlcoholConsumptionFactory.create(alcoholType, intake))
-        );
-    }
-
     public void update(Integer waterIntake, Integer smokedCigarettes) {
         if (waterIntake != null) {
             this.waterIntake = waterIntake;
@@ -89,6 +76,25 @@ public class Activity {
         }
     }
 
+    public void addOrUpdateAlcoholConsumption(AlcoholType alcoholType, int intake) {
+        AlcoholConsumptionId alcoholConsumptionId = AlcoholConsumptionId.of(this.id, alcoholType);
+
+        Optional<AlcoholConsumption> alcoholConsumptionOpt = alcoholConsumptions.stream()
+                .filter(ac -> ac.isSameId(alcoholConsumptionId))
+                .findFirst();
+
+        alcoholConsumptionOpt.ifPresentOrElse(
+                ac -> ac.update(intake),
+                () -> addAlcoholConsumption(AlcoholConsumptionFactory.create(alcoholType, intake))
+        );
+    }
+
+    public void removeAlcoholConsumption(AlcoholConsumptionId alcoholConsumptionId) {
+        boolean removed = alcoholConsumptions.removeIf(ac -> ac.isSameId(alcoholConsumptionId));
+        if (!removed) {
+            throw new NotFoundException(NOT_FOUND_ALCOHOL_CONSUMPTION);
+        }
+    }
 
     public static class ActivityBuilder {
 

@@ -82,5 +82,5 @@ public interface MemberApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    void edit(LoginMember loginMember, MemberUpdateRequest updateParam);
+    void updaaye(LoginMember loginMember, MemberUpdateRequest updateParam);
 }

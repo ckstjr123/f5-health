@@ -19,10 +19,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -141,6 +139,27 @@ public interface ActivityApiDocs {
                     content = @Content(schema = @Schema(implementation = ExceptionResult.class))
             )
     })
-    void saveOrUpdateAlcoholConsumption(Long activityId, AlcoholType alcoholType, LoginMember loginMember,
-                                        ActivityRequest.AlcoholConsumptionParam alcoholParam);
+    void upsertAlcoholConsumption(Long activityId, AlcoholType alcoholType, LoginMember loginMember,
+                                  ActivityRequest.AlcoholConsumptionParam alcoholParam);
+
+
+    @Operation(summary = "음주 기록 삭제",
+            description = "음주 정보 삭제",
+            parameters = {
+                    @Parameter(in = ParameterIn.PATH, name = "activityId", description = "활동 id", required = true),
+                    @Parameter(in = ParameterIn.PATH, name = "alcoholType", description = "주류", required = true)
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "음주 정보 삭제 완료"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "음주 기록 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ExceptionResult.class))
+            )
+    })
+    ResponseEntity<Void> deleteAlcoholConsumption(Long activityId, AlcoholType alcoholType, LoginMember loginMember);
 }

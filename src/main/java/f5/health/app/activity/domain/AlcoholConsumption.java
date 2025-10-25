@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,8 +36,9 @@ public class AlcoholConsumption {
         this.activity = activity;
     }
 
-    public AlcoholConsumptionId getId() {
-        return AlcoholConsumptionId.of(activity.getId(), alcoholType);
+    boolean isSameId(AlcoholConsumptionId id) {
+        return Objects.equals(this.activity.getId(), id.activityId())
+                && Objects.equals(this.alcoholType, id.alcoholType());
     }
 
     void update(int intake) {

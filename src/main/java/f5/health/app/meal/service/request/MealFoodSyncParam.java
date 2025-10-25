@@ -4,31 +4,26 @@ import f5.health.app.common.validation.PrimaryKey;
 import f5.health.app.meal.validation.MenuSize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
-import static java.util.Objects.requireNonNullElseGet;
 
 @Schema(description = "식단 메뉴 갱신 파라미터", requiredMode = REQUIRED)
 @MenuSize
-public record MealFoodSyncParam(@Schema(description = "새로 추가된 식사 음식 항목") @Valid List<MealFoodParam> newParams,
-                                @Schema(description = "기존 식사 음식에 대한 수정 사항") @Valid List<MealFoodUpdateParam> updateParams,
+public record MealFoodSyncParam(@Schema(description = "새로 추가된 식사 음식 항목") @NotNull @Valid List<MealFoodParam> newParams,
+                                @Schema(description = "기존 식사 음식에 대한 수정 사항") @NotNull @Valid List<MealFoodUpdateParam> updateParams,
                                 @Schema(hidden = true, description = "업데이트 대상 id 수집용 필드") Set<Long> updateIds,
-                                @Schema(description = "삭제할 식사 메뉴 id 목록") Set<@PrimaryKey Long> deleteIds) {
+                                @Schema(description = "삭제할 식사 메뉴 id 목록") @NotNull Set<@PrimaryKey Long> deleteIds) {
 
     public MealFoodSyncParam {
-        newParams = requireNonNullElseGet(newParams, ArrayList::new);
-        updateParams = requireNonNullElseGet(updateParams, ArrayList::new);
         updateIds = updateParams.stream()
                 .map(MealFoodUpdateParam::mealFoodId)
                 .collect(Collectors.toUnmodifiableSet());
-        deleteIds = requireNonNullElseGet(deleteIds, HashSet::new);
     }
 
     @Schema(hidden = true, description = "수정 id 중복 여부")

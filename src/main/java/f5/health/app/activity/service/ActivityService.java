@@ -1,11 +1,12 @@
 package f5.health.app.activity.service;
 
 import f5.health.app.activity.domain.Activity;
+import f5.health.app.activity.domain.AlcoholConsumptionId;
+import f5.health.app.activity.domain.AlcoholType;
 import f5.health.app.activity.repository.ActivityRepository;
 import f5.health.app.activity.vo.ActivityRequest;
 import f5.health.app.activity.vo.ActivityResponse;
 import f5.health.app.activity.vo.ActivityUpdateRequest;
-import f5.health.app.auth.vo.LoginMember;
 import f5.health.app.common.exception.AccessDeniedException;
 import f5.health.app.common.exception.ConflictException;
 import f5.health.app.common.exception.NotFoundException;
@@ -51,22 +52,32 @@ public class ActivityService {
         return activity.getId();
     }
 
-    public void updateActivity(Long activityId, ActivityUpdateRequest updateRequest, LoginMember loginMember) {
-        Activity activity = activityRepository.findById(activityId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACTIVITY));
-        validateActivityOwnership(activity, loginMember.getId());
+    public void updateActivity(Long activityId, ActivityUpdateRequest updateRequest, Long memberId) {
+        Activity activity = findActivityById(activityId);
+        validateActivityOwnership(activity, memberId);
 
         activity.update(updateRequest.getWaterIntake(), updateRequest.getSmokedCigarettes());
     }
 
-    public void saveOrUpdateAlcoholConsumption(Long activityId, ActivityRequest.AlcoholConsumptionParam alcoholParam, LoginMember loginMember) {
-        Activity activity = activityRepository.findById(activityId)
-                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACTIVITY));
-        validateActivityOwnership(activity, loginMember.getId());
+    public void upsertAlcoholConsumption(Long activityId, ActivityRequest.AlcoholConsumptionParam alcoholParam, Long memberId) {
+        Activity activity = findActivityById(activityId);
+        validateActivityOwnership(activity, memberId);
 
         activity.addOrUpdateAlcoholConsumption(alcoholParam.alcoholType(), alcoholParam.intake());
     }
 
+    public void deleteAlcoholConsumption(Long activityId, AlcoholType alcoholType, Long memberId) {
+        Activity activity = findActivityById(activityId);
+        validateActivityOwnership(activity, memberId);
+
+        activity.removeAlcoholConsumption(AlcoholConsumptionId.of(activityId, alcoholType));
+    }
+
+
+    private Activity findActivityById(Long activityId) {
+        return activityRepository.findById(activityId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_ACTIVITY));
+    }
 
     private void validateDuplicateActivity(Long memberId, LocalDate recordedDate) {
         Optional<Activity> findActivity = activityRepository.findByMemberIdAndRecordedDate(memberId, recordedDate);
